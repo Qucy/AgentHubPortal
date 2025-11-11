@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Execution Trace - Agent Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f7fafc;
+        }
+        
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-success { background-color: #38a169; }
+        .status-warning { background-color: #d69e2e; }
+        .status-error { background-color: #e53e3e; }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .breadcrumb a {
+            color: #3182ce;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb .separator {
+            color: #718096;
+        }
+        
+        .trace-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .trace-controls {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            display: flex;
+            items-center;
+            justify-content: between;
+            gap: 16px;
+        }
+        
+        .trace-visualization {
+            height: 600px;
+            position: relative;
+            overflow: auto;
+        }
+        
+        .node {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .node:hover {
+            transform: scale(1.05);
+        }
+        
+        .node-circle {
+            fill: #3182ce;
+            stroke: #2c5282;
+            stroke-width: 2px;
+        }
+        
+        .node-success { fill: #38a169; stroke: #2f855a; }
+        .node-warning { fill: #d69e2e; stroke: #b7791f; }
+        .node-error { fill: #e53e3e; stroke: #c53030; }
+        
+        .node-text {
+            font-size: 12px;
+            font-weight: 500;
+            fill: white;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #a0aec0;
+            stroke-width: 2px;
+        }
+        
+        .details-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            height: fit-content;
+        }
+        
+        .metadata-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .metadata-item:last-child {
+            border-bottom: none;
+        }
+        
+        .control-button {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: white;
+            color: #374151;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .control-button:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+        
+        .control-button.active {
+            background: #3182ce;
+            color: white;
+            border-color: #3182ce;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-gray-900">Agent Portal</h1>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-gray-900">Dashboard</a>
+                    <a href="application.html" class="text-gray-600 hover:text-gray-900">Applications</a>
+                    <a href="evaluation.html" class="text-gray-600 hover:text-gray-900">Evaluation</a>
+                    <div class="flex items-center space-x-2">
+                        <div class="status-dot status-success"></div>
+                        <span class="text-sm text-gray-600">Live</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Dashboard</a>
+            <span class="separator">/</span>
+            <a href="application.html" id="app-link">Application</a>
+            <span class="separator">/</span>
+            <span id="trace-name" class="text-gray-900 font-medium">Execution Trace</span>
+        </div>
+
+        <!-- Trace Header -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900" id="trace-title">Execution Trace</h1>
+                    <div class="flex items-center mt-2 space-x-4">
+                        <div class="flex items-center">
+                            <div class="status-dot status-success" id="trace-status-dot"></div>
+                            <span class="text-sm font-medium text-gray-600" id="trace-status-text">Success</span>
+                        </div>
+                        <span class="text-sm text-gray-600 mono" id="trace-id">trace-001-001</span>
+                        <span class="text-sm text-gray-600">Duration: <span class="mono" id="trace-duration">2.4s</span></span>
+                        <span class="text-sm text-gray-600">Cost: <span class="mono" id="trace-cost">$0.15</span></span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Export Trace
+                    </button>
+                    <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                        Compare
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Trace Visualization -->
+            <div class="lg:col-span-2">
+                <div class="trace-container">
+                    <div class="trace-controls">
+                        <div class="flex items-center space-x-3">
+                            <button class="control-button active" onclick="expandAll()">Expand All</button>
+                            <button class="control-button" onclick="collapseAll()">Collapse All</button>
+                            <button class="control-button" onclick="resetZoom()">Reset Zoom</button>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <input type="text" placeholder="Search nodes..." class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <button class="control-button">Search</button>
+                        </div>
+                    </div>
+                    <div class="trace-visualization" id="trace-tree">
+                        <!-- D3.js tree visualization will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details Panel -->
+            <div class="lg:col-span-1">
+                <div class="details-panel">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Node Details</h3>
+                    <div id="node-details">
+                        <div class="text-center text-gray-500 py-8">
+                            <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p>Click on a node to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-gray-600">
+                <p>&copy; 2024 Agent Application Management Portal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Trace visualization functionality
+        let treeData = {};
+        let selectedNode = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTraceVisualization();
+        });
+
+        function initializeTraceVisualization() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const appId = urlParams.get('app') || 'app-001';
+            const traceId = urlParams.get('trace') || 'trace-001-001';
+            
+            loadTraceData(appId, traceId);
+            setupBreadcrumbs(appId);
+            createTraceVisualization();
+        }
+
+        function loadTraceData(appId, traceId) {
+            // Mock trace data structure
+            treeData = {
+                name: "Execution Root",
+                id: "root",
+                status: "success",
+                duration: 2.4,
+                cost: 0.15,
+                timestamp: "2024-01-15T14:30:00Z",
+                metadata: {
+                    "Execution ID": traceId,
+                    "Application": appId,
+                    "Start Time": "2024-01-15T14:30:00Z",
+                    "End Time": "2024-01-15T14:30:02.4Z",
+                    "Total Duration": "2.4s",
+                    "Memory Usage": "128MB",
+                    "CPU Usage": "15%"
+                },
+                children: [
+                    {
+                        name: "Initialize Agent",
+                        id: "step-1",
+                        status: "success",
+                        duration: 0.2,
+                        cost: 0.02,
+                        metadata: {
+                            "Step": "Initialization",
+                            "Status": "Success",
+                            "Duration": "0.2s",
+                            "Memory": "32MB",
+                            "Dependencies": "Loaded"
+                        },
+                        children: [
+                            {
+                                name: "Load Model",
+                                id: "step-1-1",
+                                status: "success",
+                                duration: 0.1,
+                                cost: 0.01,
+                                metadata: {
+                                    "Model": "GPT-4",
+                                    "Size": "1.2GB",
+                                    "Load Time": "0.1s"
+                                }
+                            },
+                            {
+                                name: "Setup Environment",
+                                id: "step-1-2",
+                                status: "success",
+                                duration: 0.1,
+                                cost: 0.01,
+                                metadata: {
+                                    "Environment": "Production",
+                                    "Config": "Default",
+                                    "Setup Time": "0.1s"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        name: "Process Input",
+                        id: "step-2",
+                        status: "success",
+                        duration: 0.8,
+                        cost: 0.05,
+                        metadata: {
+                            "Input Size": "2.5KB",
+                            "Processing Time": "0.8s",
+                            "Validation": "Passed"
+                        },
+                        children: [
+                            {
+                                name: "Validate Input",
+                                id: "step-2-1",
+                                status: "success",
+                                duration: 0.1,
+                                cost: 0.01,
+                                metadata: {
+                                    "Validation": "Schema Check",
+                                    "Result": "Valid",
+                                    "Errors": "None"
+                                }
+                            },
+                            {
+                                name: "Preprocess Data",
+                                id: "step-2-2",
+                                status: "success",
+                                duration: 0.7,
+                                cost: 0.04,
+                                metadata: {
+                                    "Preprocessing": "Tokenization",
+                                    "Tokens": "1500",
+                                    "Processing Time": "0.7s"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        name: "Generate Response",
+                        id: "step-3",
+                        status: "success",
+                        duration: 1.2,
+                        cost: 0.06,
+                        metadata: {
+                            "Model": "GPT-4",
+                            "Tokens": "850",
+                            "Generation Time": "1.2s"
+                        }
+                    },
+                    {
+                        name: "Validate Output",
+                        id: "step-4",
+                        status: "success",
+                        duration: 0.2,
+                        cost: 0.02,
+                        metadata: {
+                            "Validation": "Content Check",
+                            "Safety Score": "0.95",
+                            "Quality Score": "0.92"
+                        }
+                    }
+                ]
+            };
+
+            // Update header information
+            document.getElementById('trace-title').textContent = `Execution Trace - ${traceId}`;
+            document.getElementById('trace-name').textContent = traceId;
+            document.getElementById('trace-id').textContent = traceId;
+            document.getElementById('trace-duration').textContent = treeData.duration + 's';
+            document.getElementById('trace-cost').textContent = '$' + treeData.cost.toFixed(2);
+        }
+
+        function setupBreadcrumbs(appId) {
+            const app = window.AgentPortal.applicationsData.find(a => a.id === appId);
+            if (app) {
+                document.getElementById('app-link').textContent = app.name;
+                document.getElementById('app-link').href = `application.html?id=${appId}`;
+            }
+        }
+
+        function createTraceVisualization() {
+            const container = document.getElementById('trace-tree');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Clear existing content
+            d3.select(container).selectAll('*').remove();
+
+            // Create SVG
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Create tree layout
+            const treeLayout = d3.tree()
+                .size([height - 100, width - 200])
+                .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
+
+            // Create hierarchy
+            const root = d3.hierarchy(treeData);
+            treeLayout(root);
+
+            // Create links
+            const links = svg.append('g')
+                .attr('transform', 'translate(100, 50)')
+                .selectAll('.link')
+                .data(root.links())
+                .enter().append('path')
+                .attr('class', 'link')
+                .attr('d', d3.linkHorizontal()
+                    .x(d => d.y)
+                    .y(d => d.x));
+
+            // Create nodes
+            const nodes = svg.append('g')
+                .attr('transform', 'translate(100, 50)')
+                .selectAll('.node')
+                .data(root.descendants())
+                .enter().append('g')
+                .attr('class', 'node')
+                .attr('transform', d => `translate(${d.y},${d.x})`)
+                .on('click', function(event, d) {
+                    selectNode(d);
+                });
+
+            // Add circles to nodes
+            nodes.append('circle')
+                .attr('class', d => `node-circle node-${d.data.status}`)
+                .attr('r', 20);
+
+            // Add text to nodes
+            nodes.append('text')
+                .attr('class', 'node-text')
+                .text(d => d.data.name.length > 10 ? d.data.name.substring(0, 10) + '...' : d.data.name);
+
+            // Add animation
+            nodes.style('opacity', 0)
+                .transition()
+                .duration(800)
+                .delay((d, i) => i * 100)
+                .style('opacity', 1);
+
+            links.style('opacity', 0)
+                .transition()
+                .duration(800)
+                .delay((d, i) => i * 50 + 500)
+                .style('opacity', 1);
+        }
+
+        function selectNode(node) {
+            selectedNode = node;
+            
+            // Update node details panel
+            const detailsPanel = document.getElementById('node-details');
+            const metadata = node.data.metadata || {};
+            
+            let html = `
+                <div class="mb-4">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">${node.data.name}</h4>
+                    <div class="flex items-center mb-3">
+                        <div class="status-dot status-${node.data.status}"></div>
+                        <span class="text-sm font-medium text-gray-600">${node.data.status.charAt(0).toUpperCase() + node.data.status.slice(1)}</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="metadata-item">
+                        <span class="text-sm text-gray-600">Duration</span>
+                        <span class="text-sm font-medium text-gray-900 mono">${node.data.duration}s</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="text-sm text-gray-600">Cost</span>
+                        <span class="text-sm font-medium text-gray-900 mono">$${node.data.cost.toFixed(2)}</span>
+                    </div>
+            `;
+            
+            Object.entries(metadata).forEach(([key, value]) => {
+                html += `
+                    <div class="metadata-item">
+                        <span class="text-sm text-gray-600">${key}</span>
+                        <span class="text-sm font-medium text-gray-900 mono">${value}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            detailsPanel.innerHTML = html;
+            
+            // Animate details panel
+            anime({
+                targets: '.details-panel',
+                scale: [0.95, 1],
+                opacity: [0.7, 1],
+                duration: 300,
+                easing: 'easeOutQuad'
+            });
+        }
+
+        function expandAll() {
+            // Implementation for expanding all nodes
+            console.log('Expand all nodes');
+        }
+
+        function collapseAll() {
+            // Implementation for collapsing all nodes
+            console.log('Collapse all nodes');
+        }
+
+        function resetZoom() {
+            // Implementation for resetting zoom
+            console.log('Reset zoom');
+        }
+    </script>
+</body>
+</html>
