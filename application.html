@@ -106,23 +106,56 @@
  </head>
  <body>
     <!-- Sidebar Navigation -->
-    <aside class="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 shadow-sm z-50">
-        <div class="p-6">
-            <h1 class="text-xl font-bold text-gray-900">Agent Portal</h1>
+    <aside class="fixed inset-y-0 left-0 w-64 bg-slate-900 border-r border-slate-800 shadow-sm z-50 text-slate-200">
+        <div class="p-6 border-b border-slate-800">
+            <h1 class="text-sm font-semibold">Agent Hub</h1>
         </div>
-        <nav class="px-6 space-y-2">
-            <a href="index.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Dashboard</a>
-            <a href="application.html" class="block px-3 py-2 rounded-md text-blue-600 font-medium bg-blue-50">Applications</a>
-            <a href="evaluation.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Evaluation</a>
+        <nav class="px-4 py-4 space-y-6">
+            <div class="space-y-1">
+                <a href="index.html" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Dashboard</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Home</a>
+            </div>
+            <div class="space-y-1">
+                <p class="px-3 text-xs uppercase tracking-wide text-slate-400">Configuration</p>
+                <a href="application.html" class="block px-3 py-2 rounded-md bg-slate-800 text-white font-medium">Applications</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Agents</a>
+            </div>
+            <div class="space-y-1">
+                <p class="px-3 text-xs uppercase tracking-wide text-slate-400">Observability</p>
+                <a href="trace.html" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Tracing</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Sessions</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Users</a>
+            </div>
+            <div class="space-y-1">
+                <p class="px-3 text-xs uppercase tracking-wide text-slate-400">Evaluation</p>
+                <a href="evaluation.html" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">LLM-as-a-Judge</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Human Annotation</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Datasets</a>
+            </div>
         </nav>
-        <div class="absolute bottom-4 left-6 flex items-center space-x-2">
+        <div class="absolute bottom-4 left-6 flex items-center space-x-2 text-slate-400">
             <div class="status-dot status-active"></div>
-            <span class="text-sm text-gray-600">Live</span>
+            <span class="text-sm">Live</span>
         </div>
     </aside>
 
     <!-- Main wrapper shifted for sidebar -->
     <div class="ml-64">
+
+    <!-- Top Bar -->
+    <header class="sticky top-0 bg-white border-b border-gray-200 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-end">
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-2 text-gray-700">
+                    <span class="text-sm">Signed in as</span>
+                    <span class="font-medium">User</span>
+                </div>
+                <button class="px-3 py-1.5 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50" onclick="window.location.href='index.html'">
+                    Log out
+                </button>
+            </div>
+        </div>
+    </header>
 
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

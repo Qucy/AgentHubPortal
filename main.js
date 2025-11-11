@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Particle system for hero background
 function initializeParticles() {
     const canvas = document.getElementById('particles-canvas');
-    if (!canvas) return;
+    if (!canvas || typeof window.PIXI === 'undefined') return;
     
     const app = new PIXI.Application({
         view: canvas,
@@ -259,26 +259,30 @@ function initializeParticles() {
 // Initialize animations
 function initializeAnimations() {
     // Animate hero title
-    Splitting();
-    
-    anime({
-        targets: '[data-splitting] .char',
-        translateY: [100, 0],
-        opacity: [0, 1],
-        easing: 'easeOutExpo',
-        duration: 1400,
-        delay: anime.stagger(30)
-    });
+    if (typeof window.Splitting === 'function') {
+        window.Splitting();
+    }
 
-    // Animate metric cards
-    anime({
-        targets: '.metric-card',
-        translateY: [50, 0],
-        opacity: [0, 1],
-        easing: 'easeOutExpo',
-        duration: 1000,
-        delay: anime.stagger(100, {start: 500})
-    });
+    if (typeof window.anime === 'function') {
+        window.anime({
+            targets: '[data-splitting] .char',
+            translateY: [100, 0],
+            opacity: [0, 1],
+            easing: 'easeOutExpo',
+            duration: 1400,
+            delay: window.anime.stagger(30)
+        });
+
+        // Animate metric cards
+        window.anime({
+            targets: '.metric-card',
+            translateY: [50, 0],
+            opacity: [0, 1],
+            easing: 'easeOutExpo',
+            duration: 1000,
+            delay: window.anime.stagger(100, { start: 500 })
+        });
+    }
 }
 
 // Render application cards

@@ -101,107 +101,242 @@
 </head>
 <body>
     <!-- Sidebar Navigation -->
-    <aside class="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 shadow-sm z-50">
-        <div class="p-6">
-            <h1 class="text-xl font-bold text-gray-900">Agent Portal</h1>
+    <aside class="fixed inset-y-0 left-0 w-64 bg-slate-900 border-r border-slate-800 shadow-sm z-50 text-slate-200">
+        <div class="p-6 border-b border-slate-800">
+            <h1 class="text-sm font-semibold">Agent Hub</h1>
         </div>
-        <nav class="px-6 space-y-2">
-            <a href="index.html" class="block px-3 py-2 rounded-md text-blue-600 font-medium bg-blue-50">Dashboard</a>
-            <a href="application.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Applications</a>
-            <a href="evaluation.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Evaluation</a>
+        <nav class="px-4 py-4 space-y-6">
+            <div class="space-y-1">
+                <a href="index.html" class="block px-3 py-2 rounded-md bg-slate-800 text-white font-medium">Dashboard</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Home</a>
+            </div>
+            <div class="space-y-1">
+                <p class="px-3 text-xs uppercase tracking-wide text-slate-400">Configuration</p>
+                <a href="application.html" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Applications</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Agents</a>
+            </div>
+            <div class="space-y-1">
+                <p class="px-3 text-xs uppercase tracking-wide text-slate-400">Observability</p>
+                <a href="trace.html" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Tracing</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Sessions</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Users</a>
+            </div>
+            <div class="space-y-1">
+                <p class="px-3 text-xs uppercase tracking-wide text-slate-400">Evaluation</p>
+                <a href="evaluation.html" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">LLM-as-a-Judge</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Human Annotation</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Datasets</a>
+            </div>
         </nav>
-        <div class="absolute bottom-4 left-6 flex items-center space-x-2">
+        <div class="absolute bottom-4 left-6 flex items-center space-x-2 text-slate-400">
             <div class="status-dot status-active"></div>
-            <span class="text-sm text-gray-600">Live</span>
+            <span class="text-sm">Live</span>
         </div>
     </aside>
 
     <!-- Main wrapper shifted for sidebar -->
     <div class="ml-64">
 
-    <!-- Hero Section -->
-    <section class="hero-bg py-16">
-        <canvas id="particles-canvas"></canvas>
-        <div class="hero-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h1 class="text-4xl font-bold text-white mb-4" data-splitting>Agent Application Management Portal</h1>
-                <p class="text-xl text-gray-200 mb-8">Monitor, analyze, and optimize your agent applications in real-time</p>
-                <div class="flex justify-center space-x-4">
-                    <button class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors" onclick="document.getElementById('applications-section').scrollIntoView({behavior: 'smooth'})">
-                        View Applications
-                    </button>
-                    <button class="bg-white text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors" onclick="window.location.href='evaluation.html'">
-                        Run Evaluation
-                    </button>
+    <!-- Top Bar -->
+    <header class="sticky top-0 bg-white border-b border-gray-200 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-end">
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-2 text-gray-700">
+                    <span class="text-sm">Signed in as</span>
+                    <span class="font-medium">User</span>
                 </div>
+                <button class="px-3 py-1.5 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50" onclick="window.location.href='index.html'">
+                    Log out
+                </button>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Statistics Overview -->
+    <!-- Hero Section removed per request -->
+
+    <!-- Dashboard -->
     <section class="py-12" id="applications-section">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Top Filters Bar -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Dashboard</h2>
+                    <button class="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Filters</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="text-xs uppercase text-gray-500">Application</label>
+                        <select class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                            <option>WNP Virtual CIO</option>
+                            <option>Customer Support Agent</option>
+                            <option>Analytics Agent</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs uppercase text-gray-500">Date Range</label>
+                        <input type="text" value="01/08/2025 - 30/11/2025" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm" />
+                    </div>
+                    <div>
+                        <label class="text-xs uppercase text-gray-500">Evaluation</label>
+                        <select class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                            <option>Online & Offline</option>
+                            <option>Online Only</option>
+                            <option>Offline Only</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs uppercase text-gray-500">Window</label>
+                        <select class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                            <option>Past 90 days</option>
+                            <option>Past 30 days</option>
+                            <option>Past 7 days</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project/Application meta -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <p class="text-xs text-gray-500">Project</p>
+                        <p class="text-sm font-medium text-gray-900">WNP AI Project</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Application</p>
+                        <p class="text-sm font-medium text-gray-900">WNP Virtual CIO</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">EIM ID</p>
+                        <p class="text-sm font-medium text-gray-900">234567</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Status</p>
+                        <p class="text-sm font-medium text-green-600">Active</p>
+                    </div>
+                </div>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 <div class="metric-card card-hover">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Total Active Agents</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2" id="total-agents">247</p>
-                            <p class="text-sm text-green-600 mt-1">+12% from last week</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                            <p class="text-sm font-medium text-gray-600">Total Cost</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">$198.5647</p>
+                            <p class="text-xs text-gray-500">Last updated: 2025-11-05 03:20</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="metric-card card-hover">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Avg Success Rate</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2" id="success-rate">94.2%</p>
-                            <p class="text-sm text-green-600 mt-1">+2.1% from last week</p>
-                        </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                            </svg>
+                            <p class="text-sm font-medium text-gray-600">Evaluation Runs</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">15</p>
+                            <p class="text-xs text-gray-500">Last updated: 2025-11-05 03:20</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="metric-card card-hover">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Total Cost (USD)</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2" id="total-cost">$48,392</p>
-                            <p class="text-sm text-red-600 mt-1">+8% from last week</p>
-                        </div>
-                        <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                            </svg>
+                            <p class="text-sm font-medium text-gray-600">Overall Pass Rate</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">69.10%</p>
+                            <p class="text-xs text-gray-500">Last updated: 2025-11-05 03:20</p>
                         </div>
                     </div>
                 </div>
-
                 <div class="metric-card card-hover">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Need Review</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2" id="need-review">3</p>
-                            <p class="text-sm text-red-600 mt-1">Critical attention required</p>
-                        </div>
-                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                            </svg>
+                            <p class="text-sm font-medium text-gray-600">Runs With Failures</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2">0</p>
+                            <p class="text-xs text-gray-500">Last updated: 2025-11-05 03:20</p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Evaluation Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <div class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Evaluation</h3>
+                    <div id="eval-chart" style="height: 300px;"></div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Operational Efficiency</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead>
+                                <tr class="text-gray-500">
+                                    <th class="text-left py-2">Metric</th>
+                                    <th class="text-right py-2">Avg</th>
+                                    <th class="text-right py-2">p25</th>
+                                    <th class="text-right py-2">p50</th>
+                                    <th class="text-right py-2">p99</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-900">
+                                <tr>
+                                    <td class="py-2">Steps</td>
+                                    <td class="text-right">38.13</td>
+                                    <td class="text-right">43.00</td>
+                                    <td class="text-right">47.00</td>
+                                    <td class="text-right">63.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Latency</td>
+                                    <td class="text-right">11.84</td>
+                                    <td class="text-right">0.00</td>
+                                    <td class="text-right">10.00</td>
+                                    <td class="text-right">72.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Tokens</td>
+                                    <td class="text-right">118.94</td>
+                                    <td class="text-right">0.00</td>
+                                    <td class="text-right">40.00</td>
+                                    <td class="text-right">778.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Input Tokens</td>
+                                    <td class="text-right">52.00</td>
+                                    <td class="text-right">52.00</td>
+                                    <td class="text-right">52.00</td>
+                                    <td class="text-right">52.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2">Output Tokens</td>
+                                    <td class="text-right">349.29</td>
+                                    <td class="text-right">328.00</td>
+                                    <td class="text-right">349.00</td>
+                                    <td class="text-right">383.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Initialize evaluation chart
+                document.addEventListener('DOMContentLoaded', function() {
+                    const el = document.getElementById('eval-chart');
+                    if (el && window.echarts) {
+                        const chart = echarts.init(el);
+                        chart.setOption({
+                            color: ['#ef4444', '#10b981', '#3b82f6'],
+                            tooltip: { trigger: 'axis' },
+                            grid: { left: 40, right: 20, top: 20, bottom: 30 },
+                            xAxis: { type: 'category', data: ['01/08/2025','01/09/2025','01/10/2025','01/11/2025'] },
+                            yAxis: { type: 'value', min: 0, max: 1 },
+                            series: [
+                                { name: 'Avg Policy Success Rate', type: 'line', data: [0.2,0.4,0.5,0.9] },
+                                { name: 'Avg Formatting Adherence', type: 'line', data: [0.1,0.5,0.4,0.6] },
+                                { name: 'Avg Semantic Correctness', type: 'line', data: [0.1,0.4,0.5,0.4] }
+                            ]
+                        });
+                    }
+                });
+            </script>
 
             <!-- Filters -->
             <div class="mb-8">
