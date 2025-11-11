@@ -153,29 +153,26 @@
             border-color: #3182ce;
         }
     </style>
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-gray-900">Agent Portal</h1>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-8">
-                    <a href="index.html" class="text-gray-600 hover:text-gray-900">Dashboard</a>
-                    <a href="application.html" class="text-gray-600 hover:text-gray-900">Applications</a>
-                    <a href="evaluation.html" class="text-gray-600 hover:text-gray-900">Evaluation</a>
-                    <div class="flex items-center space-x-2">
-                        <div class="status-dot status-success"></div>
-                        <span class="text-sm text-gray-600">Live</span>
-                    </div>
-                </div>
-            </div>
+ </head>
+ <body>
+    <!-- Sidebar Navigation -->
+    <aside class="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 shadow-sm z-50">
+        <div class="p-6">
+            <h1 class="text-xl font-bold text-gray-900">Agent Portal</h1>
         </div>
-    </nav>
+        <nav class="px-6 space-y-2">
+            <a href="index.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Dashboard</a>
+            <a href="application.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Applications</a>
+            <a href="evaluation.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Evaluation</a>
+        </nav>
+        <div class="absolute bottom-4 left-6 flex items-center space-x-2">
+            <div class="status-dot status-success"></div>
+            <span class="text-sm text-gray-600">Live</span>
+        </div>
+    </aside>
+
+    <!-- Main wrapper shifted for sidebar -->
+    <div class="ml-64">
 
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -254,7 +251,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 py-8 mt-12">
+    <footer class="bg-white border-t border-gray-200 py-8 mt-12 ml-64">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center text-gray-600">
                 <p>&copy; 2024 Agent Application Management Portal. All rights reserved.</p>
