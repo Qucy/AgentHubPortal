@@ -53,25 +53,25 @@ export default function App() {
         </div>
         <nav className="px-4 py-4 space-y-6">
           <div className="space-y-1">
-            <a className="block px-3 py-2 rounded-md bg-slate-800 text-white font-medium">Dashboard</a>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Home</a>
+            <a href="#" className="block px-3 py-2 rounded-md bg-slate-800 text-white font-medium cursor-pointer" onClick={(e)=>{e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' })}}>Dashboard</a>
+            <a href="#applications-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Home</a>
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Configuration</p>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Applications</a>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Agents</a>
+            <a href="#applications-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Applications</a>
+            <a href="#applications-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Agents</a>
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Observability</p>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Tracing</a>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Sessions</a>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Users</a>
+            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Tracing</a>
+            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Sessions</a>
+            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Users</a>
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Evaluation</p>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">LLM-as-a-Judge</a>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Human Annotation</a>
-            <a className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Datasets</a>
+            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">LLM-as-a-Judge</a>
+            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Human Annotation</a>
+            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Datasets</a>
           </div>
         </nav>
         <div className="absolute bottom-4 left-6 flex items-center space-x-2 text-slate-400">
@@ -121,7 +121,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12" id="evaluation-section">
             <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Evaluation</h3>
               <EvaluationChart />
