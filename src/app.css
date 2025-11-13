@@ -1,0 +1,13 @@
+body { font-family: 'Inter', sans-serif; background: #f7fafc; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.card-hover { transition: all 0.3s ease; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+.status-active { background-color: #38a169; }
+.status-warning { background-color: #d69e2e; }
+.status-error { background-color: #e53e3e; }
+.metric-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+.app-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px -1px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; cursor: pointer; }
+.filter-chip { background: #edf2f7; border-radius: 20px; padding: 8px 16px; font-size: 14px; cursor: pointer; transition: all 0.2s ease; }
+.filter-chip:hover { background: #e2e8f0; }
+.filter-chip.active { background: #3182ce; color: white; }
