@@ -10,6 +10,7 @@ import Evaluation from './pages/Evaluation.jsx'
 import LlmJudge from './pages/LlmJudge.jsx'
 import HumanAnnotation from './pages/HumanAnnotation.jsx'
 import Datasets from './pages/Datasets.jsx'
+import Settings from './pages/Settings.jsx'
 
 export default function App() {
   return (
@@ -20,13 +21,14 @@ export default function App() {
         </div>
         <nav className="px-4 py-4 space-y-6">
           <div className="space-y-1">
+            <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Overview</p>
             <NavLink to="/" end className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer font-medium`}>Dashboard</NavLink>
-            <NavLink to="/applications" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Applications</NavLink>
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Configuration</p>
             <NavLink to="/applications" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Applications</NavLink>
             <NavLink to="/agents" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Agents</NavLink>
+            <NavLink to="/settings" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Settings</NavLink>
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Observability</p>
@@ -36,7 +38,7 @@ export default function App() {
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Evaluation</p>
-            <NavLink to="/evaluation" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Evaluation</NavLink>
+            <NavLink to="/evaluation" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Overview</NavLink>
             <NavLink to="/llm-judge" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>LLM-as-a-Judge</NavLink>
             <NavLink to="/human-annotation" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Human Annotation</NavLink>
             <NavLink to="/datasets" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Datasets</NavLink>
@@ -68,6 +70,7 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/applications" element={<Applications />} />
             <Route path="/agents" element={<Agents />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/tracing" element={<Tracing />} />
             <Route path="/sessions" element={<Sessions />} />
             <Route path="/users" element={<Users />} />
