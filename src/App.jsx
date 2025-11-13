@@ -1,50 +1,17 @@
-import React, { useMemo, useState } from 'react'
-import { applicationsData } from './data.js'
-import { isAppNeedsReview } from './utils.js'
-import EvaluationChart from './components/EvaluationChart.jsx'
-import ApplicationsGrid from './components/ApplicationsGrid.jsx'
+import React from 'react'
+import { Routes, Route, NavLink } from 'react-router-dom'
+import Dashboard from './pages/Dashboard.jsx'
+import Applications from './pages/Applications.jsx'
+import Agents from './pages/Agents.jsx'
+import Tracing from './pages/Tracing.jsx'
+import Sessions from './pages/Sessions.jsx'
+import Users from './pages/Users.jsx'
+import Evaluation from './pages/Evaluation.jsx'
+import LlmJudge from './pages/LlmJudge.jsx'
+import HumanAnnotation from './pages/HumanAnnotation.jsx'
+import Datasets from './pages/Datasets.jsx'
 
 export default function App() {
-  const [filter, setFilter] = useState('all')
-
-  const metrics = useMemo(() => {
-    const activeCount = applicationsData.filter((a) => a.status === 'active').length
-    const avgSuccess = applicationsData.reduce((sum, a) => sum + a.successRate, 0) / applicationsData.length
-    const sumCost = applicationsData.reduce((sum, a) => sum + a.totalCost, 0)
-    const reviewCount = applicationsData.filter(isAppNeedsReview).length
-    return { activeCount, avgSuccess, sumCost: Math.round(sumCost), reviewCount }
-  }, [])
-
-  function exportApplicationsReport() {
-    const headers = [
-      'id','name','version','status','successRate','totalCost','runtime7Days','healthScore','lastRun',
-      'taskExecution','operationalEfficiency','safetyAdherence','reasoningExplainability','consistencyStability',
-    ]
-    const rows = applicationsData.map((a) => [
-      a.id, a.name, a.version, a.status, a.successRate, a.totalCost, a.runtime7Days, a.healthScore, a.lastRun,
-      a.pillars.taskExecution, a.pillars.operationalEfficiency, a.pillars.safetyAdherence, a.pillars.reasoningExplainability, a.pillars.consistencyStability,
-    ])
-    const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'applications_report.csv'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
-
-  const filters = [
-    { key: 'all', label: 'All Applications' },
-    { key: 'active', label: 'Active' },
-    { key: 'warning', label: 'Warning' },
-    { key: 'error', label: 'Error' },
-    { key: 'high-cost', label: 'High Cost' },
-    { key: 'low-success', label: 'Low Success Rate' },
-  ]
-
   return (
     <div className="ml-64">
       <aside className="fixed inset-y-0 left-0 w-64 bg-slate-900 border-r border-slate-800 shadow-sm z-50 text-slate-200">
@@ -53,25 +20,26 @@ export default function App() {
         </div>
         <nav className="px-4 py-4 space-y-6">
           <div className="space-y-1">
-            <a href="#" className="block px-3 py-2 rounded-md bg-slate-800 text-white font-medium cursor-pointer" onClick={(e)=>{e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' })}}>Dashboard</a>
-            <a href="#applications-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Home</a>
+            <NavLink to="/" end className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer font-medium`}>Dashboard</NavLink>
+            <NavLink to="/applications" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Applications</NavLink>
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Configuration</p>
-            <a href="#applications-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Applications</a>
-            <a href="#applications-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Agents</a>
+            <NavLink to="/applications" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Applications</NavLink>
+            <NavLink to="/agents" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Agents</NavLink>
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Observability</p>
-            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Tracing</a>
-            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Sessions</a>
-            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Users</a>
+            <NavLink to="/tracing" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Tracing</NavLink>
+            <NavLink to="/sessions" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Sessions</NavLink>
+            <NavLink to="/users" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Users</NavLink>
           </div>
           <div className="space-y-1">
             <p className="px-3 text-xs uppercase tracking-wide text-slate-400">Evaluation</p>
-            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">LLM-as-a-Judge</a>
-            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Human Annotation</a>
-            <a href="#evaluation-section" className="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800 cursor-pointer">Datasets</a>
+            <NavLink to="/evaluation" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Evaluation</NavLink>
+            <NavLink to="/llm-judge" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>LLM-as-a-Judge</NavLink>
+            <NavLink to="/human-annotation" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Human Annotation</NavLink>
+            <NavLink to="/datasets" className={({isActive})=>`block px-3 py-2 rounded-md ${isActive ? 'bg-slate-800 text-white' : 'text-slate-200 hover:bg-slate-800'} cursor-pointer`}>Datasets</NavLink>
           </div>
         </nav>
         <div className="absolute bottom-4 left-6 flex items-center space-x-2 text-slate-400">
@@ -94,84 +62,20 @@ export default function App() {
         </div>
       </header>
 
-      <section className="py-12" id="applications-section">
+      <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Dashboard</h2>
-              <button className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Filters</button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <p className="text-xs text-gray-500">Project</p>
-                <p className="text-sm font-medium text-gray-900">WNP AI Project</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Active Agents</p>
-                <p className="text-sm font-medium text-gray-900">{metrics.activeCount}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Avg Success</p>
-                <p className="text-sm font-medium text-gray-900">{metrics.avgSuccess.toFixed(1)}%</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Need Review</p>
-                <p className="text-sm font-medium text-gray-900">{metrics.reviewCount}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12" id="evaluation-section">
-            <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Evaluation</h3>
-              <EvaluationChart />
-            </div>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Operational Efficiency</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm">
-                  <thead>
-                    <tr className="text-gray-500">
-                      <th className="text-left py-2">Metric</th>
-                      <th className="text-right py-2">Value</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-gray-900">
-                    <tr>
-                      <td className="py-2">Total Cost</td>
-                      <td className="text-right">${metrics.sumCost.toLocaleString()}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <div className="flex flex-wrap items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">Applications</h2>
-              <div className="flex items-center space-x-4">
-                <input type="text" placeholder="Search applications..." className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Search</button>
-                <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors" onClick={exportApplicationsReport}>
-                  Export Report
-                </button>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mb-6">
-              {filters.map((f) => (
-                <button
-                  key={f.key}
-                  className={`filter-chip ${filter === f.key ? 'active' : ''}`}
-                  onClick={() => setFilter(f.key)}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <ApplicationsGrid applications={applicationsData} filter={filter} />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/applications" element={<Applications />} />
+            <Route path="/agents" element={<Agents />} />
+            <Route path="/tracing" element={<Tracing />} />
+            <Route path="/sessions" element={<Sessions />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/evaluation" element={<Evaluation />} />
+            <Route path="/llm-judge" element={<LlmJudge />} />
+            <Route path="/human-annotation" element={<HumanAnnotation />} />
+            <Route path="/datasets" element={<Datasets />} />
+          </Routes>
         </div>
       </section>
 
