@@ -39,6 +39,8 @@
           <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Configuration</div>
           <a href="#/applications" data-section="applications"
             class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Applications</a>
+          <a href="#/metrics" data-section="metrics"
+            class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Metrics</a>
         </div>
         <div>
           <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Observability</div>
@@ -65,42 +67,41 @@
     </aside>
 
     <main class="flex-1">
-      <div class="bg-white/80 backdrop-blur border-b">
-        <div class="px-6 py-3 flex items-center gap-4">
-          <div class="text-lg font-semibold">Dashboard</div>
-          <div class="ml-auto flex items-center gap-3">
-            <div class="flex items-center gap-2">
-              <img src="https://avatars.githubusercontent.com/u/0?v=4" alt="avatar"
-                class="w-8 h-8 rounded-full border border-slate-300" />
-              <div class="text-sm">qucy@example.com</div>
-            </div>
-            <button class="px-3 py-2 border rounded text-sm">Logout</button>
-          </div>
-        </div>
-      </div>
-      <div class="px-6 py-3 border-b bg-white">
-        <div class="flex flex-wrap items-center gap-2">
-          <select id="filterApp" class="px-3 py-2 border rounded text-sm">
-            <option>IWPB AI Project</option>
-            <option>Demo Project</option>
-          </select>
-          <input id="filterFrom" type="date" class="px-3 py-2 border rounded text-sm" />
-          <input id="filterTo" type="date" class="px-3 py-2 border rounded text-sm" />
-          <select id="filterPreset" class="px-3 py-2 border rounded text-sm">
-            <option>Past 7 days</option>
-            <option>Past 30 days</option>
-            <option>Past 90 days</option>
-          </select>
-          <select id="filterMode" class="px-3 py-2 border rounded text-sm">
-            <option>Online & Offline</option>
-            <option>Online</option>
-            <option>Offline</option>
-          </select>
-        </div>
-      </div>
       <div class="p-6 space-y-6">
         <section id="overview" data-page class="space-y-6">
-          <h2 class="text-2xl font-semibold">Dashboard</h2>
+          <div class="bg-white/80 backdrop-blur border">
+            <div class="px-6 py-3 flex items-center gap-4">
+              <div class="text-lg font-semibold">Dashboard</div>
+              <div class="ml-auto flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                  <img src="https://avatars.githubusercontent.com/u/0?v=4" alt="avatar"
+                    class="w-8 h-8 rounded-full border border-slate-300" />
+                  <div class="text-sm">qucy@example.com</div>
+                </div>
+                <button class="px-3 py-2 border rounded text-sm">Logout</button>
+              </div>
+            </div>
+            <div class="px-6 py-3 border-t bg-white">
+              <div class="flex flex-wrap items-center gap-2">
+                <select id="filterApp" class="px-3 py-2 border rounded text-sm">
+                  <option>IWPB AI Project</option>
+                  <option>Demo Project</option>
+                </select>
+                <input id="filterFrom" type="date" class="px-3 py-2 border rounded text-sm" />
+                <input id="filterTo" type="date" class="px-3 py-2 border rounded text-sm" />
+                <select id="filterPreset" class="px-3 py-2 border rounded text-sm">
+                  <option>Past 7 days</option>
+                  <option>Past 30 days</option>
+                  <option>Past 90 days</option>
+                </select>
+                <select id="filterMode" class="px-3 py-2 border rounded text-sm">
+                  <option>Online & Offline</option>
+                  <option>Online</option>
+                  <option>Offline</option>
+                </select>
+              </div>
+            </div>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="p-4 bg-white rounded border">
               <div class="text-xs text-gray-500">Total Active Applications</div>
@@ -166,6 +167,72 @@
           <h2 class="text-2xl font-semibold">Settings</h2>
           <p class="text-gray-600">Global configuration for the portal.</p>
           <div class="p-4 bg-white rounded border">Coming soon.</div>
+        </section>
+
+        <section id="metrics" data-page class="hidden space-y-4">
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Metrics</h2>
+            <div class="ml-auto flex gap-2">
+              <select id="metricsCategory" class="px-3 py-2 border rounded text-sm">
+                <option value="all">All Categories</option>
+                <option value="Task Quality">Task Quality</option>
+                <option value="Efficiency">Efficiency</option>
+                <option value="Safety & Adherence">Safety & Adherence</option>
+                <option value="Reasoning & Explainability">Reasoning & Explainability</option>
+                <option value="Consistency & Reliability">Consistency & Reliability</option>
+              </select>
+              <input id="metricsSearch" placeholder="Search metrics" class="px-3 py-2 border rounded text-sm" />
+              <button id="metricsNew" class="px-3 py-2 border rounded text-sm">New Metric</button>
+            </div>
+          </div>
+          <div id="metricsForm" class="hidden p-4 bg-white rounded border space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-gray-500">Name</label>
+                <input id="mfName" class="w-full px-3 py-2 border rounded text-sm" />
+              </div>
+              <div>
+                <label class="text-xs text-gray-500">Category</label>
+                <select id="mfCategory" class="w-full px-3 py-2 border rounded text-sm">
+                  <option>Task Quality</option>
+                  <option>Efficiency</option>
+                  <option>Safety & Adherence</option>
+                  <option>Reasoning & Explainability</option>
+                  <option>Consistency & Reliability</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs text-gray-500">Description</label>
+              <textarea id="mfDesc" class="w-full px-3 py-2 border rounded text-sm"></textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="flex items-center gap-2">
+                <input id="mfEnabled" type="checkbox" />
+                <label class="text-sm">Enabled</label>
+              </div>
+              <div>
+                <label class="text-xs text-gray-500">Threshold Type</label>
+                <select id="mfThreshType" class="w-full px-3 py-2 border rounded text-sm">
+                  <option value="none">None</option>
+                  <option value="min">Min</option>
+                  <option value="max">Max</option>
+                  <option value="range">Range</option>
+                  <option value="target">Target</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-gray-500">Threshold Value(s)</label>
+                <input id="mfThreshVal" class="w-full px-3 py-2 border rounded text-sm"
+                  placeholder="e.g., 0.8 or 0.7-0.9" />
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button id="mfSave" class="px-3 py-2 border rounded text-sm">Save</button>
+              <button id="mfCancel" class="px-3 py-2 border rounded text-sm">Cancel</button>
+            </div>
+          </div>
+          <div id="metricsContent" class="space-y-4"></div>
         </section>
 
         <section id="tracing" data-page class="hidden space-y-4">
@@ -239,6 +306,7 @@
       const target = match ? hash : 'overview'
       setActive(target)
       if (target === 'applications') ensureApplications()
+      if (target === 'metrics') ensureMetrics()
     }
 
     window.addEventListener('hashchange', applyFromHash)
@@ -428,6 +496,149 @@
 
     function ensureApplications() {
       initApplicationsToggle()
+    }
+
+    function loadMetrics() {
+      try { return JSON.parse(localStorage.getItem('metrics') || '[]') } catch { return [] }
+    }
+    function saveMetrics(items) {
+      localStorage.setItem('metrics', JSON.stringify(items))
+    }
+    const defaultMetrics = [
+      { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true },
+      { id: 'precision', name: 'Precision', category: 'Task Quality', description: 'Correct positive predictions', enabled: false },
+      { id: 'recall', name: 'Recall', category: 'Task Quality', description: 'Recovered relevant items', enabled: false },
+      { id: 'f1', name: 'F1 Score', category: 'Task Quality', description: 'Harmonic mean of precision and recall', enabled: true },
+      { id: 'faithfulness', name: 'Faithfulness', category: 'Task Quality', description: 'Groundedness of outputs to sources', enabled: true },
+      { id: 'formatting', name: 'Formatting Adherence', category: 'Task Quality', description: 'Schema/JSON correctness', enabled: true },
+      { id: 'tool-accuracy', name: 'Tool Call Accuracy', category: 'Task Quality', description: 'Correct tool invocations', enabled: true },
+      { id: 'pass-rate', name: 'Pass Rate', category: 'Task Quality', description: 'Percentage of runs passing checks', enabled: true },
+
+      { id: 'latency', name: 'Latency (ms)', category: 'Efficiency', description: 'End-to-end response time', enabled: true },
+      { id: 'steps', name: 'Steps', category: 'Efficiency', description: 'Agent steps per task', enabled: true },
+      { id: 'input-tokens', name: 'Input Tokens', category: 'Efficiency', description: 'Prompt tokens used', enabled: true },
+      { id: 'output-tokens', name: 'Output Tokens', category: 'Efficiency', description: 'Generated tokens', enabled: true },
+      { id: 'total-tokens', name: 'Total Tokens', category: 'Efficiency', description: 'Combined input/output tokens', enabled: true },
+      { id: 'cost', name: 'Cost ($)', category: 'Efficiency', description: 'Estimated dollar cost', enabled: true },
+
+      { id: 'policy', name: 'Policy Adherence (%)', category: 'Safety & Adherence', description: 'Compliance with policy', enabled: true },
+      { id: 'toxicity', name: 'Toxicity Score', category: 'Safety & Adherence', description: 'Toxic content score', enabled: true },
+      { id: 'pii', name: 'PII Leakage Rate', category: 'Safety & Adherence', description: 'PII exposure likelihood', enabled: true },
+      { id: 'jailbreak', name: 'Jailbreak Success Rate', category: 'Safety & Adherence', description: 'Adversarial bypass rate', enabled: false },
+      { id: 'safety-flags', name: 'Safety Flags', category: 'Safety & Adherence', description: 'Flagged outputs count', enabled: true },
+
+      { id: 'explain-depth', name: 'Explanation Depth', category: 'Reasoning & Explainability', description: 'Depth of explanations', enabled: true },
+      { id: 'self-explain', name: 'Self-Explanation Coverage (%)', category: 'Reasoning & Explainability', description: 'Outputs with explanations', enabled: true },
+      { id: 'reason-steps', name: 'Reasoning Steps', category: 'Reasoning & Explainability', description: 'Number of steps', enabled: true },
+      { id: 'justification', name: 'Justification Score', category: 'Reasoning & Explainability', description: 'Quality of justifications', enabled: false },
+
+      { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true },
+      { id: 'error-rate', name: 'Error Rate (%)', category: 'Consistency & Reliability', description: 'Failures per runs', enabled: true },
+      { id: 'retry', name: 'Retry Count', category: 'Consistency & Reliability', description: 'Retries needed', enabled: true },
+      { id: 'stability', name: 'Output Stability (variance)', category: 'Consistency & Reliability', description: 'Variance of outputs', enabled: true }
+    ]
+
+    function getMetrics() {
+      let items = loadMetrics()
+      if (!items || items.length === 0) { items = defaultMetrics; saveMetrics(items) }
+      return items
+    }
+    function renderMetricsList() {
+      const content = document.getElementById('metricsContent')
+      if (!content) return
+      const filterCat = document.getElementById('metricsCategory')?.value || 'all'
+      const q = (document.getElementById('metricsSearch')?.value || '').toLowerCase()
+      const items = getMetrics().filter(m => (filterCat === 'all' || m.category === filterCat) && (!q || m.name.toLowerCase().includes(q)))
+      content.innerHTML = ''
+      const wrap = document.createElement('div')
+      wrap.className = 'overflow-x-auto'
+      const table = document.createElement('table')
+      table.className = 'min-w-full text-sm'
+      table.innerHTML = `
+        <thead>
+          <tr class="text-gray-500">
+            <th class="text-left py-2 px-4">Name</th>
+            <th class="text-left py-2 px-4">Category</th>
+            <th class="text-left py-2 px-4">Enabled</th>
+            <th class="text-left py-2 px-4">Description</th>
+            <th class="text-left py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          ${items.map(m => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2 px-4 font-semibold">${m.name}</td>
+              <td class="py-2 px-4">${m.category}</td>
+              <td class="py-2 px-4">${m.enabled ? 'Yes' : 'No'}</td>
+              <td class="py-2 px-4">${m.description || ''}</td>
+              <td class="py-2 px-4">
+                <div class="flex gap-2">
+                  <button class="px-3 py-1 border rounded" data-edit="${m.id}">Edit</button>
+                  <button class="px-3 py-1 border rounded" data-del="${m.id}">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `
+      wrap.appendChild(table)
+      content.appendChild(wrap)
+      content.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => showMetricForm(btn.getAttribute('data-edit'))))
+      content.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', () => deleteMetric(btn.getAttribute('data-del'))))
+    }
+
+    function showMetricForm(id) {
+      const form = document.getElementById('metricsForm')
+      if (!form) return
+      const items = getMetrics()
+      const metric = items.find(x => x.id === id) || { id: '', name: '', category: 'Task Quality', description: '', enabled: true, thresholds: { type: 'none', value: '' } }
+      document.getElementById('mfName').value = metric.name
+      document.getElementById('mfCategory').value = metric.category
+      document.getElementById('mfDesc').value = metric.description || ''
+      document.getElementById('mfEnabled').checked = !!metric.enabled
+      document.getElementById('mfThreshType').value = metric.thresholds?.type || 'none'
+      document.getElementById('mfThreshVal').value = metric.thresholds?.value || ''
+      form.dataset.editing = id || ''
+      form.classList.remove('hidden')
+    }
+    function hideMetricForm() {
+      const form = document.getElementById('metricsForm'); if (form) form.classList.add('hidden')
+    }
+    function deleteMetric(id) {
+      const items = getMetrics().filter(m => m.id !== id)
+      saveMetrics(items)
+      renderMetricsList()
+    }
+    function bindMetricsEvents() {
+      const sel = document.getElementById('metricsCategory'); if (sel) sel.onchange = renderMetricsList
+      const search = document.getElementById('metricsSearch'); if (search) search.oninput = renderMetricsList
+      const btnNew = document.getElementById('metricsNew'); if (btnNew) btnNew.onclick = () => showMetricForm('')
+      const btnSave = document.getElementById('mfSave'); if (btnSave) btnSave.onclick = () => {
+        const name = document.getElementById('mfName').value.trim()
+        const category = document.getElementById('mfCategory').value
+        const description = document.getElementById('mfDesc').value.trim()
+        const enabled = document.getElementById('mfEnabled').checked
+        const thresholds = { type: document.getElementById('mfThreshType').value, value: document.getElementById('mfThreshVal').value.trim() }
+        if (!name) return alert('Name is required')
+        let items = getMetrics()
+        const editing = document.getElementById('metricsForm').dataset.editing
+        if (editing) {
+          items = items.map(m => m.id === editing ? { ...m, name, category, description, enabled, thresholds } : m)
+        } else {
+          const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+          if (items.some(m => m.id === id)) return alert('A metric with this name already exists')
+          items.push({ id, name, category, description, enabled, thresholds })
+        }
+        saveMetrics(items)
+        hideMetricForm()
+        renderMetricsList()
+      }
+      const btnCancel = document.getElementById('mfCancel'); if (btnCancel) btnCancel.onclick = hideMetricForm
+    }
+    function ensureMetrics() {
+      getMetrics()
+      bindMetricsEvents()
+      renderMetricsList()
     }
   </script>
 </body>
