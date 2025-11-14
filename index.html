@@ -15,14 +15,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module">
-      const isGh = location.hostname.endsWith('github.io')
-      if (isGh) {
-        const base = location.pathname.replace(/\/[^/]*$/, '/')
-        location.replace(base + 'docs/')
-      } else {
-        import('./src/main.jsx')
-      }
-    </script>
+    <script type="module" src="./src/main.jsx"></script>
   </body>
 </html>
