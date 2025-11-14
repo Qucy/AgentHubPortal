@@ -21,6 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Copy resources
+        run: |
+          mkdir -p docs/resources
+          cp -R resources/* docs/resources/ || true
+
       - name: Add SPA fallback
         run: cp docs/index.html docs/404.html
 
