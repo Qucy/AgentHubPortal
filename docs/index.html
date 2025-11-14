@@ -271,9 +271,25 @@
         </section>
 
         <section id="tracing" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Tracing</h2>
-          <p class="text-gray-600">View request traces and spans.</p>
-          <div class="p-4 bg-white rounded border">No traces available.</div>
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Tracing</h2>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="logSearch" placeholder="Search message" class="px-3 py-2 border rounded text-sm" />
+            <select id="logLevel" class="px-3 py-2 border rounded text-sm">
+              <option value="all">All Levels</option>
+              <option value="info">Info</option>
+              <option value="warn">Warn</option>
+              <option value="error">Error</option>
+            </select>
+            <select id="logApp" class="px-3 py-2 border rounded text-sm">
+              <option value="all">All Applications</option>
+            </select>
+            <input id="logFrom" type="datetime-local" class="px-3 py-2 border rounded text-sm" />
+            <input id="logTo" type="datetime-local" class="px-3 py-2 border rounded text-sm" />
+            <button id="logReset" class="px-3 py-2 border rounded text-sm">Reset</button>
+          </div>
+          <div id="tracingContent" class="space-y-4"></div>
         </section>
 
         <section id="sessions" data-page class="hidden space-y-4">
@@ -314,9 +330,31 @@
         </section>
 
         <section id="datasets" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Datasets</h2>
-          <p class="text-gray-600">Manage evaluation datasets.</p>
-          <div class="p-4 bg-white rounded border">No datasets.</div>
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Datasets</h2>
+            <div class="ml-auto">
+              <div class="inline-flex border rounded overflow-hidden">
+                <button id="dsViewCards" class="px-3 py-1 text-sm bg-slate-800 text-white">Cards</button>
+                <button id="dsViewList" class="px-3 py-1 text-sm">List</button>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="dsSearch" placeholder="Search by name" class="px-3 py-2 border rounded text-sm" />
+            <select id="dsType" class="px-3 py-2 border rounded text-sm">
+              <option value="all">All Types</option>
+              <option value="Q&A">Q&A</option>
+              <option value="Classification">Classification</option>
+              <option value="RAG">RAG</option>
+              <option value="Summarization">Summarization</option>
+            </select>
+            <select id="dsTag" class="px-3 py-2 border rounded text-sm">
+              <option value="all">All Tags</option>
+            </select>
+            <button id="dsReset" class="px-3 py-2 border rounded text-sm">Reset</button>
+            <button id="dsNew" class="px-3 py-2 border rounded text-sm">New Dataset</button>
+          </div>
+          <div id="datasetsContent" class="space-y-4"></div>
         </section>
       </div>
     </main>
@@ -342,6 +380,8 @@
       setActive(target)
       if (target === 'applications') ensureApplications()
       if (target === 'metrics') ensureMetrics()
+      if (target === 'tracing') ensureTracing()
+      if (target === 'datasets') ensureDatasets()
     }
 
     window.addEventListener('hashchange', applyFromHash)
@@ -557,6 +597,188 @@
 
     function ensureApplications() {
       initApplicationsToggle()
+    }
+
+    const logs = [
+      { ts: '2025-11-15T09:05:00', level: 'info', app: 'IWBP Virtual CIO', msg: 'Task started', meta: 'run=4521 step=1' },
+      { ts: '2025-11-15T09:05:02', level: 'warn', app: 'IWBP Virtual CIO', msg: 'Tool latency high', meta: 'tool=search latency=1200ms' },
+      { ts: '2025-11-15T09:05:05', level: 'error', app: 'Support Assistant', msg: 'API call failed', meta: 'status=500 endpoint=/tickets' },
+      { ts: '2025-11-15T09:06:10', level: 'info', app: 'Invoice Extractor', msg: 'OCR completed', meta: 'pages=3' },
+      { ts: '2025-11-15T09:07:00', level: 'info', app: 'QA Evaluator', msg: 'Evaluation submitted', meta: 'dataset=MTBench' }
+    ]
+    function renderLogs(list) {
+      const wrap = document.createElement('div')
+      wrap.className = 'overflow-x-auto'
+      const table = document.createElement('table')
+      table.className = 'min-w-full text-sm'
+      table.innerHTML = `
+        <thead>
+          <tr class="text-gray-500">
+            <th class="text-left py-2 px-4">Timestamp</th>
+            <th class="text-left py-2 px-4">Level</th>
+            <th class="text-left py-2 px-4">Application</th>
+            <th class="text-left py-2 px-4">Message</th>
+            <th class="text-left py-2 px-4">Meta</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          ${list.map(l => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2 px-4">${new Date(l.ts).toLocaleString()}</td>
+              <td class="py-2 px-4"><span class="px-2 py-1 rounded text-xs ${l.level === 'error' ? 'bg-red-100 text-red-700' : l.level === 'warn' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}">${l.level.toUpperCase()}</span></td>
+              <td class="py-2 px-4">${l.app}</td>
+              <td class="py-2 px-4">${l.msg}</td>
+              <td class="py-2 px-4 mono">${l.meta}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `
+      wrap.appendChild(table)
+      return wrap
+    }
+    function ensureTracing() {
+      const appSel = document.getElementById('logApp')
+      if (appSel && appSel.options.length <= 1) {
+        const apps = Array.from(new Set(logs.map(l => l.app)))
+        appSel.innerHTML = '<option value="all">All Applications</option>' + apps.map(a => `<option value="${a}">${a}</option>`).join('')
+      }
+      const container = document.getElementById('tracingContent'); if (!container) return
+      const re = () => {
+        const q = (document.getElementById('logSearch')?.value || '').toLowerCase()
+        const level = document.getElementById('logLevel')?.value || 'all'
+        const app = document.getElementById('logApp')?.value || 'all'
+        const f = document.getElementById('logFrom')?.value
+        const t = document.getElementById('logTo')?.value
+        const from = f ? new Date(f).getTime() : NaN
+        const to = t ? new Date(t).getTime() : NaN
+        const list = logs.filter(l =>
+          (!q || `${l.msg} ${l.meta}`.toLowerCase().includes(q)) &&
+          (level === 'all' || l.level === level) &&
+          (app === 'all' || l.app === app) &&
+          (isNaN(from) || new Date(l.ts).getTime() >= from) &&
+          (isNaN(to) || new Date(l.ts).getTime() <= to)
+        )
+        container.innerHTML = ''
+        container.appendChild(renderLogs(list))
+      }
+      const bindInput = id => { const el = document.getElementById(id); if (el) el.oninput = re }
+      const bindChange = id => { const el = document.getElementById(id); if (el) el.onchange = re }
+      bindInput('logSearch'); bindChange('logLevel'); bindChange('logApp'); bindChange('logFrom'); bindChange('logTo')
+      const reset = document.getElementById('logReset'); if (reset) reset.onclick = () => {
+        document.getElementById('logSearch').value = ''
+        document.getElementById('logLevel').value = 'all'
+        document.getElementById('logApp').value = 'all'
+        document.getElementById('logFrom').value = ''
+        document.getElementById('logTo').value = ''
+        re()
+      }
+      re()
+    }
+
+    const datasets = [
+      { id: 1, name: 'Support Q&A', type: 'Q&A', items: 1200, tags: ['customer', 'faq'], updated: '2025-11-10' },
+      { id: 2, name: 'Finance Invoices', type: 'RAG', items: 540, tags: ['invoice', 'ocr'], updated: '2025-11-12' },
+      { id: 3, name: 'Product Classification', type: 'Classification', items: 3200, tags: ['catalog'], updated: '2025-11-11' },
+      { id: 4, name: 'Meeting Summaries', type: 'Summarization', items: 260, tags: ['meetings'], updated: '2025-11-09' }
+    ]
+    function renderDatasetsCards(list) {
+      const grid = document.createElement('div')
+      grid.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'
+      list.forEach(d => {
+        const el = document.createElement('div')
+        el.className = 'p-4 bg-white rounded border'
+        el.innerHTML = `
+          <div class="font-semibold mb-1">${d.name}</div>
+          <div class="text-sm text-gray-600">${d.type}</div>
+          <div class="mt-2 text-sm">Items: <span class="font-semibold">${d.items}</span></div>
+          <div class="mt-1 text-xs text-gray-500">Updated ${d.updated}</div>
+          <div class="mt-2 flex gap-2">${d.tags.map(t => `<span class=\"px-2 py-1 rounded bg-slate-100 text-xs\">${t}</span>`).join('')}</div>
+          <div class="mt-3 flex gap-2">
+            <button class="px-3 py-1 border rounded text-sm">View</button>
+            <button class="px-3 py-1 border rounded text-sm">Configure</button>
+          </div>
+        `
+        grid.appendChild(el)
+      })
+      return grid
+    }
+    function renderDatasetsList(list) {
+      const wrap = document.createElement('div')
+      wrap.className = 'overflow-x-auto'
+      const table = document.createElement('table')
+      table.className = 'min-w-full text-sm'
+      table.innerHTML = `
+        <thead>
+          <tr class="text-gray-500">
+            <th class="text-left py-2 px-4">Name</th>
+            <th class="text-left py-2 px-4">Type</th>
+            <th class="text-right py-2 px-4">Items</th>
+            <th class="text-left py-2 px-4">Tags</th>
+            <th class="text-left py-2 px-4">Updated</th>
+            <th class="text-left py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          ${list.map(d => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2 px-4 font-semibold">${d.name}</td>
+              <td class="py-2 px-4">${d.type}</td>
+              <td class="py-2 px-4 text-right">${d.items}</td>
+              <td class="py-2 px-4">${d.tags.join(', ')}</td>
+              <td class="py-2 px-4">${d.updated}</td>
+              <td class="py-2 px-4"><div class="flex gap-2"><button class="px-3 py-1 border rounded">View</button><button class="px-3 py-1 border rounded">Configure</button></div></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `
+      wrap.appendChild(table)
+      return wrap
+    }
+    function renderDatasets(mode) {
+      const container = document.getElementById('datasetsContent'); if (!container) return
+      const q = (document.getElementById('dsSearch')?.value || '').toLowerCase()
+      const type = document.getElementById('dsType')?.value || 'all'
+      const tag = document.getElementById('dsTag')?.value || 'all'
+      const list = datasets.filter(d =>
+        (!q || d.name.toLowerCase().includes(q)) &&
+        (type === 'all' || d.type === type) &&
+        (tag === 'all' || d.tags.includes(tag))
+      )
+      container.innerHTML = ''
+      container.appendChild(mode === 'list' ? renderDatasetsList(list) : renderDatasetsCards(list))
+      const cardsBtn = document.getElementById('dsViewCards')
+      const listBtn = document.getElementById('dsViewList')
+      if (cardsBtn && listBtn) {
+        cardsBtn.classList.toggle('bg-slate-800', mode === 'cards')
+        cardsBtn.classList.toggle('text-white', mode === 'cards')
+        listBtn.classList.toggle('bg-slate-800', mode === 'list')
+        listBtn.classList.toggle('text-white', mode === 'list')
+      }
+    }
+    function ensureDatasets() {
+      const tagSel = document.getElementById('dsTag')
+      if (tagSel && tagSel.options.length <= 1) {
+        const tags = Array.from(new Set(datasets.flatMap(d => d.tags)))
+        tagSel.innerHTML = '<option value="all">All Tags</option>' + tags.map(t => `<option value="${t}">${t}</option>`).join('')
+      }
+      const cardsBtn = document.getElementById('dsViewCards')
+      const listBtn = document.getElementById('dsViewList')
+      if (cardsBtn && listBtn) {
+        cardsBtn.onclick = () => { localStorage.setItem('dsView', 'cards'); renderDatasets('cards') }
+        listBtn.onclick = () => { localStorage.setItem('dsView', 'list'); renderDatasets('list') }
+      }
+      const re = () => renderDatasets(localStorage.getItem('dsView') || 'cards')
+      const bindInput = id => { const el = document.getElementById(id); if (el) el.oninput = re }
+      const bindChange = id => { const el = document.getElementById(id); if (el) el.onchange = re }
+      bindInput('dsSearch'); bindChange('dsType'); bindChange('dsTag')
+      const reset = document.getElementById('dsReset'); if (reset) reset.onclick = () => {
+        document.getElementById('dsSearch').value = ''
+        document.getElementById('dsType').value = 'all'
+        document.getElementById('dsTag').value = 'all'
+        re()
+      }
+      const mode = localStorage.getItem('dsView') || 'cards'
+      renderDatasets(mode)
     }
 
     function loadMetrics() {
