@@ -165,6 +165,14 @@
               </div>
             </div>
           </div>
+          <div class="flex items-center gap-2">
+            <div class="text-sm text-gray-600">Date Range</div>
+            <div class="inline-flex border rounded overflow-hidden">
+              <button id="appsRange7" class="px-3 py-1 text-sm">7d</button>
+              <button id="appsRange14" class="px-3 py-1 text-sm">14d</button>
+              <button id="appsRange30" class="px-3 py-1 text-sm bg-slate-800 text-white">30d</button>
+            </div>
+          </div>
           <div class="flex flex-wrap items-center gap-2">
             <input id="appsSearch" placeholder="Search by name" class="px-3 py-2 border rounded text-sm" />
             <select id="appsStatus" class="px-3 py-2 border rounded text-sm">
@@ -524,12 +532,12 @@
       ]
     })
     const apps = [
-      { id: 1, name: 'IWBP Virtual CIO', project: 'IWBP AI Project', status: 'Active', passRate: 0.69, cost: 198.56, updated: '2025-11-15' },
-      { id: 2, name: 'Support Assistant', project: 'Customer Ops', status: 'Active', passRate: 0.74, cost: 54.12, updated: '2025-11-13' },
-      { id: 3, name: 'Invoice Extractor', project: 'Finance', status: 'Paused', passRate: 0.62, cost: 12.88, updated: '2025-11-10' },
-      { id: 4, name: 'QA Evaluator', project: 'Quality', status: 'Active', passRate: 0.71, cost: 33.40, updated: '2025-11-12' },
-      { id: 5, name: 'RAG Knowledge Bot', project: 'Docs', status: 'Active', passRate: 0.77, cost: 88.02, updated: '2025-11-11' },
-      { id: 6, name: 'Email Summarizer', project: 'Sales', status: 'Paused', passRate: 0.55, cost: 9.43, updated: '2025-11-09' }
+      { id: 1, name: 'IWBP Virtual CIO', project: 'IWBP AI Project', status: 'Active', passRate: 0.69, safetyScore: 0.96, cost: 198.56, lastRunAt: '2025-11-15T09:05:00Z', baseRuns: 240, offlineBase: 64 },
+      { id: 2, name: 'Support Assistant', project: 'Customer Ops', status: 'Active', passRate: 0.74, safetyScore: 0.94, cost: 54.12, lastRunAt: '2025-11-13T12:22:00Z', baseRuns: 180, offlineBase: 42 },
+      { id: 3, name: 'Invoice Extractor', project: 'Finance', status: 'Paused', passRate: 0.62, safetyScore: 0.92, cost: 12.88, lastRunAt: '2025-11-10T07:30:00Z', baseRuns: 90, offlineBase: 28 },
+      { id: 4, name: 'QA Evaluator', project: 'Quality', status: 'Active', passRate: 0.71, safetyScore: 0.95, cost: 33.40, lastRunAt: '2025-11-12T16:05:00Z', baseRuns: 120, offlineBase: 36 },
+      { id: 5, name: 'RAG Knowledge Bot', project: 'Docs', status: 'Active', passRate: 0.77, safetyScore: 0.97, cost: 88.02, lastRunAt: '2025-11-11T10:11:00Z', baseRuns: 150, offlineBase: 40 },
+      { id: 6, name: 'Email Summarizer', project: 'Sales', status: 'Paused', passRate: 0.55, safetyScore: 0.90, cost: 9.43, lastRunAt: '2025-11-09T19:45:00Z', baseRuns: 60, offlineBase: 20 }
     ]
 
     function renderApplicationsCards(list) {
@@ -555,7 +563,27 @@
               <div class="font-semibold mono">$${a.cost.toFixed(2)}</div>
             </div>
           </div>
-          <div class="mt-3 text-xs text-gray-500">Updated ${a.updated}</div>
+          <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+            <div class="p-2 bg-slate-50 rounded border">
+              <div class="text-gray-500">Task Quality</div>
+              <div class="font-semibold">${(a.passRate * 100).toFixed(2)}%</div>
+            </div>
+            <div class="p-2 bg-slate-50 rounded border">
+              <div class="text-gray-500">Safety Score</div>
+              <div class="font-semibold">${((a.safetyScore || 0) * 100).toFixed(2)}%</div>
+            </div>
+          </div>
+          <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+            <div class="p-2 bg-slate-50 rounded border">
+              <div class="text-gray-500">Total Runs</div>
+              <div class="font-semibold">${computeRuns(a)}</div>
+            </div>
+            <div class="p-2 bg-slate-50 rounded border">
+              <div class="text-gray-500">Offline Eval Runs</div>
+              <div class="font-semibold">${computeOfflineRuns(a)}</div>
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-gray-500">Last Run At ${formatTs(a.lastRunAt)}</div>
           <div class="mt-3 flex gap-2">
             <a href="#/applications" class="px-3 py-1 border rounded text-sm">View</a>
             <a href="#/settings" class="px-3 py-1 border rounded text-sm">Configure</a>
@@ -637,6 +665,12 @@
       if (!cardsBtn || !listBtn) return
       cardsBtn.onclick = () => { localStorage.setItem('appsView', 'cards'); renderApplications('cards') }
       listBtn.onclick = () => { localStorage.setItem('appsView', 'list'); renderApplications('list') }
+      const rangeBtns = { 'appsRange7': 7, 'appsRange14': 14, 'appsRange30': 30 }
+      Object.entries(rangeBtns).forEach(([id, days]) => {
+        const btn = document.getElementById(id)
+        if (btn) btn.onclick = () => { localStorage.setItem('appsRange', String(days)); updateRangeButtons(); renderApplications(localStorage.getItem('appsView') || 'cards') }
+      })
+      updateRangeButtons()
       const projSel = document.getElementById('appsProject')
       if (projSel) {
         const projects = Array.from(new Set(apps.map(a => a.project)))
@@ -657,6 +691,18 @@
       }
       renderApplications(mode)
     }
+    function getRangeDays() {
+      const v = parseInt(localStorage.getItem('appsRange') || '30', 10)
+      return [7,14,30].includes(v) ? v : 30
+    }
+    function updateRangeButtons() {
+      const days = getRangeDays()
+      const set = (id, active) => { const el = document.getElementById(id); if (!el) return; el.classList.toggle('bg-slate-800', active); el.classList.toggle('text-white', active) }
+      set('appsRange7', days===7); set('appsRange14', days===14); set('appsRange30', days===30)
+    }
+    function computeRuns(a) { const days = getRangeDays(); const base = a.baseRuns || 100; return Math.max(0, Math.round(base * (days/30))) }
+    function computeOfflineRuns(a) { const days = getRangeDays(); const base = a.offlineBase || 20; return Math.max(0, Math.round(base * (days/30))) }
+    function formatTs(ts) { try { return new Date(ts).toLocaleString() } catch { return String(ts) } }
 
     function ensureApplications() {
       initApplicationsToggle()
