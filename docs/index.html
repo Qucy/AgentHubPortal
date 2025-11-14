@@ -70,22 +70,27 @@
     <main class="flex-1 p-6">
       <section id="overview" data-page class="space-y-6">
         <h2 class="text-2xl font-semibold">Dashboard</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="p-4 bg-white rounded border">
-            <div class="text-sm text-gray-500">Active Agents</div>
-            <div class="text-3xl font-semibold">12</div>
+            <div class="text-xs text-gray-500">Total Active Applications</div>
+            <div class="text-3xl font-semibold">15</div>
           </div>
           <div class="p-4 bg-white rounded border">
-            <div class="text-sm text-gray-500">Requests (24h)</div>
-            <div class="text-3xl font-semibold">18,432</div>
+            <div class="text-xs text-gray-500">Average Success Rate</div>
+            <div class="text-3xl font-semibold">69.10%</div>
           </div>
           <div class="p-4 bg-white rounded border">
-            <div class="text-sm text-gray-500">Avg Latency</div>
-            <div class="text-3xl font-semibold">220 ms</div>
+            <div class="text-xs text-gray-500">Total Cost</div>
+            <div class="text-3xl font-semibold mono">$198.5647</div>
+          </div>
+          <div class="p-4 bg-white rounded border">
+            <div class="text-xs text-gray-500">Applications Need Review</div>
+            <div class="text-3xl font-semibold">3</div>
           </div>
         </div>
         <div class="p-4 bg-white rounded border">
-          <div id="overviewChart" class="w-full h-64"></div>
+          <div class="text-sm font-semibold mb-2">Task Quality</div>
+          <div id="qualityChart" class="w-full h-64"></div>
         </div>
       </section>
 
@@ -165,7 +170,7 @@
     function setActive(id) {
       links.forEach(a => {
         const active = a.getAttribute('data-section') === id
-        a.classList.toggle('bg-gray-100', active)
+        a.classList.toggle('bg-slate-700', active)
         a.classList.toggle('font-semibold', active)
       })
       pages.forEach(p => p.classList.toggle('hidden', p.id !== id))
@@ -180,12 +185,18 @@
     window.addEventListener('hashchange', applyFromHash)
     applyFromHash()
 
-    const overviewChart = echarts.init(document.getElementById('overviewChart'))
-    overviewChart.setOption({
+    const qualityChart = echarts.init(document.getElementById('qualityChart'))
+    qualityChart.setOption({
       tooltip: {},
-      xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
-      yAxis: { type: 'value' },
-      series: [{ type: 'line', data: [120, 200, 150, 80, 70, 110, 130] }]
+      legend: { data: ['Avg E2E Success', 'Avg Formatting Adherence', 'Avg Tool Accuracy', 'Avg Semantic Correctness'] },
+      xAxis: { type: 'category', data: ['09/16/2025', '09/26/2025', '10/06/2025', '10/16/2025', '10/26/2025', '11/05/2025'] },
+      yAxis: { type: 'value', min: 0, max: 1 },
+      series: [
+        { name: 'Avg E2E Success', type: 'line', smooth: true, data: [0.12, 0.28, 0.36, 0.31, 0.42, 0.55] },
+        { name: 'Avg Formatting Adherence', type: 'line', smooth: true, data: [0.10, 0.22, 0.47, 0.29, 0.35, 0.44] },
+        { name: 'Avg Tool Accuracy', type: 'line', smooth: true, data: [0.08, 0.21, 0.33, 0.27, 0.41, 0.52] },
+        { name: 'Avg Semantic Correctness', type: 'line', smooth: true, data: [0.09, 0.19, 0.31, 0.25, 0.38, 0.61] }
+      ]
     })
 
     const evalChart = echarts.init(document.getElementById('evalChart'))
