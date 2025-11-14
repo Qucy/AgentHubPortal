@@ -28,7 +28,7 @@
     <aside class="w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-slate-200 flex flex-col">
       <div class="p-4 border-b border-slate-700">
         <div class="flex items-center gap-2">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/HSBC_logo_%282018%29.svg" alt="HSBC logo" class="h-5" />
+          <img src="./resources/hsbc_logo.jpg" alt="" class="h-5 w-auto object-contain" />
           <h1 class="text-xl font-semibold">Agent Hub</h1>
         </div>
         <div class="mt-2">
@@ -207,78 +207,35 @@
                 <option value="Consistency & Reliability">Consistency & Reliability</option>
               </select>
               <input id="metricsSearch" placeholder="Search metrics" class="px-3 py-2 border rounded text-sm" />
-              <button id="metricsNew" class="px-3 py-2 border rounded text-sm">New Metric</button>
             </div>
           </div>
-          <div id="metricsForm" class="hidden p-4 bg-white rounded border space-y-3">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <label class="text-xs text-gray-500">Name</label>
-                <input id="mfName" class="w-full px-3 py-2 border rounded text-sm" />
-              </div>
-              <div>
-                <label class="text-xs text-gray-500">Category</label>
-                <select id="mfCategory" class="w-full px-3 py-2 border rounded text-sm">
-                  <option>Task Quality</option>
-                  <option>Efficiency</option>
-                  <option>Safety & Adherence</option>
-                  <option>Reasoning & Explainability</option>
-                  <option>Consistency & Reliability</option>
-                </select>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div>
-                <label class="text-xs text-gray-500">Method</label>
-                <input id="mfMethod" class="w-full px-3 py-2 border rounded text-sm"
-                  placeholder="e.g., LLM-as-a-Judge, BLEU, ROUGE" />
-              </div>
-              <div class="flex items-center gap-2">
-                <input id="mfNeedsGT" type="checkbox" />
-                <label class="text-sm">Requires Ground Truth</label>
-              </div>
-              <div>
-                <label class="text-xs text-gray-500">Scope</label>
-                <div class="flex gap-3 px-2 py-2 border rounded">
-                  <label class="flex items-center gap-1 text-sm"><input type="checkbox" id="mfScopeApp" />
-                    Application</label>
-                  <label class="flex items-center gap-1 text-sm"><input type="checkbox" id="mfScopeAgent" />
-                    Agent</label>
-                  <label class="flex items-center gap-1 text-sm"><input type="checkbox" id="mfScopeStep" /> Step</label>
-                </div>
-              </div>
-            </div>
-            <div>
-              <label class="text-xs text-gray-500">Description</label>
-              <textarea id="mfDesc" class="w-full px-3 py-2 border rounded text-sm"></textarea>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div class="flex items-center gap-2">
-                <input id="mfEnabled" type="checkbox" />
-                <label class="text-sm">Enabled</label>
-              </div>
-              <div>
-                <label class="text-xs text-gray-500">Threshold Type</label>
-                <select id="mfThreshType" class="w-full px-3 py-2 border rounded text-sm">
-                  <option value="none">None</option>
-                  <option value="min">Min</option>
-                  <option value="max">Max</option>
-                  <option value="range">Range</option>
-                  <option value="target">Target</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-xs text-gray-500">Threshold Value(s)</label>
-                <input id="mfThreshVal" class="w-full px-3 py-2 border rounded text-sm"
-                  placeholder="e.g., 0.8 or 0.7-0.9" />
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <button id="mfSave" class="px-3 py-2 border rounded text-sm">Save</button>
-              <button id="mfCancel" class="px-3 py-2 border rounded text-sm">Cancel</button>
-            </div>
-          </div>
+          
           <div id="metricsContent" class="space-y-4"></div>
+          <div id="metricDetail" class="hidden p-4 bg-white rounded border">
+            <div class="text-lg font-semibold mb-2" id="mdName"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <div class="text-gray-500">Category</div>
+                <div id="mdCategory" class="font-semibold"></div>
+              </div>
+              <div>
+                <div class="text-gray-500">Method</div>
+                <div id="mdMethod" class="font-semibold"></div>
+              </div>
+              <div>
+                <div class="text-gray-500">Requires Ground Truth</div>
+                <div id="mdNeedsGT" class="font-semibold"></div>
+              </div>
+              <div>
+                <div class="text-gray-500">Scope</div>
+                <div id="mdScope" class="flex gap-2"></div>
+              </div>
+            </div>
+            <div class="mt-3">
+              <div class="text-gray-500 text-sm">Description</div>
+              <div id="mdDesc" class="text-sm"></div>
+            </div>
+          </div>
         </section>
 
         <section id="tracing" data-page class="hidden space-y-4">
@@ -886,6 +843,18 @@
     function getMetrics() {
       let items = loadMetrics()
       if (!items || items.length === 0) { items = defaultMetrics; saveMetrics(items) }
+      const map = Object.fromEntries(defaultMetrics.map(m => [m.id, m]))
+      items = items.map(m => {
+        const d = map[m.id] || {}
+        return {
+          ...m,
+          requiresGroundTruth: typeof m.requiresGroundTruth === 'boolean' ? m.requiresGroundTruth : (typeof d.requiresGroundTruth === 'boolean' ? d.requiresGroundTruth : false),
+          method: m.method ?? d.method ?? '',
+          scope: Array.isArray(m.scope) ? m.scope : (Array.isArray(d.scope) ? d.scope : []),
+          thresholds: m.thresholds ? m.thresholds : { type: 'none', value: '' }
+        }
+      })
+      saveMetrics(items)
       return items
     }
     function renderMetricsList() {
@@ -898,10 +867,10 @@
       const wrap = document.createElement('div')
       wrap.className = 'overflow-x-auto'
       const table = document.createElement('table')
-      table.className = 'min-w-full text-sm'
+      table.className = 'min-w-full text-sm bg-white rounded border'
       table.innerHTML = `
-        <thead>
-          <tr class="text-gray-500">
+        <thead class="bg-slate-50">
+          <tr class="text-gray-700">
             <th class="text-left py-2 px-4">Name</th>
             <th class="text-left py-2 px-4">Category</th>
             <th class="text-left py-2 px-4">Scope</th>
@@ -909,7 +878,7 @@
             <th class="text-left py-2 px-4">Needs GT</th>
             <th class="text-left py-2 px-4">Enabled</th>
             <th class="text-left py-2 px-4">Description</th>
-            <th class="text-left py-2 px-4">Actions</th>
+            <th class="text-left py-2 px-4">View</th>
           </tr>
         </thead>
         <tbody class="divide-y">
@@ -923,10 +892,7 @@
               <td class="py-2 px-4">${m.enabled ? 'Yes' : 'No'}</td>
               <td class="py-2 px-4">${m.description || ''}</td>
               <td class="py-2 px-4">
-                <div class="flex gap-2">
-                  <button class="px-3 py-1 border rounded" data-edit="${m.id}">Edit</button>
-                  <button class="px-3 py-1 border rounded" data-del="${m.id}">Delete</button>
-                </div>
+                <button class="px-3 py-1 border rounded" data-view="${m.id}">View</button>
               </td>
             </tr>
           `).join('')}
@@ -934,8 +900,7 @@
       `
       wrap.appendChild(table)
       content.appendChild(wrap)
-      content.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => showMetricForm(btn.getAttribute('data-edit'))))
-      content.querySelectorAll('[data-del]').forEach(btn => btn.addEventListener('click', () => deleteMetric(btn.getAttribute('data-del'))))
+      content.querySelectorAll('[data-view]').forEach(btn => btn.addEventListener('click', () => showMetricDetail(btn.getAttribute('data-view'))))
     }
 
     function showMetricForm(id) {
@@ -969,31 +934,25 @@
     function bindMetricsEvents() {
       const sel = document.getElementById('metricsCategory'); if (sel) sel.onchange = renderMetricsList
       const search = document.getElementById('metricsSearch'); if (search) search.oninput = renderMetricsList
-      const btnNew = document.getElementById('metricsNew'); if (btnNew) btnNew.onclick = () => showMetricForm('')
-      const btnSave = document.getElementById('mfSave'); if (btnSave) btnSave.onclick = () => {
-        const name = document.getElementById('mfName').value.trim()
-        const category = document.getElementById('mfCategory').value
-        const description = document.getElementById('mfDesc').value.trim()
-        const enabled = document.getElementById('mfEnabled').checked
-        const thresholds = { type: document.getElementById('mfThreshType').value, value: document.getElementById('mfThreshVal').value.trim() }
-        const method = document.getElementById('mfMethod').value.trim()
-        const requiresGroundTruth = document.getElementById('mfNeedsGT').checked
-        const scope = ['Application', 'Agent', 'Step'].filter(s => document.getElementById('mfScope' + (s === 'Application' ? 'App' : s)).checked)
-        if (!name) return alert('Name is required')
-        let items = getMetrics()
-        const editing = document.getElementById('metricsForm').dataset.editing
-        if (editing) {
-          items = items.map(m => m.id === editing ? { ...m, name, category, description, enabled, thresholds, method, requiresGroundTruth, scope } : m)
-        } else {
-          const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-          if (items.some(m => m.id === id)) return alert('A metric with this name already exists')
-          items.push({ id, name, category, description, enabled, thresholds, method, requiresGroundTruth, scope })
-        }
-        saveMetrics(items)
-        hideMetricForm()
-        renderMetricsList()
-      }
-      const btnCancel = document.getElementById('mfCancel'); if (btnCancel) btnCancel.onclick = hideMetricForm
+      renderMetricsList()
+    }
+    function showMetricDetail(id) {
+      const m = getMetrics().find(x => x.id === id)
+      const panel = document.getElementById('metricDetail'); if (!panel || !m) return
+      document.getElementById('mdName').textContent = m.name
+      document.getElementById('mdCategory').textContent = m.category
+      document.getElementById('mdMethod').textContent = m.method || ''
+      document.getElementById('mdNeedsGT').textContent = m.requiresGroundTruth ? 'Yes' : 'No'
+      const scope = document.getElementById('mdScope'); scope.innerHTML = ''
+      (Array.isArray(m.scope) ? m.scope : []).forEach(s => {
+        const span = document.createElement('span')
+        span.className = 'px-2 py-1 rounded bg-slate-100 text-xs'
+        span.textContent = s
+        scope.appendChild(span)
+      })
+      document.getElementById('mdDesc').textContent = m.description || ''
+      panel.classList.remove('hidden')
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
     function ensureMetrics() {
       getMetrics()
