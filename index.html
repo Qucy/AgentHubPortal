@@ -14,41 +14,64 @@
       .mono { font-family: 'JetBrains Mono', monospace; }
     </style>
   </head>
-  <body class="bg-gray-100">
+  <body class="bg-slate-100">
     <div class="min-h-screen flex">
-      <aside class="w-64 bg-white border-r">
-        <div class="p-4 border-b">
-          <h1 class="text-xl font-semibold">Agent Hub</h1>
-          <p class="text-sm text-gray-500">Management Portal</p>
+      <aside class="w-64 bg-gradient-to-b from-slate-900 to-slate-800 text-slate-200">
+        <div class="p-4 border-b border-slate-700">
+          <h1 class="text-xl font-semibold">AI Platform - Agent Hub</h1>
         </div>
         <nav class="p-2 space-y-6">
           <div>
-            <div class="px-2 text-xs font-semibold text-gray-400 uppercase">Overview</div>
-            <a href="#/overview" data-section="overview" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Dashboard</a>
+            <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Overview</div>
+            <a href="#/overview" data-section="overview" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Dashboard</a>
           </div>
           <div>
-            <div class="px-2 text-xs font-semibold text-gray-400 uppercase">Configuration</div>
-            <a href="#/applications" data-section="applications" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Applications</a>
-            <a href="#/agents" data-section="agents" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Agents</a>
-            <a href="#/settings" data-section="settings" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Settings</a>
+            <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Configuration</div>
+            <a href="#/applications" data-section="applications" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Applications</a>
+            <a href="#/agents" data-section="agents" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Agents</a>
+            <a href="#/settings" data-section="settings" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Settings</a>
           </div>
           <div>
-            <div class="px-2 text-xs font-semibold text-gray-400 uppercase">Observability</div>
-            <a href="#/tracing" data-section="tracing" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Tracing</a>
-            <a href="#/sessions" data-section="sessions" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Sessions</a>
-            <a href="#/users" data-section="users" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Users</a>
+            <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Observability</div>
+            <a href="#/tracing" data-section="tracing" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Tracing</a>
+            <a href="#/sessions" data-section="sessions" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Sessions</a>
+            <a href="#/users" data-section="users" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Users</a>
           </div>
           <div>
-            <div class="px-2 text-xs font-semibold text-gray-400 uppercase">Evaluation</div>
-            <a href="#/evaluation" data-section="evaluation" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Overview</a>
-            <a href="#/llm-judge" data-section="llm-judge" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">LLM-as-a-Judge</a>
-            <a href="#/human-annotation" data-section="human-annotation" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Human Annotation</a>
-            <a href="#/datasets" data-section="datasets" class="block px-3 py-2 rounded hover:bg-gray-100 cursor-pointer">Datasets</a>
+            <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Evaluation</div>
+            <a href="#/evaluation" data-section="evaluation" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Overview</a>
+            <a href="#/llm-judge" data-section="llm-judge" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">LLM-as-a-Judge</a>
+            <a href="#/human-annotation" data-section="human-annotation" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Human Annotation</a>
+            <a href="#/datasets" data-section="datasets" class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Datasets</a>
           </div>
         </nav>
       </aside>
 
-      <main class="flex-1 p-6">
+      <main class="flex-1">
+        <div class="bg-white/80 backdrop-blur border-b">
+          <div class="px-6 py-3 flex items-center gap-4">
+            <div class="text-lg font-semibold">Dashboard</div>
+            <div class="ml-auto flex items-center gap-2">
+              <select class="px-3 py-2 border rounded text-sm">
+                <option>IWPB AI Project</option>
+                <option>Demo Project</option>
+              </select>
+              <input type="date" class="px-3 py-2 border rounded text-sm" value="2025-11-01" />
+              <input type="date" class="px-3 py-2 border rounded text-sm" value="2025-11-30" />
+              <select class="px-3 py-2 border rounded text-sm">
+                <option>Past 90 days</option>
+                <option>Past 30 days</option>
+              </select>
+              <select class="px-3 py-2 border rounded text-sm">
+                <option>Online & Offline</option>
+                <option>Online</option>
+                <option>Offline</option>
+              </select>
+              <button class="px-3 py-2 border rounded text-sm">Filters</button>
+            </div>
+          </div>
+        </div>
+        <div class="p-6 space-y-6">
         <section id="overview" data-page class="space-y-6">
           <h2 class="text-2xl font-semibold">Dashboard</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -66,7 +89,8 @@
             </div>
           </div>
           <div class="p-4 bg-white rounded border">
-            <div id="overviewChart" class="w-full h-64"></div>
+            <div class="text-sm font-semibold mb-2">Task Quality</div>
+            <div id="qualityChart" class="w-full h-64"></div>
           </div>
         </section>
 
@@ -108,13 +132,59 @@
 
         <section id="evaluation" data-page class="hidden space-y-6">
           <h2 class="text-2xl font-semibold">Evaluation Overview</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 gap-4">
             <div class="p-4 bg-white rounded border">
-              <div id="evalChart" class="w-full h-64"></div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-sm text-gray-500">Dataset Coverage</div>
-              <div class="text-3xl font-semibold">68%</div>
+              <div class="text-sm font-semibold mb-2">Operational Efficiency</div>
+              <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="text-gray-500">
+                      <th class="text-left py-2 pr-4">Metric</th>
+                      <th class="text-right py-2 px-4">Avg</th>
+                      <th class="text-right py-2 px-4">p25</th>
+                      <th class="text-right py-2 px-4">p50</th>
+                      <th class="text-right py-2 px-4">p99</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y">
+                    <tr>
+                      <td class="py-2 pr-4">Steps</td>
+                      <td class="text-right px-4">38.13</td>
+                      <td class="text-right px-4">43.00</td>
+                      <td class="text-right px-4">47.00</td>
+                      <td class="text-right px-4">63.00</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2 pr-4">Latency (ms)</td>
+                      <td class="text-right px-4">118.94</td>
+                      <td class="text-right px-4">0.00</td>
+                      <td class="text-right px-4">0.00</td>
+                      <td class="text-right px-4">72.00</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2 pr-4">Tokens</td>
+                      <td class="text-right px-4">11.98k</td>
+                      <td class="text-right px-4">0.00</td>
+                      <td class="text-right px-4">0.00</td>
+                      <td class="text-right px-4">40.00</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2 pr-4">Input Tokens</td>
+                      <td class="text-right px-4">52.00</td>
+                      <td class="text-right px-4">52.00</td>
+                      <td class="text-right px-4">52.00</td>
+                      <td class="text-right px-4">52.00</td>
+                    </tr>
+                    <tr>
+                      <td class="py-2 pr-4">Output Tokens</td>
+                      <td class="text-right px-4">349.23</td>
+                      <td class="text-right px-4">328.00</td>
+                      <td class="text-right px-4">349.49</td>
+                      <td class="text-right px-4">383.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>
@@ -136,6 +206,7 @@
           <p class="text-gray-600">Manage evaluation datasets.</p>
           <div class="p-4 bg-white rounded border">No datasets.</div>
         </section>
+        </div>
       </main>
     </div>
 
@@ -161,23 +232,17 @@
       window.addEventListener('hashchange', applyFromHash)
       applyFromHash()
 
-      const overviewChart = echarts.init(document.getElementById('overviewChart'))
-      overviewChart.setOption({
+      const qualityChart = echarts.init(document.getElementById('qualityChart'))
+      qualityChart.setOption({
         tooltip: {},
-        xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
-        yAxis: { type: 'value' },
-        series: [ { type: 'line', data: [120, 200, 150, 80, 70, 110, 130] } ]
-      })
-
-      const evalChart = echarts.init(document.getElementById('evalChart'))
-      evalChart.setOption({
-        tooltip: {},
-        legend: { data: ['Accuracy', 'F1'] },
-        xAxis: { type: 'category', data: ['v0.1', 'v0.2', 'v0.3', 'v0.4'] },
-        yAxis: { type: 'value' },
+        legend: { data: ['Avg E2E Success', 'Avg Formatting Adherence', 'Avg Tool Accuracy', 'Avg Semantic Correctness'] },
+        xAxis: { type: 'category', data: ['09/16/2025', '09/26/2025', '10/06/2025', '10/16/2025', '10/26/2025', '11/05/2025'] },
+        yAxis: { type: 'value', min: 0, max: 1 },
         series: [
-          { name: 'Accuracy', type: 'bar', data: [0.62, 0.65, 0.68, 0.72] },
-          { name: 'F1', type: 'bar', data: [0.58, 0.61, 0.66, 0.69] }
+          { name: 'Avg E2E Success', type: 'line', smooth: true, data: [0.12, 0.28, 0.36, 0.31, 0.42, 0.55] },
+          { name: 'Avg Formatting Adherence', type: 'line', smooth: true, data: [0.10, 0.22, 0.47, 0.29, 0.35, 0.44] },
+          { name: 'Avg Tool Accuracy', type: 'line', smooth: true, data: [0.08, 0.21, 0.33, 0.27, 0.41, 0.52] },
+          { name: 'Avg Semantic Correctness', type: 'line', smooth: true, data: [0.09, 0.19, 0.31, 0.25, 0.38, 0.61] }
         ]
       })
     </script>
