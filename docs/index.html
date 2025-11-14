@@ -450,6 +450,133 @@
 
 
 
+    function ensureAppDetail(id) {
+      const app = apps.find(a => String(a.id) === String(id))
+      const wrap = document.getElementById('appDetailContent')
+      if (!wrap) return
+      if (!app) { wrap.innerHTML = '<div class="p-4 bg-white rounded border">Application not found.</div>'; return }
+      wrap.innerHTML = `
+        <div class="p-4 bg-white rounded border">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div><div class="text-xs text-gray-500">Name</div><div class="font-semibold">${app.name}</div></div>
+            <div><div class="text-xs text-gray-500">Project</div><div class="font-semibold">${app.project}</div></div>
+            <div><div class="text-xs text-gray-500">Status</div><div class="font-semibold">${app.status}</div></div>
+            <div><div class="text-xs text-gray-500">Last Run At</div><div class="font-semibold">${formatTs(app.lastRunAt)}</div></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div class="p-4 bg-white rounded border"><div class="text-sm font-semibold mb-2">Task Quality</div><div id="appQ_${id}" class="w-full h-64"></div></div>
+          <div class="p-4 bg-white rounded border"><div class="text-sm font-semibold mb-2">Operational Efficiency</div><div id="appE_${id}" class="w-full h-64"></div></div>
+          <div class="p-4 bg-white rounded border"><div class="text-sm font-semibold mb-2">Safety & Adherence</div><div id="appS_${id}" class="w-full h-64"></div></div>
+          <div class="p-4 bg-white rounded border"><div class="text-sm font-semibold mb-2">Reasoning & Explainability</div><div id="appR_${id}" class="w-full h-64"></div></div>
+          <div class="p-4 bg-white rounded border xl:col-span-2"><div class="text-sm font-semibold mb-2">Consistency & Reliability</div><div id="appC_${id}" class="w-full h-64"></div></div>
+        </div>
+        <div class="p-4 bg-white rounded border">
+          <div class="flex items-center mb-2"><div class="text-sm font-semibold">Trace Logs</div><div class="ml-auto inline-flex gap-2"><button id="appPrev_${id}" class="px-3 py-1 border rounded text-sm">Prev</button><button id="appNext_${id}" class="px-3 py-1 border rounded text-sm">Next</button></div></div>
+          <div id="appLogs_${id}"></div>
+        </div>
+      `
+      renderAppCharts(id, app)
+      initAppLogs(id, app)
+    }
+
+    function renderAppCharts(id, app) {
+      const dates = ['09/01','09/10','09/20','09/30','10/10','10/20','11/01']
+      const base = Math.max(0.4, Math.min(0.95, (app.passRate || 0.7)))
+      const jitter = () => Math.max(0, Math.min(1, base + (Math.random()-0.5)*0.2))
+      const mk = () => dates.map(() => jitter())
+      const qEl = document.getElementById(`appQ_${id}`)
+      const eEl = document.getElementById(`appE_${id}`)
+      const sEl = document.getElementById(`appS_${id}`)
+      const rEl = document.getElementById(`appR_${id}`)
+      const cEl = document.getElementById(`appC_${id}`)
+      if (qEl) {
+        const inst = echarts.init(qEl)
+        inst.setOption({ tooltip: {}, legend: { data: ['E2E Success','Formatting','Tool Accuracy','Semantic'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value', min: 0, max: 1 }, series: [ { name: 'E2E Success', type: 'line', smooth: true, data: mk() }, { name: 'Formatting', type: 'line', smooth: true, data: mk() }, { name: 'Tool Accuracy', type: 'line', smooth: true, data: mk() }, { name: 'Semantic', type: 'line', smooth: true, data: mk() } ] })
+      }
+      if (eEl) {
+        const inst = echarts.init(eEl)
+        inst.setOption({ tooltip: {}, legend: { data: ['Latency','Steps','Total Tokens','Cost'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [ { name: 'Latency', type: 'line', smooth: true, data: dates.map(() => Math.round(400 + Math.random()*300)) }, { name: 'Steps', type: 'line', smooth: true, data: dates.map(() => Math.round(4 + Math.random()*4)) }, { name: 'Total Tokens', type: 'line', smooth: true, data: dates.map(() => Math.round(1200 + Math.random()*800)) }, { name: 'Cost', type: 'line', smooth: true, data: dates.map(() => +(5 + Math.random()*4).toFixed(2)) } ] })
+      }
+      if (sEl) {
+        const inst = echarts.init(sEl)
+        inst.setOption({ tooltip: {}, legend: { data: ['Policy','Toxicity','PII','Flags'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value', min: 0, max: 1 }, series: [ { name: 'Policy', type: 'line', smooth: true, data: mk() }, { name: 'Toxicity', type: 'line', smooth: true, data: mk().map(v => +(1-v).toFixed(2)) }, { name: 'PII', type: 'line', smooth: true, data: mk().map(v => +(1-v).toFixed(2)) }, { name: 'Flags', type: 'line', smooth: true, data: dates.map(() => Math.round(Math.random()*3)) } ] })
+      }
+      if (rEl) {
+        const inst = echarts.init(rEl)
+        inst.setOption({ tooltip: {}, legend: { data: ['Explain Depth','Self-Explain','Reasoning Steps','Justification'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [ { name: 'Explain Depth', type: 'line', smooth: true, data: dates.map(() => +(3 + Math.random()*2).toFixed(1)) }, { name: 'Self-Explain', type: 'line', smooth: true, data: mk().map(v => +(v).toFixed(2)) }, { name: 'Reasoning Steps', type: 'line', smooth: true, data: dates.map(() => Math.round(5 + Math.random()*4)) }, { name: 'Justification', type: 'line', smooth: true, data: mk() } ] })
+      }
+      if (cEl) {
+        const inst = echarts.init(cEl)
+        inst.setOption({ tooltip: {}, legend: { data: ['Consistency','Error Rate','Retry','Stability'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [ { name: 'Consistency', type: 'line', smooth: true, data: mk().map(v => +(v).toFixed(2)) }, { name: 'Error Rate', type: 'line', smooth: true, data: mk().map(v => +(1-v).toFixed(2)) }, { name: 'Retry', type: 'line', smooth: true, data: dates.map(() => Math.round(Math.random()*2)) }, { name: 'Stability', type: 'line', smooth: true, data: dates.map(() => +(Math.random()*0.2).toFixed(2)) } ] })
+      }
+    }
+
+    function genAppRuns(app) {
+      const count = 37
+      const baseTs = new Date(app.lastRunAt || Date.now()).getTime()
+      const levels = ['info','warn','error']
+      const res = []
+      for (let i=0;i<count;i++) {
+        const ts = new Date(baseTs - i*3600*1000).toISOString()
+        const lvl = levels[Math.floor(Math.random()*levels.length)]
+        const rid = `${app.id}-${1000+i}`
+        const msg = lvl==='error' ? 'Run failed' : (lvl==='warn' ? 'Latency high' : 'Run completed')
+        const meta = `run=${rid} steps=${Math.floor(4+Math.random()*4)} tokens=${Math.floor(800+Math.random()*800)}`
+        res.push({ ts, level: lvl, runId: rid, app: app.name, msg, meta })
+      }
+      return res
+    }
+
+    function initAppLogs(id, app) {
+      const runs = genAppRuns(app)
+      const pageKey = `appPage_${id}`
+      const size = 10
+      const total = Math.max(1, Math.ceil(runs.length/size))
+      const prev = document.getElementById(`appPrev_${id}`)
+      const next = document.getElementById(`appNext_${id}`)
+      const container = document.getElementById(`appLogs_${id}`)
+      const getPage = () => { const v = parseInt(localStorage.getItem(pageKey) || '1', 10); return isNaN(v) ? 1 : Math.min(Math.max(1,v), total) }
+      const setPage = p => localStorage.setItem(pageKey, String(Math.min(Math.max(1,p), total)))
+      const render = () => {
+        const p = getPage()
+        const start = (p-1)*size
+        const slice = runs.slice(start, start+size)
+        const wrap = document.createElement('div')
+        wrap.className = 'overflow-x-auto'
+        const table = document.createElement('table')
+        table.className = 'min-w-full text-sm'
+        table.innerHTML = `
+          <thead>
+            <tr class="text-gray-500">
+              <th class="text-left py-2 px-4">Timestamp</th>
+              <th class="text-left py-2 px-4">Level</th>
+              <th class="text-left py-2 px-4">Run</th>
+              <th class="text-left py-2 px-4">Message</th>
+              <th class="text-left py-2 px-4">Meta</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            ${slice.map(l => `
+              <tr class="hover:bg-slate-50">
+                <td class="py-2 px-4">${new Date(l.ts).toLocaleString()}</td>
+                <td class="py-2 px-4"><span class="px-2 py-1 rounded text-xs ${l.level === 'error' ? 'bg-red-100 text-red-700' : l.level === 'warn' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}">${l.level.toUpperCase()}</span></td>
+                <td class="py-2 px-4 mono">${l.runId}</td>
+                <td class="py-2 px-4">${l.msg}</td>
+                <td class="py-2 px-4 mono">${l.meta}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        `
+        wrap.appendChild(table)
+        container.innerHTML = ''
+        container.appendChild(wrap)
+      }
+      if (prev) prev.onclick = () => { setPage(getPage()-1); render() }
+      if (next) next.onclick = () => { setPage(getPage()+1); render() }
+      render()
+    }
+
     const d = ['09/01', '09/10', '09/20', '09/30', '10/10', '10/20', '11/01']
     const chartQuality = echarts.init(document.getElementById('chartQuality'))
     chartQuality.setOption({
