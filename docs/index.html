@@ -209,7 +209,7 @@
               <input id="metricsSearch" placeholder="Search metrics" class="px-3 py-2 border rounded text-sm" />
             </div>
           </div>
-          
+
           <div id="metricsContent" class="space-y-4"></div>
           <div id="metricDetail" class="hidden p-4 bg-white rounded border">
             <div class="text-lg font-semibold mb-2" id="mdName"></div>
@@ -380,41 +380,9 @@
     window.addEventListener('hashchange', applyFromHash)
     applyFromHash()
 
-    const defaultMetrics = [
-      { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent', 'Step'] },
-      { id: 'precision', name: 'Precision', category: 'Task Quality', description: 'Correct positive predictions', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
-      { id: 'recall', name: 'Recall', category: 'Task Quality', description: 'Recovered relevant items', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
-      { id: 'f1', name: 'F1 Score', category: 'Task Quality', description: 'Harmonic mean of precision and recall', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
-      { id: 'faithfulness', name: 'Faithfulness', category: 'Task Quality', description: 'Groundedness of outputs to sources', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge', scope: ['Application'] },
-      { id: 'formatting', name: 'Formatting Adherence', category: 'Task Quality', description: 'Schema/JSON correctness', enabled: true, requiresGroundTruth: false, method: 'Schema Validator', scope: ['Application', 'Agent'] },
-      { id: 'tool-accuracy', name: 'Tool Call Accuracy', category: 'Task Quality', description: 'Correct tool invocations', enabled: true, requiresGroundTruth: true, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'pass-rate', name: 'Pass Rate', category: 'Task Quality', description: 'Percentage of runs passing checks', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
 
-      { id: 'latency', name: 'Latency (ms)', category: 'Efficiency', description: 'End-to-end response time', enabled: true, requiresGroundTruth: false, method: 'Instrumentation', scope: ['Application', 'Agent', 'Step'] },
-      { id: 'steps', name: 'Steps', category: 'Efficiency', description: 'Agent steps per task', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'input-tokens', name: 'Input Tokens', category: 'Efficiency', description: 'Prompt tokens used', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
-      { id: 'output-tokens', name: 'Output Tokens', category: 'Efficiency', description: 'Generated tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
-      { id: 'total-tokens', name: 'Total Tokens', category: 'Efficiency', description: 'Combined input/output tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
-      { id: 'cost', name: 'Cost ($)', category: 'Efficiency', description: 'Estimated dollar cost', enabled: true, requiresGroundTruth: false, method: 'Pricing Model', scope: ['Application', 'Agent'] },
 
-      { id: 'policy', name: 'Policy Adherence (%)', category: 'Safety & Adherence', description: 'Compliance with policy', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge / Classifier', scope: ['Application'] },
-      { id: 'toxicity', name: 'Toxicity Score', category: 'Safety & Adherence', description: 'Toxic content score', enabled: true, requiresGroundTruth: false, method: 'Classifier (e.g., Detoxify)', scope: ['Application'] },
-      { id: 'pii', name: 'PII Leakage Rate', category: 'Safety & Adherence', description: 'PII exposure likelihood', enabled: true, requiresGroundTruth: false, method: 'Regex/NER/Classifier', scope: ['Application'] },
-      { id: 'jailbreak', name: 'Jailbreak Success Rate', category: 'Safety & Adherence', description: 'Adversarial bypass rate', enabled: false, requiresGroundTruth: false, method: 'Adversarial Tests', scope: ['Application'] },
-      { id: 'safety-flags', name: 'Safety Flags', category: 'Safety & Adherence', description: 'Flagged outputs count', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application'] },
 
-      { id: 'explain-depth', name: 'Explanation Depth', category: 'Reasoning & Explainability', description: 'Depth of explanations', enabled: true, requiresGroundTruth: false, method: 'Heuristic / Judge', scope: ['Application'] },
-      { id: 'self-explain', name: 'Self-Explanation Coverage (%)', category: 'Reasoning & Explainability', description: 'Outputs with explanations', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application'] },
-      { id: 'reason-steps', name: 'Reasoning Steps', category: 'Reasoning & Explainability', description: 'Number of steps', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'justification', name: 'Justification Score', category: 'Reasoning & Explainability', description: 'Quality of justifications', enabled: false, requiresGroundTruth: true, method: 'LLM-as-a-Judge', scope: ['Application'] },
-
-      { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true, requiresGroundTruth: false, method: 'Repeated Trials', scope: ['Application', 'Agent'] },
-      { id: 'error-rate', name: 'Error Rate (%)', category: 'Consistency & Reliability', description: 'Failures per runs', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
-      { id: 'retry', name: 'Retry Count', category: 'Consistency & Reliability', description: 'Retries needed', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'stability', name: 'Output Stability (variance)', category: 'Consistency & Reliability', description: 'Variance of outputs', enabled: true, requiresGroundTruth: false, method: 'Statistical', scope: ['Application'] }
-    ]
-
-    
 
     const d = ['09/01', '09/10', '09/20', '09/30', '10/10', '10/20', '11/01']
     const chartQuality = echarts.init(document.getElementById('chartQuality'))
@@ -842,39 +810,7 @@
     function saveMetrics(items) {
       localStorage.setItem('metrics', JSON.stringify(items))
     }
-    const defaultMetrics = [
-      { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent', 'Step'] },
-      { id: 'precision', name: 'Precision', category: 'Task Quality', description: 'Correct positive predictions', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
-      { id: 'recall', name: 'Recall', category: 'Task Quality', description: 'Recovered relevant items', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
-      { id: 'f1', name: 'F1 Score', category: 'Task Quality', description: 'Harmonic mean of precision and recall', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
-      { id: 'faithfulness', name: 'Faithfulness', category: 'Task Quality', description: 'Groundedness of outputs to sources', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge', scope: ['Application'] },
-      { id: 'formatting', name: 'Formatting Adherence', category: 'Task Quality', description: 'Schema/JSON correctness', enabled: true, requiresGroundTruth: false, method: 'Schema Validator', scope: ['Application', 'Agent'] },
-      { id: 'tool-accuracy', name: 'Tool Call Accuracy', category: 'Task Quality', description: 'Correct tool invocations', enabled: true, requiresGroundTruth: true, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'pass-rate', name: 'Pass Rate', category: 'Task Quality', description: 'Percentage of runs passing checks', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
-
-      { id: 'latency', name: 'Latency (ms)', category: 'Efficiency', description: 'End-to-end response time', enabled: true, requiresGroundTruth: false, method: 'Instrumentation', scope: ['Application', 'Agent', 'Step'] },
-      { id: 'steps', name: 'Steps', category: 'Efficiency', description: 'Agent steps per task', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'input-tokens', name: 'Input Tokens', category: 'Efficiency', description: 'Prompt tokens used', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
-      { id: 'output-tokens', name: 'Output Tokens', category: 'Efficiency', description: 'Generated tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
-      { id: 'total-tokens', name: 'Total Tokens', category: 'Efficiency', description: 'Combined input/output tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
-      { id: 'cost', name: 'Cost ($)', category: 'Efficiency', description: 'Estimated dollar cost', enabled: true, requiresGroundTruth: false, method: 'Pricing Model', scope: ['Application', 'Agent'] },
-
-      { id: 'policy', name: 'Policy Adherence (%)', category: 'Safety & Adherence', description: 'Compliance with policy', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge / Classifier', scope: ['Application'] },
-      { id: 'toxicity', name: 'Toxicity Score', category: 'Safety & Adherence', description: 'Toxic content score', enabled: true, requiresGroundTruth: false, method: 'Classifier (e.g., Detoxify)', scope: ['Application'] },
-      { id: 'pii', name: 'PII Leakage Rate', category: 'Safety & Adherence', description: 'PII exposure likelihood', enabled: true, requiresGroundTruth: false, method: 'Regex/NER/Classifier', scope: ['Application'] },
-      { id: 'jailbreak', name: 'Jailbreak Success Rate', category: 'Safety & Adherence', description: 'Adversarial bypass rate', enabled: false, requiresGroundTruth: false, method: 'Adversarial Tests', scope: ['Application'] },
-      { id: 'safety-flags', name: 'Safety Flags', category: 'Safety & Adherence', description: 'Flagged outputs count', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application'] },
-
-      { id: 'explain-depth', name: 'Explanation Depth', category: 'Reasoning & Explainability', description: 'Depth of explanations', enabled: true, requiresGroundTruth: false, method: 'Heuristic / Judge', scope: ['Application'] },
-      { id: 'self-explain', name: 'Self-Explanation Coverage (%)', category: 'Reasoning & Explainability', description: 'Outputs with explanations', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application'] },
-      { id: 'reason-steps', name: 'Reasoning Steps', category: 'Reasoning & Explainability', description: 'Number of steps', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'justification', name: 'Justification Score', category: 'Reasoning & Explainability', description: 'Quality of justifications', enabled: false, requiresGroundTruth: true, method: 'LLM-as-a-Judge', scope: ['Application'] },
-
-      { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true, requiresGroundTruth: false, method: 'Repeated Trials', scope: ['Application', 'Agent'] },
-      { id: 'error-rate', name: 'Error Rate (%)', category: 'Consistency & Reliability', description: 'Failures per runs', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
-      { id: 'retry', name: 'Retry Count', category: 'Consistency & Reliability', description: 'Retries needed', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'stability', name: 'Output Stability (variance)', category: 'Consistency & Reliability', description: 'Variance of outputs', enabled: true, requiresGroundTruth: false, method: 'Statistical', scope: ['Application'] }
-    ]
+    
 
     function getMetrics() {
       let items = loadMetrics()
@@ -980,12 +916,12 @@
       document.getElementById('mdMethod').textContent = m.method || ''
       document.getElementById('mdNeedsGT').textContent = m.requiresGroundTruth ? 'Yes' : 'No'
       const scope = document.getElementById('mdScope'); scope.innerHTML = ''
-      (Array.isArray(m.scope) ? m.scope : []).forEach(s => {
-        const span = document.createElement('span')
-        span.className = 'px-2 py-1 rounded bg-slate-100 text-xs'
-        span.textContent = s
-        scope.appendChild(span)
-      })
+        (Array.isArray(m.scope) ? m.scope : []).forEach(s => {
+          const span = document.createElement('span')
+          span.className = 'px-2 py-1 rounded bg-slate-100 text-xs'
+          span.textContent = s
+          scope.appendChild(span)
+        })
       document.getElementById('mdDesc').textContent = m.description || ''
       panel.classList.remove('hidden')
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
