@@ -357,6 +357,12 @@
           </div>
           <div id="datasetsContent" class="space-y-4"></div>
         </section>
+        <section id="app-detail" data-page class="hidden space-y-4">
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Application Detail</h2>
+          </div>
+          <div id="appDetailContent" class="space-y-4"></div>
+        </section>
       </div>
     </main>
   </div>
@@ -425,13 +431,16 @@
 
     function applyFromHash() {
       const hash = location.hash.replace('#/', '') || 'overview'
+      const parts = hash.split('/')
       const match = pages.some(p => p.id === hash)
-      const target = match ? hash : 'overview'
+      let target = match ? hash : 'overview'
+      if (parts[0] === 'app' && parts[1]) target = 'app-detail'
       setActive(target)
       if (target === 'applications') ensureApplications()
       if (target === 'metrics') ensureMetrics()
       if (target === 'tracing') ensureTracing()
       if (target === 'datasets') ensureDatasets()
+      if (target === 'app-detail') ensureAppDetail(parts[1])
     }
 
     window.addEventListener('hashchange', applyFromHash)
@@ -586,7 +595,7 @@
           </div>
           <div class="mt-3 text-xs text-gray-500">Last Run At ${formatTs(a.lastRunAt)}</div>
           <div class="mt-3 flex gap-2">
-            <a href="#/applications" class="px-3 py-1 border rounded text-sm">View</a>
+            <a href="#/app/${a.id}" class="px-3 py-1 border rounded text-sm">View</a>
             <a href="#/settings" class="px-3 py-1 border rounded text-sm">Configure</a>
           </div>
         `
@@ -623,7 +632,7 @@
               <td class="py-2 px-4">${a.updated}</td>
               <td class="py-2 px-4">
                 <div class="flex gap-2">
-                  <a href="#/applications" class="px-3 py-1 border rounded">View</a>
+                  <a href="#/app/${a.id}" class="px-3 py-1 border rounded">View</a>
                   <a href="#/settings" class="px-3 py-1 border rounded">Configure</a>
                 </div>
               </td>
