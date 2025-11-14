@@ -39,17 +39,12 @@
           <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Configuration</div>
           <a href="#/applications" data-section="applications"
             class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Applications</a>
-          <a href="#/agents" data-section="agents"
-            class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Agents</a>
-          <a href="#/settings" data-section="settings"
-            class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Settings</a>
         </div>
         <div>
           <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Observability</div>
           <a href="#/tracing" data-section="tracing"
             class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Tracing</a>
-          <a href="#/sessions" data-section="sessions"
-            class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Sessions</a>
+
           <a href="#/users" data-section="users"
             class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Users</a>
         </div>
@@ -57,12 +52,14 @@
           <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Evaluation</div>
           <a href="#/evaluation" data-section="evaluation"
             class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Overview</a>
-          <a href="#/llm-judge" data-section="llm-judge"
-            class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">LLM-as-a-Judge</a>
-          <a href="#/human-annotation" data-section="human-annotation"
-            class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Human Annotation</a>
+
           <a href="#/datasets" data-section="datasets"
             class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Datasets</a>
+        </div>
+        <div class="mt-6">
+          <div class="px-2 text-xs font-semibold text-slate-400 uppercase">Settings</div>
+          <a href="#/settings" data-section="settings"
+            class="block px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">Settings</a>
         </div>
       </nav>
     </aside>
@@ -147,9 +144,16 @@
         </section>
 
         <section id="applications" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Applications</h2>
-          <p class="text-gray-600">List and manage applications registered to Agent Hub.</p>
-          <div class="p-4 bg-white rounded border">No applications yet.</div>
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Applications</h2>
+            <div class="ml-auto">
+              <div class="inline-flex border rounded overflow-hidden">
+                <button id="appsViewCards" class="px-3 py-1 text-sm bg-slate-800 text-white">Cards</button>
+                <button id="appsViewList" class="px-3 py-1 text-sm">List</button>
+              </div>
+            </div>
+          </div>
+          <div id="applicationsContent" class="space-y-4"></div>
         </section>
 
         <section id="agents" data-page class="hidden space-y-4">
@@ -232,7 +236,9 @@
     function applyFromHash() {
       const hash = location.hash.replace('#/', '') || 'overview'
       const match = pages.some(p => p.id === hash)
-      setActive(match ? hash : 'overview')
+      const target = match ? hash : 'overview'
+      setActive(target)
+      if (target === 'applications') ensureApplications()
     }
 
     window.addEventListener('hashchange', applyFromHash)
@@ -311,6 +317,118 @@
         { name: 'F1', type: 'bar', data: [0.58, 0.61, 0.66, 0.69] }
       ]
     })
+    const apps = [
+      { id: 1, name: 'IWBP Virtual CIO', project: 'IWBP AI Project', status: 'Active', passRate: 0.69, cost: 198.56, updated: '2025-11-15' },
+      { id: 2, name: 'Support Assistant', project: 'Customer Ops', status: 'Active', passRate: 0.74, cost: 54.12, updated: '2025-11-13' },
+      { id: 3, name: 'Invoice Extractor', project: 'Finance', status: 'Paused', passRate: 0.62, cost: 12.88, updated: '2025-11-10' },
+      { id: 4, name: 'QA Evaluator', project: 'Quality', status: 'Active', passRate: 0.71, cost: 33.40, updated: '2025-11-12' },
+      { id: 5, name: 'RAG Knowledge Bot', project: 'Docs', status: 'Active', passRate: 0.77, cost: 88.02, updated: '2025-11-11' },
+      { id: 6, name: 'Email Summarizer', project: 'Sales', status: 'Paused', passRate: 0.55, cost: 9.43, updated: '2025-11-09' }
+    ]
+
+    function renderApplicationsCards(list) {
+      const grid = document.createElement('div')
+      grid.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'
+      list.forEach(a => {
+        const dot = a.status === 'Active' ? 'bg-green-500' : 'bg-amber-500'
+        const el = document.createElement('div')
+        el.className = 'p-4 bg-white rounded border'
+        el.innerHTML = `
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-2 h-2 rounded-full ${dot}"></div>
+            <div class="font-semibold">${a.name}</div>
+          </div>
+          <div class="text-sm text-gray-600">${a.project}</div>
+          <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+            <div class="p-2 bg-slate-50 rounded border">
+              <div class="text-gray-500">Success Rate</div>
+              <div class="font-semibold">${(a.passRate * 100).toFixed(2)}%</div>
+            </div>
+            <div class="p-2 bg-slate-50 rounded border">
+              <div class="text-gray-500">Cost</div>
+              <div class="font-semibold mono">$${a.cost.toFixed(2)}</div>
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-gray-500">Updated ${a.updated}</div>
+          <div class="mt-3 flex gap-2">
+            <a href="#/applications" class="px-3 py-1 border rounded text-sm">View</a>
+            <a href="#/settings" class="px-3 py-1 border rounded text-sm">Configure</a>
+          </div>
+        `
+        grid.appendChild(el)
+      })
+      return grid
+    }
+
+    function renderApplicationsList(list) {
+      const wrap = document.createElement('div')
+      wrap.className = 'overflow-x-auto'
+      const table = document.createElement('table')
+      table.className = 'min-w-full text-sm'
+      table.innerHTML = `
+        <thead>
+          <tr class="text-gray-500">
+            <th class="text-left py-2 px-4">Name</th>
+            <th class="text-left py-2 px-4">Project</th>
+            <th class="text-left py-2 px-4">Status</th>
+            <th class="text-right py-2 px-4">Success</th>
+            <th class="text-right py-2 px-4">Cost</th>
+            <th class="text-left py-2 px-4">Updated</th>
+            <th class="text-left py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          ${list.map(a => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2 px-4 font-semibold">${a.name}</td>
+              <td class="py-2 px-4">${a.project}</td>
+              <td class="py-2 px-4">${a.status}</td>
+              <td class="py-2 px-4 text-right">${(a.passRate * 100).toFixed(2)}%</td>
+              <td class="py-2 px-4 text-right mono">$${a.cost.toFixed(2)}</td>
+              <td class="py-2 px-4">${a.updated}</td>
+              <td class="py-2 px-4">
+                <div class="flex gap-2">
+                  <a href="#/applications" class="px-3 py-1 border rounded">View</a>
+                  <a href="#/settings" class="px-3 py-1 border rounded">Configure</a>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `
+      wrap.appendChild(table)
+      return wrap
+    }
+
+    function renderApplications(mode) {
+      const container = document.getElementById('applicationsContent')
+      if (!container) return
+      container.innerHTML = ''
+      const list = apps
+      container.appendChild(mode === 'list' ? renderApplicationsList(list) : renderApplicationsCards(list))
+      const cardsBtn = document.getElementById('appsViewCards')
+      const listBtn = document.getElementById('appsViewList')
+      if (cardsBtn && listBtn) {
+        cardsBtn.classList.toggle('bg-slate-800', mode === 'cards')
+        cardsBtn.classList.toggle('text-white', mode === 'cards')
+        listBtn.classList.toggle('bg-slate-800', mode === 'list')
+        listBtn.classList.toggle('text-white', mode === 'list')
+      }
+    }
+
+    function initApplicationsToggle() {
+      const cardsBtn = document.getElementById('appsViewCards')
+      const listBtn = document.getElementById('appsViewList')
+      if (!cardsBtn || !listBtn) return
+      cardsBtn.onclick = () => { localStorage.setItem('appsView', 'cards'); renderApplications('cards') }
+      listBtn.onclick = () => { localStorage.setItem('appsView', 'list'); renderApplications('list') }
+      const mode = localStorage.getItem('appsView') || 'cards'
+      renderApplications(mode)
+    }
+
+    function ensureApplications() {
+      initApplicationsToggle()
+    }
   </script>
 </body>
 
