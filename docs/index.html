@@ -356,6 +356,17 @@
   <script>
     const links = Array.from(document.querySelectorAll('[data-section]'))
     const pages = Array.from(document.querySelectorAll('[data-page]'))
+    const defaultMetrics = [
+      { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application','Agent','Step'] },
+      { id: 'f1', name: 'F1 Score', category: 'Task Quality', description: 'Harmonic mean of precision and recall', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application','Agent'] },
+      { id: 'formatting', name: 'Formatting Adherence', category: 'Task Quality', description: 'Schema/JSON correctness', enabled: true, requiresGroundTruth: false, method: 'Schema Validator', scope: ['Application','Agent'] },
+      { id: 'latency', name: 'Latency (ms)', category: 'Efficiency', description: 'End-to-end response time', enabled: true, requiresGroundTruth: false, method: 'Instrumentation', scope: ['Application','Agent','Step'] },
+      { id: 'tokens', name: 'Total Tokens', category: 'Efficiency', description: 'Combined input/output tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application','Agent'] },
+      { id: 'cost', name: 'Cost ($)', category: 'Efficiency', description: 'Estimated dollar cost', enabled: true, requiresGroundTruth: false, method: 'Pricing Model', scope: ['Application','Agent'] },
+      { id: 'policy', name: 'Policy Adherence (%)', category: 'Safety & Adherence', description: 'Compliance with policy', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge / Classifier', scope: ['Application'] },
+      { id: 'toxicity', name: 'Toxicity Score', category: 'Safety & Adherence', description: 'Toxic content score', enabled: true, requiresGroundTruth: false, method: 'Classifier', scope: ['Application'] },
+      { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true, requiresGroundTruth: false, method: 'Repeated Trials', scope: ['Application','Agent'] }
+    ]
     
     
 
