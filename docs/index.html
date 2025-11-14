@@ -154,6 +154,20 @@
               </div>
             </div>
           </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="appsSearch" placeholder="Search by name" class="px-3 py-2 border rounded text-sm" />
+            <select id="appsStatus" class="px-3 py-2 border rounded text-sm">
+              <option value="all">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Paused">Paused</option>
+            </select>
+            <select id="appsProject" class="px-3 py-2 border rounded text-sm">
+              <option value="all">All Projects</option>
+            </select>
+            <input id="appsMinPass" type="number" min="0" max="100" step="1" placeholder="Min Success %"
+              class="px-3 py-2 border rounded text-sm w-40" />
+            <button id="appsReset" class="px-3 py-2 border rounded text-sm">Reset</button>
+          </div>
           <div id="applicationsContent" class="space-y-4"></div>
         </section>
 
@@ -200,6 +214,27 @@
                   <option>Reasoning & Explainability</option>
                   <option>Consistency & Reliability</option>
                 </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="text-xs text-gray-500">Method</label>
+                <input id="mfMethod" class="w-full px-3 py-2 border rounded text-sm"
+                  placeholder="e.g., LLM-as-a-Judge, BLEU, ROUGE" />
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="mfNeedsGT" type="checkbox" />
+                <label class="text-sm">Requires Ground Truth</label>
+              </div>
+              <div>
+                <label class="text-xs text-gray-500">Scope</label>
+                <div class="flex gap-3 px-2 py-2 border rounded">
+                  <label class="flex items-center gap-1 text-sm"><input type="checkbox" id="mfScopeApp" />
+                    Application</label>
+                  <label class="flex items-center gap-1 text-sm"><input type="checkbox" id="mfScopeAgent" />
+                    Agent</label>
+                  <label class="flex items-center gap-1 text-sm"><input type="checkbox" id="mfScopeStep" /> Step</label>
+                </div>
               </div>
             </div>
             <div>
@@ -472,7 +507,16 @@
       const container = document.getElementById('applicationsContent')
       if (!container) return
       container.innerHTML = ''
-      const list = apps
+      const q = (document.getElementById('appsSearch')?.value || '').toLowerCase()
+      const status = document.getElementById('appsStatus')?.value || 'all'
+      const proj = document.getElementById('appsProject')?.value || 'all'
+      const minPass = parseFloat(document.getElementById('appsMinPass')?.value || 'NaN')
+      const list = apps.filter(a =>
+        (!q || a.name.toLowerCase().includes(q)) &&
+        (status === 'all' || a.status === status) &&
+        (proj === 'all' || a.project === proj) &&
+        (isNaN(minPass) || (a.passRate * 100) >= minPass)
+      )
       container.appendChild(mode === 'list' ? renderApplicationsList(list) : renderApplicationsCards(list))
       const cardsBtn = document.getElementById('appsViewCards')
       const listBtn = document.getElementById('appsViewList')
@@ -490,7 +534,24 @@
       if (!cardsBtn || !listBtn) return
       cardsBtn.onclick = () => { localStorage.setItem('appsView', 'cards'); renderApplications('cards') }
       listBtn.onclick = () => { localStorage.setItem('appsView', 'list'); renderApplications('list') }
+      const projSel = document.getElementById('appsProject')
+      if (projSel) {
+        const projects = Array.from(new Set(apps.map(a => a.project)))
+        projSel.innerHTML = '<option value="all">All Projects</option>' + projects.map(p => `<option value="${p}">${p}</option>`).join('')
+      }
       const mode = localStorage.getItem('appsView') || 'cards'
+      const re = () => renderApplications(localStorage.getItem('appsView') || 'cards')
+      const bindInput = id => { const el = document.getElementById(id); if (el) el.oninput = re }
+      const bindChange = id => { const el = document.getElementById(id); if (el) el.onchange = re }
+      bindInput('appsSearch'); bindInput('appsMinPass')
+      bindChange('appsStatus'); bindChange('appsProject')
+      const reset = document.getElementById('appsReset'); if (reset) reset.onclick = () => {
+        document.getElementById('appsSearch').value = ''
+        document.getElementById('appsStatus').value = 'all'
+        document.getElementById('appsProject').value = 'all'
+        document.getElementById('appsMinPass').value = ''
+        re()
+      }
       renderApplications(mode)
     }
 
@@ -505,37 +566,37 @@
       localStorage.setItem('metrics', JSON.stringify(items))
     }
     const defaultMetrics = [
-      { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true },
-      { id: 'precision', name: 'Precision', category: 'Task Quality', description: 'Correct positive predictions', enabled: false },
-      { id: 'recall', name: 'Recall', category: 'Task Quality', description: 'Recovered relevant items', enabled: false },
-      { id: 'f1', name: 'F1 Score', category: 'Task Quality', description: 'Harmonic mean of precision and recall', enabled: true },
-      { id: 'faithfulness', name: 'Faithfulness', category: 'Task Quality', description: 'Groundedness of outputs to sources', enabled: true },
-      { id: 'formatting', name: 'Formatting Adherence', category: 'Task Quality', description: 'Schema/JSON correctness', enabled: true },
-      { id: 'tool-accuracy', name: 'Tool Call Accuracy', category: 'Task Quality', description: 'Correct tool invocations', enabled: true },
-      { id: 'pass-rate', name: 'Pass Rate', category: 'Task Quality', description: 'Percentage of runs passing checks', enabled: true },
+      { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent', 'Step'] },
+      { id: 'precision', name: 'Precision', category: 'Task Quality', description: 'Correct positive predictions', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
+      { id: 'recall', name: 'Recall', category: 'Task Quality', description: 'Recovered relevant items', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
+      { id: 'f1', name: 'F1 Score', category: 'Task Quality', description: 'Harmonic mean of precision and recall', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
+      { id: 'faithfulness', name: 'Faithfulness', category: 'Task Quality', description: 'Groundedness of outputs to sources', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge', scope: ['Application'] },
+      { id: 'formatting', name: 'Formatting Adherence', category: 'Task Quality', description: 'Schema/JSON correctness', enabled: true, requiresGroundTruth: false, method: 'Schema Validator', scope: ['Application', 'Agent'] },
+      { id: 'tool-accuracy', name: 'Tool Call Accuracy', category: 'Task Quality', description: 'Correct tool invocations', enabled: true, requiresGroundTruth: true, method: 'Execution Trace', scope: ['Agent', 'Step'] },
+      { id: 'pass-rate', name: 'Pass Rate', category: 'Task Quality', description: 'Percentage of runs passing checks', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
 
-      { id: 'latency', name: 'Latency (ms)', category: 'Efficiency', description: 'End-to-end response time', enabled: true },
-      { id: 'steps', name: 'Steps', category: 'Efficiency', description: 'Agent steps per task', enabled: true },
-      { id: 'input-tokens', name: 'Input Tokens', category: 'Efficiency', description: 'Prompt tokens used', enabled: true },
-      { id: 'output-tokens', name: 'Output Tokens', category: 'Efficiency', description: 'Generated tokens', enabled: true },
-      { id: 'total-tokens', name: 'Total Tokens', category: 'Efficiency', description: 'Combined input/output tokens', enabled: true },
-      { id: 'cost', name: 'Cost ($)', category: 'Efficiency', description: 'Estimated dollar cost', enabled: true },
+      { id: 'latency', name: 'Latency (ms)', category: 'Efficiency', description: 'End-to-end response time', enabled: true, requiresGroundTruth: false, method: 'Instrumentation', scope: ['Application', 'Agent', 'Step'] },
+      { id: 'steps', name: 'Steps', category: 'Efficiency', description: 'Agent steps per task', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
+      { id: 'input-tokens', name: 'Input Tokens', category: 'Efficiency', description: 'Prompt tokens used', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
+      { id: 'output-tokens', name: 'Output Tokens', category: 'Efficiency', description: 'Generated tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
+      { id: 'total-tokens', name: 'Total Tokens', category: 'Efficiency', description: 'Combined input/output tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
+      { id: 'cost', name: 'Cost ($)', category: 'Efficiency', description: 'Estimated dollar cost', enabled: true, requiresGroundTruth: false, method: 'Pricing Model', scope: ['Application', 'Agent'] },
 
-      { id: 'policy', name: 'Policy Adherence (%)', category: 'Safety & Adherence', description: 'Compliance with policy', enabled: true },
-      { id: 'toxicity', name: 'Toxicity Score', category: 'Safety & Adherence', description: 'Toxic content score', enabled: true },
-      { id: 'pii', name: 'PII Leakage Rate', category: 'Safety & Adherence', description: 'PII exposure likelihood', enabled: true },
-      { id: 'jailbreak', name: 'Jailbreak Success Rate', category: 'Safety & Adherence', description: 'Adversarial bypass rate', enabled: false },
-      { id: 'safety-flags', name: 'Safety Flags', category: 'Safety & Adherence', description: 'Flagged outputs count', enabled: true },
+      { id: 'policy', name: 'Policy Adherence (%)', category: 'Safety & Adherence', description: 'Compliance with policy', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge / Classifier', scope: ['Application'] },
+      { id: 'toxicity', name: 'Toxicity Score', category: 'Safety & Adherence', description: 'Toxic content score', enabled: true, requiresGroundTruth: false, method: 'Classifier (e.g., Detoxify)', scope: ['Application'] },
+      { id: 'pii', name: 'PII Leakage Rate', category: 'Safety & Adherence', description: 'PII exposure likelihood', enabled: true, requiresGroundTruth: false, method: 'Regex/NER/Classifier', scope: ['Application'] },
+      { id: 'jailbreak', name: 'Jailbreak Success Rate', category: 'Safety & Adherence', description: 'Adversarial bypass rate', enabled: false, requiresGroundTruth: false, method: 'Adversarial Tests', scope: ['Application'] },
+      { id: 'safety-flags', name: 'Safety Flags', category: 'Safety & Adherence', description: 'Flagged outputs count', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application'] },
 
-      { id: 'explain-depth', name: 'Explanation Depth', category: 'Reasoning & Explainability', description: 'Depth of explanations', enabled: true },
-      { id: 'self-explain', name: 'Self-Explanation Coverage (%)', category: 'Reasoning & Explainability', description: 'Outputs with explanations', enabled: true },
-      { id: 'reason-steps', name: 'Reasoning Steps', category: 'Reasoning & Explainability', description: 'Number of steps', enabled: true },
-      { id: 'justification', name: 'Justification Score', category: 'Reasoning & Explainability', description: 'Quality of justifications', enabled: false },
+      { id: 'explain-depth', name: 'Explanation Depth', category: 'Reasoning & Explainability', description: 'Depth of explanations', enabled: true, requiresGroundTruth: false, method: 'Heuristic / Judge', scope: ['Application'] },
+      { id: 'self-explain', name: 'Self-Explanation Coverage (%)', category: 'Reasoning & Explainability', description: 'Outputs with explanations', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application'] },
+      { id: 'reason-steps', name: 'Reasoning Steps', category: 'Reasoning & Explainability', description: 'Number of steps', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
+      { id: 'justification', name: 'Justification Score', category: 'Reasoning & Explainability', description: 'Quality of justifications', enabled: false, requiresGroundTruth: true, method: 'LLM-as-a-Judge', scope: ['Application'] },
 
-      { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true },
-      { id: 'error-rate', name: 'Error Rate (%)', category: 'Consistency & Reliability', description: 'Failures per runs', enabled: true },
-      { id: 'retry', name: 'Retry Count', category: 'Consistency & Reliability', description: 'Retries needed', enabled: true },
-      { id: 'stability', name: 'Output Stability (variance)', category: 'Consistency & Reliability', description: 'Variance of outputs', enabled: true }
+      { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true, requiresGroundTruth: false, method: 'Repeated Trials', scope: ['Application', 'Agent'] },
+      { id: 'error-rate', name: 'Error Rate (%)', category: 'Consistency & Reliability', description: 'Failures per runs', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
+      { id: 'retry', name: 'Retry Count', category: 'Consistency & Reliability', description: 'Retries needed', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
+      { id: 'stability', name: 'Output Stability (variance)', category: 'Consistency & Reliability', description: 'Variance of outputs', enabled: true, requiresGroundTruth: false, method: 'Statistical', scope: ['Application'] }
     ]
 
     function getMetrics() {
@@ -559,6 +620,9 @@
           <tr class="text-gray-500">
             <th class="text-left py-2 px-4">Name</th>
             <th class="text-left py-2 px-4">Category</th>
+            <th class="text-left py-2 px-4">Scope</th>
+            <th class="text-left py-2 px-4">Method</th>
+            <th class="text-left py-2 px-4">Needs GT</th>
             <th class="text-left py-2 px-4">Enabled</th>
             <th class="text-left py-2 px-4">Description</th>
             <th class="text-left py-2 px-4">Actions</th>
@@ -569,6 +633,9 @@
             <tr class="hover:bg-slate-50">
               <td class="py-2 px-4 font-semibold">${m.name}</td>
               <td class="py-2 px-4">${m.category}</td>
+              <td class="py-2 px-4">${Array.isArray(m.scope) ? m.scope.join(', ') : (m.scope || '')}</td>
+              <td class="py-2 px-4">${m.method || ''}</td>
+              <td class="py-2 px-4">${m.requiresGroundTruth ? 'Yes' : 'No'}</td>
               <td class="py-2 px-4">${m.enabled ? 'Yes' : 'No'}</td>
               <td class="py-2 px-4">${m.description || ''}</td>
               <td class="py-2 px-4">
@@ -598,6 +665,12 @@
       document.getElementById('mfEnabled').checked = !!metric.enabled
       document.getElementById('mfThreshType').value = metric.thresholds?.type || 'none'
       document.getElementById('mfThreshVal').value = metric.thresholds?.value || ''
+      document.getElementById('mfMethod').value = metric.method || ''
+      document.getElementById('mfNeedsGT').checked = !!metric.requiresGroundTruth
+      const scope = Array.isArray(metric.scope) ? metric.scope : []
+      document.getElementById('mfScopeApp').checked = scope.includes('Application')
+      document.getElementById('mfScopeAgent').checked = scope.includes('Agent')
+      document.getElementById('mfScopeStep').checked = scope.includes('Step')
       form.dataset.editing = id || ''
       form.classList.remove('hidden')
     }
@@ -619,15 +692,18 @@
         const description = document.getElementById('mfDesc').value.trim()
         const enabled = document.getElementById('mfEnabled').checked
         const thresholds = { type: document.getElementById('mfThreshType').value, value: document.getElementById('mfThreshVal').value.trim() }
+        const method = document.getElementById('mfMethod').value.trim()
+        const requiresGroundTruth = document.getElementById('mfNeedsGT').checked
+        const scope = ['Application', 'Agent', 'Step'].filter(s => document.getElementById('mfScope' + (s === 'Application' ? 'App' : s)).checked)
         if (!name) return alert('Name is required')
         let items = getMetrics()
         const editing = document.getElementById('metricsForm').dataset.editing
         if (editing) {
-          items = items.map(m => m.id === editing ? { ...m, name, category, description, enabled, thresholds } : m)
+          items = items.map(m => m.id === editing ? { ...m, name, category, description, enabled, thresholds, method, requiresGroundTruth, scope } : m)
         } else {
           const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
           if (items.some(m => m.id === id)) return alert('A metric with this name already exists')
-          items.push({ id, name, category, description, enabled, thresholds })
+          items.push({ id, name, category, description, enabled, thresholds, method, requiresGroundTruth, scope })
         }
         saveMetrics(items)
         hideMetricForm()
