@@ -20,18 +20,72 @@
     .mono {
       font-family: 'JetBrains Mono', monospace;
     }
-    .dark-theme { --bg:#0f1115; --panel:#151922; --panelHover:#1b2030; --panelSoft:#11161d; --border:#242a38; --text:#e5e7eb; --muted:#9aa4b2 }
-    .dark-theme, .dark-theme body { background-color: var(--bg); color: var(--text) }
-    .dark-theme .bg-white, .dark-theme .bg-white\/80 { background-color: var(--panel) !important; color: var(--text) }
-    .dark-theme .border { border-color: var(--border) !important }
-    .dark-theme .text-gray-500 { color: var(--muted) !important }
-    .dark-theme .text-gray-600 { color: var(--muted) !important }
-    .dark-theme .text-gray-700 { color: #cbd5e1 !important }
-    .dark-theme .bg-slate-50 { background-color: var(--panelSoft) !important }
-    .dark-theme tbody tr:hover { background-color: var(--panelHover) }
-    .dark-theme thead { background-color: var(--panelSoft) }
-    .btn-dark { background-color: transparent; border: 1px solid var(--border); color: var(--text); border-radius: .75rem; padding: .5rem .75rem }
-    .badge { font-size: .75rem; padding: 0 .375rem; border: 1px solid var(--border); color: var(--muted); border-radius: 9999px }
+
+    .dark-theme {
+      --bg: #0f1115;
+      --panel: #151922;
+      --panelHover: #1b2030;
+      --panelSoft: #11161d;
+      --border: #242a38;
+      --text: #e5e7eb;
+      --muted: #9aa4b2
+    }
+
+    .dark-theme,
+    .dark-theme body {
+      background-color: var(--bg);
+      color: var(--text)
+    }
+
+    .dark-theme .bg-white,
+    .dark-theme .bg-white\/80 {
+      background-color: var(--panel) !important;
+      color: var(--text)
+    }
+
+    .dark-theme .border {
+      border-color: var(--border) !important
+    }
+
+    .dark-theme .text-gray-500 {
+      color: var(--muted) !important
+    }
+
+    .dark-theme .text-gray-600 {
+      color: var(--muted) !important
+    }
+
+    .dark-theme .text-gray-700 {
+      color: #cbd5e1 !important
+    }
+
+    .dark-theme .bg-slate-50 {
+      background-color: var(--panelSoft) !important
+    }
+
+    .dark-theme tbody tr:hover {
+      background-color: var(--panelHover)
+    }
+
+    .dark-theme thead {
+      background-color: var(--panelSoft)
+    }
+
+    .btn-dark {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: .75rem;
+      padding: .5rem .75rem
+    }
+
+    .badge {
+      font-size: .75rem;
+      padding: 0 .375rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 9999px
+    }
   </style>
 </head>
 
@@ -43,13 +97,16 @@
           <img src="./resources/hsbc_logo.png" alt="" class="h-5 w-auto object-contain" />
           <h1 class="text-xl font-semibold">Agent Hub</h1>
         </div>
-        
+
       </div>
       <nav class="p-2 space-y-6 flex-1 overflow-y-auto">
         <div>
           <a href="#/overview" data-section="overview"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.5Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.5Z" />
+            </svg>
             <span>Home</span>
           </a>
         </div>
@@ -57,13 +114,22 @@
           <div class="px-3 py-2 text-sm text-slate-200">Configuration</div>
           <a href="#/applications" data-section="applications"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
             <span>Applications</span>
             <span id="countApps" class="badge ml-auto">0</span>
           </a>
           <a href="#/metrics" data-section="metrics"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M4 19h16M6 17V7m6 10V5m6 12V9"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M4 19h16M6 17V7m6 10V5m6 12V9" />
+            </svg>
             <span>Metrics</span>
             <span id="countMetrics" class="badge ml-auto">0</span>
           </a>
@@ -72,14 +138,20 @@
           <div class="px-3 py-2 text-sm text-slate-200">Observability</div>
           <a href="#/tracing" data-section="tracing"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M5 12h4l3-6 3 12 3-6h3"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M5 12h4l3-6 3 12 3-6h3" />
+            </svg>
             <span>Tracing</span>
             <span id="countTracing" class="badge ml-auto">0</span>
           </a>
 
           <a href="#/users" data-section="users"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M7 7a5 5 0 1 0 10 0 5 5 0 0 0-10 0ZM3 21a9 9 0 0 1 18 0"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M7 7a5 5 0 1 0 10 0 5 5 0 0 0-10 0ZM3 21a9 9 0 0 1 18 0" />
+            </svg>
             <span>Users</span>
           </a>
         </div>
@@ -87,47 +159,71 @@
           <div class="px-3 py-2 text-sm text-slate-200">Evaluation</div>
           <a href="#/evaluation" data-section="evaluation"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M7 4h10a2 2 0 0 1 2 2v12l-7-3-7 3V6a2 2 0 0 1 2-2Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M7 4h10a2 2 0 0 1 2 2v12l-7-3-7 3V6a2 2 0 0 1 2-2Z" />
+            </svg>
             <span>Overview</span>
           </a>
 
           <a href="#/datasets" data-section="datasets"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6c0 1.7 4 3 9 3s9-1.3 9-3V5M3 11v6c0 1.7 4 3 9 3s9-1.3 9-3v-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <ellipse cx="12" cy="5" rx="9" ry="3" />
+              <path d="M3 5v6c0 1.7 4 3 9 3s9-1.3 9-3V5M3 11v6c0 1.7 4 3 9 3s9-1.3 9-3v-6" />
+            </svg>
             <span>Datasets</span>
             <span id="countDatasets" class="badge ml-auto">0</span>
           </a>
         </div>
-        
+
       </nav>
       <div class="mt-auto p-4 border-t border-slate-800 relative">
         <div class="space-y-2 mb-3">
           <a href="#/documentation" data-section="documentation"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-800 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M5 4h10a3 3 0 0 1 3 3v13l-5-2-5 2V7a3 3 0 0 1 3-3Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M5 4h10a3 3 0 0 1 3 3v13l-5-2-5 2V7a3 3 0 0 1 3-3Z" />
+            </svg>
             <span>Documentation</span>
           </a>
           <a href="#/whats-new" data-section="whats-new"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-800 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5Z" />
+            </svg>
             <span>What's New</span>
           </a>
           <a href="#/contact" data-section="contact"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-800 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M4 4h16v16H4V4Z"/><path d="M22 6L12 13 2 6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M4 4h16v16H4V4Z" />
+              <path d="M22 6L12 13 2 6" />
+            </svg>
             <span>Contact Us</span>
           </a>
           <a href="#/settings" data-section="settings"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-800 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4 1.65 1.65 0 0 0 3.49 14H3a2 2 0 1 1 0-4h.49A1.65 1.65 0 0 0 5 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 3.49V3a2 2 0 1 1 4 0v.49a1.65 1.65 0 0 0 1 .33 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1h.09a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 5 15.4 1.65 1.65 0 0 0 3.49 14H3a2 2 0 1 1 0-4h.49A1.65 1.65 0 0 0 5 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 3.49V3a2 2 0 1 1 4 0v.49a1.65 1.65 0 0 0 1 .33 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1h.09a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+            </svg>
             <span>Settings</span>
           </a>
         </div>
         <button id="accountButton" class="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-slate-700">
-          <img src="https://avatars.githubusercontent.com/u/0?v=4" alt="avatar" class="w-8 h-8 rounded-full border border-slate-300" />
+          <img src="https://avatars.githubusercontent.com/u/0?v=4" alt="avatar"
+            class="w-8 h-8 rounded-full border border-slate-300" />
           <span class="text-sm">qucy@example.com</span>
         </button>
-        <div id="accountMenu" class="hidden absolute left-4 bottom-16 bg-black border border-slate-700 rounded shadow-lg w-48">
+        <div id="accountMenu"
+          class="hidden absolute left-4 bottom-16 bg-black border border-slate-700 rounded shadow-lg w-48">
           <button id="logoutBtn" class="block w-full text-left px-3 py-2 hover:bg-slate-700 text-sm">Logout</button>
         </div>
       </div>
@@ -137,310 +233,313 @@
       <div class="p-6 space-y-4">
         <div id="breadcrumb" class="px-4 py-2 bg-white rounded border text-sm hidden"></div>
         <div class="space-y-6">
-        <section id="overview" data-page class="space-y-6">
-          <div class="bg-white/80 backdrop-blur border">
-            <div class="px-6 py-4 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-white">P</div>
-                <div class="text-2xl font-semibold">Personal</div>
-                <span class="ml-2 px-2 py-0.5 text-xs rounded border">ID</span>
+          <section id="overview" data-page class="space-y-6">
+            <div class="bg-white/80 backdrop-blur border">
+              <div class="px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-white">P</div>
+                  <div class="text-2xl font-semibold">Personal</div>
+                  <span class="ml-2 px-2 py-0.5 text-xs rounded border">ID</span>
+                </div>
+                <div class="text-xs text-gray-500">Beta user</div>
               </div>
-              <div class="text-xs text-gray-500">Beta user</div>
+              <div class="px-6 pb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <button class="btn-dark flex items-center gap-2"><span>👥</span><span>Invite team</span></button>
+                <button class="btn-dark flex items-center gap-2"><span>🎛️</span><span>Studio quickstart</span></button>
+                <button class="btn-dark flex items-center gap-2"><span>🔗</span><span>Tracing quickstart</span></button>
+                <button class="btn-dark flex items-center gap-2"><span>📊</span><span>Evaluation
+                    quickstart</span></button>
+              </div>
             </div>
-            <div class="px-6 pb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              <button class="btn-dark flex items-center gap-2"><span>👥</span><span>Invite team</span></button>
-              <button class="btn-dark flex items-center gap-2"><span>🎛️</span><span>Studio quickstart</span></button>
-              <button class="btn-dark flex items-center gap-2"><span>🔗</span><span>Tracing quickstart</span></button>
-              <button class="btn-dark flex items-center gap-2"><span>📊</span><span>Evaluation quickstart</span></button>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="p-4 bg-white rounded border">
+                <div class="text-xs text-gray-500">Total Active Applications</div>
+                <div class="text-3xl font-semibold">15</div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-xs text-gray-500">Average Success Rate</div>
+                <div class="text-3xl font-semibold">69.10%</div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-xs text-gray-500">Total Cost</div>
+                <div class="text-3xl font-semibold mono">$198.5647</div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-xs text-gray-500">Applications Pending Review</div>
+                <div class="text-3xl font-semibold">3</div>
+              </div>
             </div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="p-4 bg-white rounded border">
-              <div class="text-xs text-gray-500">Total Active Applications</div>
-              <div class="text-3xl font-semibold">15</div>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              <div class="p-4 bg-white rounded border">
+                <div class="text-sm font-semibold mb-2">Task Quality</div>
+                <div id="chartQuality" class="w-full h-64"></div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-sm font-semibold mb-2">Operational Efficiency</div>
+                <div id="chartEfficiency" class="w-full h-64"></div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-sm font-semibold mb-2">Safety & Adherence</div>
+                <div id="chartSafety" class="w-full h-64"></div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-sm font-semibold mb-2">Reasoning & Explainability</div>
+                <div id="chartReasoning" class="w-full h-64"></div>
+              </div>
+              <div class="p-4 bg-white rounded border xl:col-span-2">
+                <div class="text-sm font-semibold mb-2">Consistency & Reliability</div>
+                <div id="chartConsistency" class="w-full h-64"></div>
+              </div>
             </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-xs text-gray-500">Average Success Rate</div>
-              <div class="text-3xl font-semibold">69.10%</div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-xs text-gray-500">Total Cost</div>
-              <div class="text-3xl font-semibold mono">$198.5647</div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-xs text-gray-500">Applications Pending Review</div>
-              <div class="text-3xl font-semibold">3</div>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <div class="p-4 bg-white rounded border">
-              <div class="text-sm font-semibold mb-2">Task Quality</div>
-              <div id="chartQuality" class="w-full h-64"></div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-sm font-semibold mb-2">Operational Efficiency</div>
-              <div id="chartEfficiency" class="w-full h-64"></div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-sm font-semibold mb-2">Safety & Adherence</div>
-              <div id="chartSafety" class="w-full h-64"></div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-sm font-semibold mb-2">Reasoning & Explainability</div>
-              <div id="chartReasoning" class="w-full h-64"></div>
-            </div>
-            <div class="p-4 bg-white rounded border xl:col-span-2">
-              <div class="text-sm font-semibold mb-2">Consistency & Reliability</div>
-              <div id="chartConsistency" class="w-full h-64"></div>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        <section id="applications" data-page class="hidden space-y-4">
-          <div class="flex items-center">
-            <h2 class="text-2xl font-semibold">Applications</h2>
-            <div class="ml-auto">
+          <section id="applications" data-page class="hidden space-y-4">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-semibold">Applications</h2>
+              <div class="ml-auto">
+                <div class="inline-flex border rounded overflow-hidden">
+                  <button id="appsViewCards" class="px-3 py-1 text-sm bg-slate-800 text-white">Cards</button>
+                  <button id="appsViewList" class="px-3 py-1 text-sm">List</button>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="text-sm text-gray-600">Date Range</div>
               <div class="inline-flex border rounded overflow-hidden">
-                <button id="appsViewCards" class="px-3 py-1 text-sm bg-slate-800 text-white">Cards</button>
-                <button id="appsViewList" class="px-3 py-1 text-sm">List</button>
+                <button id="appsRange7" class="px-3 py-1 text-sm">7d</button>
+                <button id="appsRange14" class="px-3 py-1 text-sm">14d</button>
+                <button id="appsRange30" class="px-3 py-1 text-sm bg-slate-800 text-white">30d</button>
               </div>
             </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="text-sm text-gray-600">Date Range</div>
-            <div class="inline-flex border rounded overflow-hidden">
-              <button id="appsRange7" class="px-3 py-1 text-sm">7d</button>
-              <button id="appsRange14" class="px-3 py-1 text-sm">14d</button>
-              <button id="appsRange30" class="px-3 py-1 text-sm bg-slate-800 text-white">30d</button>
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <input id="appsSearch" placeholder="Search by name" class="px-3 py-2 border rounded text-sm" />
-            <select id="appsStatus" class="px-3 py-2 border rounded text-sm">
-              <option value="all">All Status</option>
-              <option value="Active">Active</option>
-              <option value="Paused">Paused</option>
-            </select>
-            <select id="appsProject" class="px-3 py-2 border rounded text-sm">
-              <option value="all">All Projects</option>
-            </select>
-            <input id="appsMinPass" type="number" min="0" max="100" step="1" placeholder="Min Success %"
-              class="px-3 py-2 border rounded text-sm w-40" />
-            <button id="appsReset" class="px-3 py-2 border rounded text-sm">Reset</button>
-          </div>
-          <div id="applicationsContent" class="space-y-4"></div>
-        </section>
-
-        <section id="agents" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Agents</h2>
-          <p class="text-gray-600">Configure and monitor agents.</p>
-          <div class="p-4 bg-white rounded border">No agents configured.</div>
-        </section>
-
-        <section id="settings" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Settings</h2>
-          <p class="text-gray-600">Global configuration for the portal.</p>
-          <div class="p-4 bg-white rounded border">Coming soon.</div>
-        </section>
-
-        <section id="metrics" data-page class="hidden space-y-4">
-          <div class="flex items-center">
-            <h2 class="text-2xl font-semibold">Metrics</h2>
-            <div class="ml-auto flex gap-2">
-              <select id="metricsCategory" class="px-3 py-2 border rounded text-sm">
-                <option value="all">All Categories</option>
-                <option value="Task Quality">Task Quality</option>
-                <option value="Efficiency">Efficiency</option>
-                <option value="Safety & Adherence">Safety & Adherence</option>
-                <option value="Reasoning & Explainability">Reasoning & Explainability</option>
-                <option value="Consistency & Reliability">Consistency & Reliability</option>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="appsSearch" placeholder="Search by name" class="px-3 py-2 border rounded text-sm" />
+              <select id="appsStatus" class="px-3 py-2 border rounded text-sm">
+                <option value="all">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Paused">Paused</option>
               </select>
-              <input id="metricsSearch" placeholder="Search metrics" class="px-3 py-2 border rounded text-sm" />
+              <select id="appsProject" class="px-3 py-2 border rounded text-sm">
+                <option value="all">All Projects</option>
+              </select>
+              <input id="appsMinPass" type="number" min="0" max="100" step="1" placeholder="Min Success %"
+                class="px-3 py-2 border rounded text-sm w-40" />
+              <button id="appsReset" class="px-3 py-2 border rounded text-sm">Reset</button>
             </div>
-          </div>
+            <div id="applicationsContent" class="space-y-4"></div>
+          </section>
 
-          <div id="metricsContent" class="space-y-4"></div>
-          <div id="metricDetail" class="hidden p-4 bg-white rounded border">
-            <div class="text-lg font-semibold mb-2" id="mdName"></div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <div class="text-gray-500">Category</div>
-                <div id="mdCategory" class="font-semibold"></div>
-              </div>
-              <div>
-                <div class="text-gray-500">Method</div>
-                <div id="mdMethod" class="font-semibold"></div>
-              </div>
-              <div>
-                <div class="text-gray-500">Requires Ground Truth</div>
-                <div id="mdNeedsGT" class="font-semibold"></div>
-              </div>
-              <div>
-                <div class="text-gray-500">Scope</div>
-                <div id="mdScope" class="flex gap-2"></div>
-              </div>
-            </div>
-            <div class="mt-3">
-              <div class="text-gray-500 text-sm">Description</div>
-              <div id="mdDesc" class="text-sm"></div>
-            </div>
-          </div>
-        </section>
+          <section id="agents" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">Agents</h2>
+            <p class="text-gray-600">Configure and monitor agents.</p>
+            <div class="p-4 bg-white rounded border">No agents configured.</div>
+          </section>
 
-        <section id="metric-detail" data-page class="hidden space-y-4">
-          <div class="flex items-center">
-            <h2 class="text-2xl font-semibold">Metric Detail</h2>
-          </div>
-          <div id="metricDetailContent" class="space-y-4"></div>
-        </section>
+          <section id="settings" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">Settings</h2>
+            <p class="text-gray-600">Global configuration for the portal.</p>
+            <div class="p-4 bg-white rounded border">Coming soon.</div>
+          </section>
 
-        <section id="tracing" data-page class="hidden space-y-4">
-          <div class="flex items-center">
-            <h2 class="text-2xl font-semibold">Tracing</h2>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <input id="logSearch" placeholder="Search message" class="px-3 py-2 border rounded text-sm" />
-            <select id="logLevel" class="px-3 py-2 border rounded text-sm">
-              <option value="all">All Levels</option>
-              <option value="info">Info</option>
-              <option value="warn">Warn</option>
-              <option value="error">Error</option>
-            </select>
-            <select id="logApp" class="px-3 py-2 border rounded text-sm">
-              <option value="all">All Applications</option>
-            </select>
-            <input id="logFrom" type="datetime-local" class="px-3 py-2 border rounded text-sm" />
-            <input id="logTo" type="datetime-local" class="px-3 py-2 border rounded text-sm" />
-            <button id="logReset" class="px-3 py-2 border rounded text-sm">Reset</button>
-          </div>
-          <div id="tracingContent" class="space-y-4"></div>
-        </section>
-
-        <section id="sessions" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Sessions</h2>
-          <p class="text-gray-600">Track user and agent sessions.</p>
-          <div class="p-4 bg-white rounded border">No sessions.</div>
-        </section>
-
-        <section id="users" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Users</h2>
-          <p class="text-gray-600">Manage users and permissions.</p>
-          <div class="p-4 bg-white rounded border">No users.</div>
-        </section>
-
-        <section id="documentation" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Documentation</h2>
-          <p class="text-gray-600">Guides and references.</p>
-          <div class="p-4 bg-white rounded border">Coming soon.</div>
-        </section>
-
-        <section id="whats-new" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">What's New</h2>
-          <p class="text-gray-600">Latest updates and release notes.</p>
-          <div class="p-4 bg-white rounded border">No updates.</div>
-        </section>
-
-        <section id="contact" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Contact Us</h2>
-          <p class="text-gray-600">Reach out to the team.</p>
-          <div class="p-4 bg-white rounded border">
-            <div class="space-y-2">
-              <input id="contactEmail" type="email" placeholder="Your email" class="w-full px-3 py-2 border rounded text-sm" />
-              <textarea id="contactMsg" placeholder="Message" class="w-full px-3 py-2 border rounded text-sm h-32"></textarea>
-              <button id="contactSend" class="px-3 py-2 border rounded text-sm">Send</button>
-            </div>
-          </div>
-        </section>
-
-        <section id="evaluation" data-page class="hidden space-y-6">
-          <div class="flex items-center">
-            <h2 class="text-2xl font-semibold">Evaluation Overview</h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="p-4 bg-white rounded border">
-              <div class="text-xs text-gray-500">Overall Pass Rate</div>
-              <div class="text-3xl font-semibold">71.2%</div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-xs text-gray-500">Dataset Coverage</div>
-              <div class="text-3xl font-semibold">68%</div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-xs text-gray-500">Runs Evaluated</div>
-              <div class="text-3xl font-semibold">1,284</div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-xs text-gray-500">Cost (30d)</div>
-              <div class="text-3xl font-semibold mono">$412.86</div>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <div class="p-4 bg-white rounded border">
-              <div class="text-sm font-semibold mb-2">Task Quality</div>
-              <div id="evalQuality" class="w-full h-64"></div>
-            </div>
-            <div class="p-4 bg-white rounded border">
-              <div class="text-sm font-semibold mb-2">Safety & Adherence</div>
-              <div id="evalSafety" class="w-full h-64"></div>
-            </div>
-            <div class="p-4 bg-white rounded border xl:col-span-2">
-              <div class="text-sm font-semibold mb-2">Consistency & Reliability</div>
-              <div id="evalConsistency" class="w-full h-64"></div>
-            </div>
-          </div>
-        </section>
-
-        <section id="llm-judge" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">LLM-as-a-Judge</h2>
-          <p class="text-gray-600">Automated judgment using LLMs for evaluation tasks.</p>
-          <div class="p-4 bg-white rounded border">No judgments yet.</div>
-        </section>
-
-        <section id="human-annotation" data-page class="hidden space-y-4">
-          <h2 class="text-2xl font-semibold">Human Annotation</h2>
-          <p class="text-gray-600">Collect human labels for evaluation datasets.</p>
-          <div class="p-4 bg-white rounded border">No annotations.</div>
-        </section>
-
-        <section id="datasets" data-page class="hidden space-y-4">
-          <div class="flex items-center">
-            <h2 class="text-2xl font-semibold">Datasets</h2>
-            <div class="ml-auto">
-              <div class="inline-flex border rounded overflow-hidden">
-                <button id="dsViewCards" class="px-3 py-1 text-sm bg-slate-800 text-white">Cards</button>
-                <button id="dsViewList" class="px-3 py-1 text-sm">List</button>
+          <section id="metrics" data-page class="hidden space-y-4">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-semibold">Metrics</h2>
+              <div class="ml-auto flex gap-2">
+                <select id="metricsCategory" class="px-3 py-2 border rounded text-sm">
+                  <option value="all">All Categories</option>
+                  <option value="Task Quality">Task Quality</option>
+                  <option value="Efficiency">Efficiency</option>
+                  <option value="Safety & Adherence">Safety & Adherence</option>
+                  <option value="Reasoning & Explainability">Reasoning & Explainability</option>
+                  <option value="Consistency & Reliability">Consistency & Reliability</option>
+                </select>
+                <input id="metricsSearch" placeholder="Search metrics" class="px-3 py-2 border rounded text-sm" />
               </div>
             </div>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <input id="dsSearch" placeholder="Search by name" class="px-3 py-2 border rounded text-sm" />
-            <select id="dsType" class="px-3 py-2 border rounded text-sm">
-              <option value="all">All Types</option>
-              <option value="Q&A">Q&A</option>
-              <option value="Classification">Classification</option>
-              <option value="RAG">RAG</option>
-              <option value="Summarization">Summarization</option>
-            </select>
-            <select id="dsTag" class="px-3 py-2 border rounded text-sm">
-              <option value="all">All Tags</option>
-            </select>
-            <button id="dsReset" class="px-3 py-2 border rounded text-sm">Reset</button>
-            <button id="dsNew" class="px-3 py-2 border rounded text-sm">New Dataset</button>
-          </div>
-          <div id="datasetsContent" class="space-y-4"></div>
-        </section>
-        <section id="app-detail" data-page class="hidden space-y-4">
-          <div class="flex items-center">
-            <h2 class="text-2xl font-semibold">Application Detail</h2>
-          </div>
-          <div id="appDetailContent" class="space-y-4"></div>
-        </section>
-        <section id="app-config" data-page class="hidden space-y-4">
-          <div class="flex items-center">
-            <h2 class="text-2xl font-semibold">Application Configuration</h2>
-          </div>
-          <div id="appConfigContent" class="space-y-4"></div>
-        </section>
+
+            <div id="metricsContent" class="space-y-4"></div>
+            <div id="metricDetail" class="hidden p-4 bg-white rounded border">
+              <div class="text-lg font-semibold mb-2" id="mdName"></div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <div class="text-gray-500">Category</div>
+                  <div id="mdCategory" class="font-semibold"></div>
+                </div>
+                <div>
+                  <div class="text-gray-500">Method</div>
+                  <div id="mdMethod" class="font-semibold"></div>
+                </div>
+                <div>
+                  <div class="text-gray-500">Requires Ground Truth</div>
+                  <div id="mdNeedsGT" class="font-semibold"></div>
+                </div>
+                <div>
+                  <div class="text-gray-500">Scope</div>
+                  <div id="mdScope" class="flex gap-2"></div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div class="text-gray-500 text-sm">Description</div>
+                <div id="mdDesc" class="text-sm"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="metric-detail" data-page class="hidden space-y-4">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-semibold">Metric Detail</h2>
+            </div>
+            <div id="metricDetailContent" class="space-y-4"></div>
+          </section>
+
+          <section id="tracing" data-page class="hidden space-y-4">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-semibold">Tracing</h2>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="logSearch" placeholder="Search message" class="px-3 py-2 border rounded text-sm" />
+              <select id="logLevel" class="px-3 py-2 border rounded text-sm">
+                <option value="all">All Levels</option>
+                <option value="info">Info</option>
+                <option value="warn">Warn</option>
+                <option value="error">Error</option>
+              </select>
+              <select id="logApp" class="px-3 py-2 border rounded text-sm">
+                <option value="all">All Applications</option>
+              </select>
+              <input id="logFrom" type="datetime-local" class="px-3 py-2 border rounded text-sm" />
+              <input id="logTo" type="datetime-local" class="px-3 py-2 border rounded text-sm" />
+              <button id="logReset" class="px-3 py-2 border rounded text-sm">Reset</button>
+            </div>
+            <div id="tracingContent" class="space-y-4"></div>
+          </section>
+
+          <section id="sessions" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">Sessions</h2>
+            <p class="text-gray-600">Track user and agent sessions.</p>
+            <div class="p-4 bg-white rounded border">No sessions.</div>
+          </section>
+
+          <section id="users" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">Users</h2>
+            <p class="text-gray-600">Manage users and permissions.</p>
+            <div class="p-4 bg-white rounded border">No users.</div>
+          </section>
+
+          <section id="documentation" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">Documentation</h2>
+            <p class="text-gray-600">Guides and references.</p>
+            <div class="p-4 bg-white rounded border">Coming soon.</div>
+          </section>
+
+          <section id="whats-new" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">What's New</h2>
+            <p class="text-gray-600">Latest updates and release notes.</p>
+            <div class="p-4 bg-white rounded border">No updates.</div>
+          </section>
+
+          <section id="contact" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">Contact Us</h2>
+            <p class="text-gray-600">Reach out to the team.</p>
+            <div class="p-4 bg-white rounded border">
+              <div class="space-y-2">
+                <input id="contactEmail" type="email" placeholder="Your email"
+                  class="w-full px-3 py-2 border rounded text-sm" />
+                <textarea id="contactMsg" placeholder="Message"
+                  class="w-full px-3 py-2 border rounded text-sm h-32"></textarea>
+                <button id="contactSend" class="px-3 py-2 border rounded text-sm">Send</button>
+              </div>
+            </div>
+          </section>
+
+          <section id="evaluation" data-page class="hidden space-y-6">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-semibold">Evaluation Overview</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="p-4 bg-white rounded border">
+                <div class="text-xs text-gray-500">Overall Pass Rate</div>
+                <div class="text-3xl font-semibold">71.2%</div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-xs text-gray-500">Dataset Coverage</div>
+                <div class="text-3xl font-semibold">68%</div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-xs text-gray-500">Runs Evaluated</div>
+                <div class="text-3xl font-semibold">1,284</div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-xs text-gray-500">Cost (30d)</div>
+                <div class="text-3xl font-semibold mono">$412.86</div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              <div class="p-4 bg-white rounded border">
+                <div class="text-sm font-semibold mb-2">Task Quality</div>
+                <div id="evalQuality" class="w-full h-64"></div>
+              </div>
+              <div class="p-4 bg-white rounded border">
+                <div class="text-sm font-semibold mb-2">Safety & Adherence</div>
+                <div id="evalSafety" class="w-full h-64"></div>
+              </div>
+              <div class="p-4 bg-white rounded border xl:col-span-2">
+                <div class="text-sm font-semibold mb-2">Consistency & Reliability</div>
+                <div id="evalConsistency" class="w-full h-64"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="llm-judge" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">LLM-as-a-Judge</h2>
+            <p class="text-gray-600">Automated judgment using LLMs for evaluation tasks.</p>
+            <div class="p-4 bg-white rounded border">No judgments yet.</div>
+          </section>
+
+          <section id="human-annotation" data-page class="hidden space-y-4">
+            <h2 class="text-2xl font-semibold">Human Annotation</h2>
+            <p class="text-gray-600">Collect human labels for evaluation datasets.</p>
+            <div class="p-4 bg-white rounded border">No annotations.</div>
+          </section>
+
+          <section id="datasets" data-page class="hidden space-y-4">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-semibold">Datasets</h2>
+              <div class="ml-auto">
+                <div class="inline-flex border rounded overflow-hidden">
+                  <button id="dsViewCards" class="px-3 py-1 text-sm bg-slate-800 text-white">Cards</button>
+                  <button id="dsViewList" class="px-3 py-1 text-sm">List</button>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="dsSearch" placeholder="Search by name" class="px-3 py-2 border rounded text-sm" />
+              <select id="dsType" class="px-3 py-2 border rounded text-sm">
+                <option value="all">All Types</option>
+                <option value="Q&A">Q&A</option>
+                <option value="Classification">Classification</option>
+                <option value="RAG">RAG</option>
+                <option value="Summarization">Summarization</option>
+              </select>
+              <select id="dsTag" class="px-3 py-2 border rounded text-sm">
+                <option value="all">All Tags</option>
+              </select>
+              <button id="dsReset" class="px-3 py-2 border rounded text-sm">Reset</button>
+              <button id="dsNew" class="px-3 py-2 border rounded text-sm">New Dataset</button>
+            </div>
+            <div id="datasetsContent" class="space-y-4"></div>
+          </section>
+          <section id="app-detail" data-page class="hidden space-y-4">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-semibold">Application Detail</h2>
+            </div>
+            <div id="appDetailContent" class="space-y-4"></div>
+          </section>
+          <section id="app-config" data-page class="hidden space-y-4">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-semibold">Application Configuration</h2>
+            </div>
+            <div id="appConfigContent" class="space-y-4"></div>
+          </section>
         </div>
       </div>
     </main>
@@ -450,21 +549,21 @@
     const links = Array.from(document.querySelectorAll('[data-section]'))
     const pages = Array.from(document.querySelectorAll('[data-page]'))
     const defaultMetrics = [
-      { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application','Agent','Step'] },
-      { id: 'precision', name: 'Precision', category: 'Task Quality', description: 'Correct positive predictions', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application','Agent'] },
-      { id: 'recall', name: 'Recall', category: 'Task Quality', description: 'Recovered relevant items', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application','Agent'] },
-      { id: 'f1', name: 'F1 Score', category: 'Task Quality', description: 'Harmonic mean of precision and recall', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application','Agent'] },
+      { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent', 'Step'] },
+      { id: 'precision', name: 'Precision', category: 'Task Quality', description: 'Correct positive predictions', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
+      { id: 'recall', name: 'Recall', category: 'Task Quality', description: 'Recovered relevant items', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
+      { id: 'f1', name: 'F1 Score', category: 'Task Quality', description: 'Harmonic mean of precision and recall', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
       { id: 'faithfulness', name: 'Faithfulness', category: 'Task Quality', description: 'Groundedness of outputs to sources', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge', scope: ['Application'] },
-      { id: 'formatting', name: 'Formatting Adherence', category: 'Task Quality', description: 'Schema/JSON correctness', enabled: true, requiresGroundTruth: false, method: 'Schema Validator', scope: ['Application','Agent'] },
-      { id: 'tool-accuracy', name: 'Tool Call Accuracy', category: 'Task Quality', description: 'Correct tool invocations', enabled: true, requiresGroundTruth: true, method: 'Execution Trace', scope: ['Agent','Step'] },
-      { id: 'pass-rate', name: 'Pass Rate', category: 'Task Quality', description: 'Percentage of runs passing checks', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application','Agent'] },
+      { id: 'formatting', name: 'Formatting Adherence', category: 'Task Quality', description: 'Schema/JSON correctness', enabled: true, requiresGroundTruth: false, method: 'Schema Validator', scope: ['Application', 'Agent'] },
+      { id: 'tool-accuracy', name: 'Tool Call Accuracy', category: 'Task Quality', description: 'Correct tool invocations', enabled: true, requiresGroundTruth: true, method: 'Execution Trace', scope: ['Agent', 'Step'] },
+      { id: 'pass-rate', name: 'Pass Rate', category: 'Task Quality', description: 'Percentage of runs passing checks', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
 
-      { id: 'latency', name: 'Latency (ms)', category: 'Efficiency', description: 'End-to-end response time', enabled: true, requiresGroundTruth: false, method: 'Instrumentation', scope: ['Application','Agent','Step'] },
-      { id: 'steps', name: 'Steps', category: 'Efficiency', description: 'Agent steps per task', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent','Step'] },
-      { id: 'input-tokens', name: 'Input Tokens', category: 'Efficiency', description: 'Prompt tokens used', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application','Agent'] },
-      { id: 'output-tokens', name: 'Output Tokens', category: 'Efficiency', description: 'Generated tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application','Agent'] },
-      { id: 'total-tokens', name: 'Total Tokens', category: 'Efficiency', description: 'Combined input/output tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application','Agent'] },
-      { id: 'cost', name: 'Cost ($)', category: 'Efficiency', description: 'Estimated dollar cost', enabled: true, requiresGroundTruth: false, method: 'Pricing Model', scope: ['Application','Agent'] },
+      { id: 'latency', name: 'Latency (ms)', category: 'Efficiency', description: 'End-to-end response time', enabled: true, requiresGroundTruth: false, method: 'Instrumentation', scope: ['Application', 'Agent', 'Step'] },
+      { id: 'steps', name: 'Steps', category: 'Efficiency', description: 'Agent steps per task', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
+      { id: 'input-tokens', name: 'Input Tokens', category: 'Efficiency', description: 'Prompt tokens used', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
+      { id: 'output-tokens', name: 'Output Tokens', category: 'Efficiency', description: 'Generated tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
+      { id: 'total-tokens', name: 'Total Tokens', category: 'Efficiency', description: 'Combined input/output tokens', enabled: true, requiresGroundTruth: false, method: 'Model Tokenizer', scope: ['Application', 'Agent'] },
+      { id: 'cost', name: 'Cost ($)', category: 'Efficiency', description: 'Estimated dollar cost', enabled: true, requiresGroundTruth: false, method: 'Pricing Model', scope: ['Application', 'Agent'] },
 
       { id: 'policy', name: 'Policy Adherence (%)', category: 'Safety & Adherence', description: 'Compliance with policy', enabled: true, requiresGroundTruth: true, method: 'LLM-as-a-Judge / Classifier', scope: ['Application'] },
       { id: 'toxicity', name: 'Toxicity Score', category: 'Safety & Adherence', description: 'Toxic content score', enabled: true, requiresGroundTruth: false, method: 'Classifier', scope: ['Application'] },
@@ -474,12 +573,12 @@
 
       { id: 'explain-depth', name: 'Explanation Depth', category: 'Reasoning & Explainability', description: 'Depth of explanations', enabled: true, requiresGroundTruth: false, method: 'Heuristic / Judge', scope: ['Application'] },
       { id: 'self-explain', name: 'Self-Explanation Coverage (%)', category: 'Reasoning & Explainability', description: 'Outputs with explanations', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application'] },
-      { id: 'reason-steps', name: 'Reasoning Steps', category: 'Reasoning & Explainability', description: 'Number of steps', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent','Step'] },
+      { id: 'reason-steps', name: 'Reasoning Steps', category: 'Reasoning & Explainability', description: 'Number of steps', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
       { id: 'justification', name: 'Justification Score', category: 'Reasoning & Explainability', description: 'Quality of justifications', enabled: false, requiresGroundTruth: true, method: 'LLM-as-a-Judge', scope: ['Application'] },
 
-      { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true, requiresGroundTruth: false, method: 'Repeated Trials', scope: ['Application','Agent'] },
-      { id: 'error-rate', name: 'Error Rate (%)', category: 'Consistency & Reliability', description: 'Failures per runs', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application','Agent'] },
-      { id: 'retry', name: 'Retry Count', category: 'Consistency & Reliability', description: 'Retries needed', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent','Step'] },
+      { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true, requiresGroundTruth: false, method: 'Repeated Trials', scope: ['Application', 'Agent'] },
+      { id: 'error-rate', name: 'Error Rate (%)', category: 'Consistency & Reliability', description: 'Failures per runs', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
+      { id: 'retry', name: 'Retry Count', category: 'Consistency & Reliability', description: 'Retries needed', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
       { id: 'stability', name: 'Output Stability (variance)', category: 'Consistency & Reliability', description: 'Variance of outputs', enabled: true, requiresGroundTruth: false, method: 'Statistical', scope: ['Application'] }
     ]
 
@@ -537,11 +636,11 @@
             <div><div class="text-xs text-gray-500">Status</div><div class="font-semibold">${app.status}</div></div>
             <div><div class="text-xs text-gray-500">Last Run At</div><div class="font-semibold">${formatTs(app.lastRunAt)}</div></div>
             <div><div class="text-xs text-gray-500">Version</div><div class="font-semibold mono">${app.version || ''}</div></div>
-            <div><div class="text-xs text-gray-500">Type</div><div class="font-semibold"><span class="px-2 py-0.5 rounded text-xs ${app.type==='pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${app.type==='pro-code' ? 'Pro Code' : 'Low Code'}</span></div></div>
+            <div><div class="text-xs text-gray-500">Type</div><div class="font-semibold"><span class="px-2 py-0.5 rounded text-xs ${app.type === 'pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${app.type === 'pro-code' ? 'Pro Code' : 'Low Code'}</span></div></div>
             <div><div class="text-xs text-gray-500">EIM ID</div><div class="font-semibold mono">${app.eimId || ''}</div></div>
             <div><div class="text-xs text-gray-500">Use Case ID</div><div class="font-semibold mono">${app.useCaseId || ''}</div></div>
-            <div><div class="text-xs text-gray-500">Success Rate</div><div class="font-semibold">${(app.passRate*100).toFixed(2)}%</div></div>
-            <div><div class="text-xs text-gray-500">Safety Score</div><div class="font-semibold">${((app.safetyScore||0)*100).toFixed(2)}%</div></div>
+            <div><div class="text-xs text-gray-500">Success Rate</div><div class="font-semibold">${(app.passRate * 100).toFixed(2)}%</div></div>
+            <div><div class="text-xs text-gray-500">Safety Score</div><div class="font-semibold">${((app.safetyScore || 0) * 100).toFixed(2)}%</div></div>
             <div><div class="text-xs text-gray-500">Total Runs</div><div class="font-semibold">${computeRuns(app)}</div></div>
             <div><div class="text-xs text-gray-500">Offline Eval Runs</div><div class="font-semibold">${computeOfflineRuns(app)}</div></div>
           </div>
@@ -593,14 +692,28 @@
       activate('dash')
     }
 
+    function genMetricRationale(m) {
+      const scope = Array.isArray(m.scope) ? m.scope.join(', ') : 'selected scopes'
+      const desc = (m.description || 'this capability').toLowerCase()
+      return `Evaluates ${m.name} within ${m.category} to monitor ${desc}, prevent regressions, and guide improvements across ${scope} for reliable outcomes.`
+    }
+    function genMetricMeasurement(m) {
+      const scope = Array.isArray(m.scope) ? m.scope.join(', ') : 'selected scopes'
+      const gt = m.requiresGroundTruth ? 'using ground truth labels' : 'without ground truth'
+      const method = m.method ? `via ${m.method}` : 'via heuristic evaluation'
+      const thr = m.thresholds && m.thresholds.type && m.thresholds.type !== 'none' ? `with ${m.thresholds.type} threshold ${m.thresholds.value}` : 'with no fixed threshold'
+      return `Measured ${method}, ${gt}, aggregated at ${scope}, ${thr}, and tracked over time to detect performance drift and quality issues.`
+    }
     function ensureMetricDetail(id) {
       const items = getMetrics()
       const m = items.find(x => x.id === id)
       const wrap = document.getElementById('metricDetailContent')
       if (!wrap) return
       if (!m) { wrap.innerHTML = '<div class="p-4 bg-white rounded border">Metric not found.</div>'; return }
-      const scopeChips = (Array.isArray(m.scope) ? m.scope : []).map(s => `<span class="px-2 py-1 rounded bg-slate-100 text-xs">${s}</span>`).join(' ')
+      const scopeColors = { 'Application':'bg-blue-100 text-blue-700', 'Agent':'bg-violet-100 text-violet-700', 'Step':'bg-amber-100 text-amber-700' }
+      const scopeChips = (Array.isArray(m.scope) ? m.scope : []).map(s => `<span class="px-2 py-1 rounded text-xs ${scopeColors[s] || 'bg-slate-200 text-slate-800'}">${s}</span>`).join(' ')
       const thresholds = m.thresholds || { type: 'none', value: '' }
+      const enableCls = m.enabled ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
       wrap.innerHTML = `
         <div class="p-4 bg-white rounded border">
           <div class="flex items-center justify-between">
@@ -608,7 +721,7 @@
               <div class="text-2xl font-semibold">${m.name}</div>
               <div class="text-sm text-gray-600">${m.description || ''}</div>
             </div>
-            <div class="text-sm"><span class="px-2 py-1 rounded bg-slate-100">${m.enabled ? 'Enabled' : 'Disabled'}</span></div>
+            <div class="text-sm"><span class="px-2 py-1 rounded ${enableCls}">${m.enabled ? 'Enabled' : 'Disabled'}</span></div>
           </div>
         </div>
         <div class="p-4 bg-white rounded border">
@@ -631,11 +744,23 @@
             </div>
             <div>
               <div class="text-gray-500">Thresholds</div>
-              <div class="font-semibold">${thresholds.type || 'none'} ${thresholds.value ? ('- '+thresholds.value) : ''}</div>
+              <div class="font-semibold">${thresholds.type || 'none'} ${thresholds.value ? ('- ' + thresholds.value) : ''}</div>
             </div>
             <div>
               <div class="text-gray-500">ID</div>
               <div class="font-semibold mono">${m.id}</div>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 bg-white rounded border">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div class="text-sm font-semibold mb-1">Rationale</div>
+              <div class="text-sm">${genMetricRationale(m)}</div>
+            </div>
+            <div>
+              <div class="text-sm font-semibold mb-1">Measurement</div>
+              <div class="text-sm">${genMetricMeasurement(m)}</div>
             </div>
           </div>
         </div>
@@ -655,14 +780,14 @@
               <div class="space-y-2 text-sm">
                 <label class="block">Name<input id="cfgName" class="mt-1 w-full px-2 py-1 border rounded" value="${app.name}" /></label>
                 <label class="block">Description<input id="cfgDesc" class="mt-1 w-full px-2 py-1 border rounded" value="${app.desc || ''}" /></label>
-                <label class="block">Status<select id="cfgStatus" class="mt-1 w-full px-2 py-1 border rounded"><option ${app.status==='Active'?'selected':''}>Active</option><option ${app.status==='Paused'?'selected':''}>Paused</option></select></label>
+                <label class="block">Status<select id="cfgStatus" class="mt-1 w-full px-2 py-1 border rounded"><option ${app.status === 'Active' ? 'selected' : ''}>Active</option><option ${app.status === 'Paused' ? 'selected' : ''}>Paused</option></select></label>
               </div>
             </div>
             <div>
               <div class="text-sm font-semibold mb-2">Evaluation</div>
               <div class="space-y-2 text-sm">
-                <label class="block">Pass Rate<input class="mt-1 w-full px-2 py-1 border rounded" value="${(app.passRate*100).toFixed(2)}%" /></label>
-                <label class="block">Safety Score<input class="mt-1 w-full px-2 py-1 border rounded" value="${((app.safetyScore||0)*100).toFixed(2)}%" /></label>
+                <label class="block">Pass Rate<input class="mt-1 w-full px-2 py-1 border rounded" value="${(app.passRate * 100).toFixed(2)}%" /></label>
+                <label class="block">Safety Score<input class="mt-1 w-full px-2 py-1 border rounded" value="${((app.safetyScore || 0) * 100).toFixed(2)}%" /></label>
                 <label class="block">Last Run<input class="mt-1 w-full px-2 py-1 border rounded" value="${formatTs(app.lastRunAt)}" /></label>
               </div>
             </div>
@@ -685,9 +810,9 @@
     }
 
     function renderAppCharts(id, app) {
-      const dates = ['09/01','09/10','09/20','09/30','10/10','10/20','11/01']
+      const dates = ['09/01', '09/10', '09/20', '09/30', '10/10', '10/20', '11/01']
       const base = Math.max(0.4, Math.min(0.95, (app.passRate || 0.7)))
-      const jitter = () => Math.max(0, Math.min(1, base + (Math.random()-0.5)*0.2))
+      const jitter = () => Math.max(0, Math.min(1, base + (Math.random() - 0.5) * 0.2))
       const mk = () => dates.map(() => jitter())
       const qEl = document.getElementById(`appQ_${id}`)
       const eEl = document.getElementById(`appE_${id}`)
@@ -696,28 +821,28 @@
       const cEl = document.getElementById(`appC_${id}`)
       if (qEl) {
         const inst = echarts.init(qEl)
-        inst.setOption({ tooltip: {}, legend: { data: ['E2E Success','Formatting','Tool Accuracy','Semantic'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value', min: 0, max: 1 }, series: [ { name: 'E2E Success', type: 'line', smooth: true, data: mk() }, { name: 'Formatting', type: 'line', smooth: true, data: mk() }, { name: 'Tool Accuracy', type: 'line', smooth: true, data: mk() }, { name: 'Semantic', type: 'line', smooth: true, data: mk() } ] })
+        inst.setOption({ tooltip: {}, legend: { data: ['E2E Success', 'Formatting', 'Tool Accuracy', 'Semantic'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value', min: 0, max: 1 }, series: [{ name: 'E2E Success', type: 'line', smooth: true, data: mk() }, { name: 'Formatting', type: 'line', smooth: true, data: mk() }, { name: 'Tool Accuracy', type: 'line', smooth: true, data: mk() }, { name: 'Semantic', type: 'line', smooth: true, data: mk() }] })
       }
       if (eEl) {
         const inst = echarts.init(eEl)
-        inst.setOption({ tooltip: {}, legend: { data: ['Latency','Steps','Total Tokens','Cost'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [ { name: 'Latency', type: 'line', smooth: true, data: dates.map(() => Math.round(400 + Math.random()*300)) }, { name: 'Steps', type: 'line', smooth: true, data: dates.map(() => Math.round(4 + Math.random()*4)) }, { name: 'Total Tokens', type: 'line', smooth: true, data: dates.map(() => Math.round(1200 + Math.random()*800)) }, { name: 'Cost', type: 'line', smooth: true, data: dates.map(() => +(5 + Math.random()*4).toFixed(2)) } ] })
+        inst.setOption({ tooltip: {}, legend: { data: ['Latency', 'Steps', 'Total Tokens', 'Cost'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [{ name: 'Latency', type: 'line', smooth: true, data: dates.map(() => Math.round(400 + Math.random() * 300)) }, { name: 'Steps', type: 'line', smooth: true, data: dates.map(() => Math.round(4 + Math.random() * 4)) }, { name: 'Total Tokens', type: 'line', smooth: true, data: dates.map(() => Math.round(1200 + Math.random() * 800)) }, { name: 'Cost', type: 'line', smooth: true, data: dates.map(() => +(5 + Math.random() * 4).toFixed(2)) }] })
       }
       if (sEl) {
         const inst = echarts.init(sEl)
-        inst.setOption({ tooltip: {}, legend: { data: ['Policy','Toxicity','PII','Flags'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value', min: 0, max: 1 }, series: [ { name: 'Policy', type: 'line', smooth: true, data: mk() }, { name: 'Toxicity', type: 'line', smooth: true, data: mk().map(v => +(1-v).toFixed(2)) }, { name: 'PII', type: 'line', smooth: true, data: mk().map(v => +(1-v).toFixed(2)) }, { name: 'Flags', type: 'line', smooth: true, data: dates.map(() => Math.round(Math.random()*3)) } ] })
+        inst.setOption({ tooltip: {}, legend: { data: ['Policy', 'Toxicity', 'PII', 'Flags'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value', min: 0, max: 1 }, series: [{ name: 'Policy', type: 'line', smooth: true, data: mk() }, { name: 'Toxicity', type: 'line', smooth: true, data: mk().map(v => +(1 - v).toFixed(2)) }, { name: 'PII', type: 'line', smooth: true, data: mk().map(v => +(1 - v).toFixed(2)) }, { name: 'Flags', type: 'line', smooth: true, data: dates.map(() => Math.round(Math.random() * 3)) }] })
       }
       if (rEl) {
         const inst = echarts.init(rEl)
-        inst.setOption({ tooltip: {}, legend: { data: ['Explain Depth','Self-Explain','Reasoning Steps','Justification'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [ { name: 'Explain Depth', type: 'line', smooth: true, data: dates.map(() => +(3 + Math.random()*2).toFixed(1)) }, { name: 'Self-Explain', type: 'line', smooth: true, data: mk().map(v => +(v).toFixed(2)) }, { name: 'Reasoning Steps', type: 'line', smooth: true, data: dates.map(() => Math.round(5 + Math.random()*4)) }, { name: 'Justification', type: 'line', smooth: true, data: mk() } ] })
+        inst.setOption({ tooltip: {}, legend: { data: ['Explain Depth', 'Self-Explain', 'Reasoning Steps', 'Justification'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [{ name: 'Explain Depth', type: 'line', smooth: true, data: dates.map(() => +(3 + Math.random() * 2).toFixed(1)) }, { name: 'Self-Explain', type: 'line', smooth: true, data: mk().map(v => +(v).toFixed(2)) }, { name: 'Reasoning Steps', type: 'line', smooth: true, data: dates.map(() => Math.round(5 + Math.random() * 4)) }, { name: 'Justification', type: 'line', smooth: true, data: mk() }] })
       }
       if (cEl) {
         const inst = echarts.init(cEl)
-        inst.setOption({ tooltip: {}, legend: { data: ['Consistency','Error Rate','Retry','Stability'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [ { name: 'Consistency', type: 'line', smooth: true, data: mk().map(v => +(v).toFixed(2)) }, { name: 'Error Rate', type: 'line', smooth: true, data: mk().map(v => +(1-v).toFixed(2)) }, { name: 'Retry', type: 'line', smooth: true, data: dates.map(() => Math.round(Math.random()*2)) }, { name: 'Stability', type: 'line', smooth: true, data: dates.map(() => +(Math.random()*0.2).toFixed(2)) } ] })
+        inst.setOption({ tooltip: {}, legend: { data: ['Consistency', 'Error Rate', 'Retry', 'Stability'] }, xAxis: { type: 'category', data: dates }, yAxis: { type: 'value' }, series: [{ name: 'Consistency', type: 'line', smooth: true, data: mk().map(v => +(v).toFixed(2)) }, { name: 'Error Rate', type: 'line', smooth: true, data: mk().map(v => +(1 - v).toFixed(2)) }, { name: 'Retry', type: 'line', smooth: true, data: dates.map(() => Math.round(Math.random() * 2)) }, { name: 'Stability', type: 'line', smooth: true, data: dates.map(() => +(Math.random() * 0.2).toFixed(2)) }] })
       }
     }
 
     function resizeVisibleCharts() {
-      const ids = ['chartQuality','chartEfficiency','chartSafety','chartReasoning','chartConsistency','evalQuality','evalSafety','evalConsistency']
+      const ids = ['chartQuality', 'chartEfficiency', 'chartSafety', 'chartReasoning', 'chartConsistency', 'evalQuality', 'evalSafety', 'evalConsistency']
       ids.forEach(id => {
         const el = document.getElementById(id)
         if (el && el.offsetParent !== null) {
@@ -735,14 +860,14 @@
     function genAppRuns(app) {
       const count = 37
       const baseTs = new Date(app.lastRunAt || Date.now()).getTime()
-      const levels = ['info','warn','error']
+      const levels = ['info', 'warn', 'error']
       const res = []
-      for (let i=0;i<count;i++) {
-        const ts = new Date(baseTs - i*3600*1000).toISOString()
-        const lvl = levels[Math.floor(Math.random()*levels.length)]
-        const rid = `${app.id}-${1000+i}`
-        const msg = lvl==='error' ? 'Run failed' : (lvl==='warn' ? 'Latency high' : 'Run completed')
-        const meta = `run=${rid} steps=${Math.floor(4+Math.random()*4)} tokens=${Math.floor(800+Math.random()*800)}`
+      for (let i = 0; i < count; i++) {
+        const ts = new Date(baseTs - i * 3600 * 1000).toISOString()
+        const lvl = levels[Math.floor(Math.random() * levels.length)]
+        const rid = `${app.id}-${1000 + i}`
+        const msg = lvl === 'error' ? 'Run failed' : (lvl === 'warn' ? 'Latency high' : 'Run completed')
+        const meta = `run=${rid} steps=${Math.floor(4 + Math.random() * 4)} tokens=${Math.floor(800 + Math.random() * 800)}`
         res.push({ ts, level: lvl, runId: rid, app: app.name, msg, meta })
       }
       return res
@@ -752,16 +877,16 @@
       const runs = genAppRuns(app)
       const pageKey = `appPage_${id}`
       const size = 10
-      const total = Math.max(1, Math.ceil(runs.length/size))
+      const total = Math.max(1, Math.ceil(runs.length / size))
       const prev = document.getElementById(`appPrev_${id}`)
       const next = document.getElementById(`appNext_${id}`)
       const container = document.getElementById(`appLogs_${id}`)
-      const getPage = () => { const v = parseInt(localStorage.getItem(pageKey) || '1', 10); return isNaN(v) ? 1 : Math.min(Math.max(1,v), total) }
-      const setPage = p => localStorage.setItem(pageKey, String(Math.min(Math.max(1,p), total)))
+      const getPage = () => { const v = parseInt(localStorage.getItem(pageKey) || '1', 10); return isNaN(v) ? 1 : Math.min(Math.max(1, v), total) }
+      const setPage = p => localStorage.setItem(pageKey, String(Math.min(Math.max(1, p), total)))
       const render = () => {
         const p = getPage()
-        const start = (p-1)*size
-        const slice = runs.slice(start, start+size)
+        const start = (p - 1) * size
+        const slice = runs.slice(start, start + size)
         const wrap = document.createElement('div')
         wrap.className = 'overflow-x-auto'
         const table = document.createElement('table')
@@ -792,8 +917,8 @@
         container.innerHTML = ''
         container.appendChild(wrap)
       }
-      if (prev) prev.onclick = () => { setPage(getPage()-1); render() }
-      if (next) next.onclick = () => { setPage(getPage()+1); render() }
+      if (prev) prev.onclick = () => { setPage(getPage() - 1); render() }
+      if (next) next.onclick = () => { setPage(getPage() + 1); render() }
       render()
     }
 
@@ -909,7 +1034,7 @@
             <div class="w-2 h-2 rounded-full ${dot}"></div>
             <div class="font-semibold">${a.name}</div>
             <span class="mono text-xs text-gray-500">${a.version || ''}</span>
-            <span class="px-2 py-0.5 rounded text-xs ${a.type==='pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${a.type==='pro-code' ? 'Pro Code' : 'Low Code'}</span>
+            <span class="px-2 py-0.5 rounded text-xs ${a.type === 'pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${a.type === 'pro-code' ? 'Pro Code' : 'Low Code'}</span>
           </div>
           <div class="text-sm text-gray-600">${a.desc || ''}</div>
           <div class="mt-2 grid grid-cols-2 gap-2 text-xs">
@@ -988,7 +1113,7 @@
               <td class="py-2 px-4 font-semibold">${a.name}</td>
               <td class="py-2 px-4">${a.desc || ''}</td>
               <td class="py-2 px-4 mono">${a.version || ''}</td>
-              <td class="py-2 px-4"><span class="px-2 py-0.5 rounded text-xs ${a.type==='pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${a.type==='pro-code' ? 'Pro Code' : 'Low Code'}</span></td>
+              <td class="py-2 px-4"><span class="px-2 py-0.5 rounded text-xs ${a.type === 'pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${a.type === 'pro-code' ? 'Pro Code' : 'Low Code'}</span></td>
               <td class="py-2 px-4 mono">${a.eimId || ''}</td>
               <td class="py-2 px-4 mono">${a.useCaseId || ''}</td>
               <td class="py-2 px-4">${a.status}</td>
@@ -1093,15 +1218,15 @@
     }
     function getRangeDays() {
       const v = parseInt(localStorage.getItem('appsRange') || '30', 10)
-      return [7,14,30].includes(v) ? v : 30
+      return [7, 14, 30].includes(v) ? v : 30
     }
     function updateRangeButtons() {
       const days = getRangeDays()
       const set = (id, active) => { const el = document.getElementById(id); if (!el) return; el.classList.toggle('bg-slate-800', active); el.classList.toggle('text-white', active) }
-      set('appsRange7', days===7); set('appsRange14', days===14); set('appsRange30', days===30)
+      set('appsRange7', days === 7); set('appsRange14', days === 14); set('appsRange30', days === 30)
     }
-    function computeRuns(a) { const days = getRangeDays(); const base = a.baseRuns || 100; return Math.max(0, Math.round(base * (days/30))) }
-    function computeOfflineRuns(a) { const days = getRangeDays(); const base = a.offlineBase || 20; return Math.max(0, Math.round(base * (days/30))) }
+    function computeRuns(a) { const days = getRangeDays(); const base = a.baseRuns || 100; return Math.max(0, Math.round(base * (days / 30))) }
+    function computeOfflineRuns(a) { const days = getRangeDays(); const base = a.offlineBase || 20; return Math.max(0, Math.round(base * (days / 30))) }
     function formatTs(ts) { try { return new Date(ts).toLocaleString() } catch { return String(ts) } }
 
     function ensureApplications() {
@@ -1296,7 +1421,7 @@
     function saveMetrics(items) {
       localStorage.setItem('metrics', JSON.stringify(items))
     }
-    
+
     function getMetrics() {
       let items = loadMetrics()
       const map = Object.fromEntries(defaultMetrics.map(m => [m.id, m]))
@@ -1436,7 +1561,7 @@
         items = [mk('Applications', '#/applications'), `<span class="text-slate-900">${app ? app.name : 'Detail'}</span>`]
       } else if (target === 'app-config') {
         const app = apps.find(a => String(a.id) === String(parts[1]))
-        items = [mk('Applications', '#/applications'), `<span class="text-slate-900">${app ? 'Configure '+app.name : 'Configure'}</span>`]
+        items = [mk('Applications', '#/applications'), `<span class="text-slate-900">${app ? 'Configure ' + app.name : 'Configure'}</span>`]
       } else if (target === 'metrics') {
         items = [mk('Metrics', '#/metrics')]
       } else if (target === 'tracing') {
@@ -1469,7 +1594,7 @@
       sel.onchange = () => localStorage.setItem('department', sel.value)
     })()
 
-    function initAccountMenu(){
+    function initAccountMenu() {
       const btn = document.getElementById('accountButton')
       const menu = document.getElementById('accountMenu')
       const logout = document.getElementById('logoutBtn')
@@ -1479,7 +1604,7 @@
       if (logout) logout.onclick = () => { menu.classList.add('hidden') }
     }
 
-    ;(function applyDarkTheme(){
+    ; (function applyDarkTheme() {
       document.body.classList.add('dark-theme')
       document.body.classList.remove('bg-slate-100')
       document.body.classList.add('bg-slate-900')
@@ -1493,7 +1618,8 @@
     }
     updateNavCounts()
     initAccountMenu()
-    
+
   </script>
-  </body>
-  </html>
+</body>
+
+</html>
