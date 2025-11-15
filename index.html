@@ -20,6 +20,17 @@
     .mono {
       font-family: 'JetBrains Mono', monospace;
     }
+    .dark-theme { --bg:#0f1115; --panel:#151922; --panelHover:#1b2030; --panelSoft:#11161d; --border:#242a38; --text:#e5e7eb; --muted:#9aa4b2 }
+    .dark-theme, .dark-theme body { background-color: var(--bg); color: var(--text) }
+    .dark-theme .bg-white, .dark-theme .bg-white\/80 { background-color: var(--panel) !important; color: var(--text) }
+    .dark-theme .border { border-color: var(--border) !important }
+    .dark-theme .text-gray-500 { color: var(--muted) !important }
+    .dark-theme .text-gray-600 { color: var(--muted) !important }
+    .dark-theme .text-gray-700 { color: #cbd5e1 !important }
+    .dark-theme .bg-slate-50 { background-color: var(--panelSoft) !important }
+    .dark-theme tbody tr:hover { background-color: var(--panelHover) }
+    .dark-theme thead { background-color: var(--panelSoft) }
+    .btn-dark { background-color: transparent; border: 1px solid var(--border); color: var(--text); border-radius: .75rem; padding: .5rem .75rem }
   </style>
 </head>
 
@@ -91,28 +102,19 @@
         <div class="space-y-6">
         <section id="overview" data-page class="space-y-6">
           <div class="bg-white/80 backdrop-blur border">
-            <div class="px-6 py-3 flex items-center gap-4">
-              <div class="text-lg font-semibold">Dashboard</div>
-            </div>
-            <div class="px-6 py-3 border-t bg-white">
-              <div class="flex flex-wrap items-center gap-2">
-                <select id="filterApp" class="px-3 py-2 border rounded text-sm">
-                  <option>IWPB AI Project</option>
-                  <option>Demo Project</option>
-                </select>
-                <input id="filterFrom" type="date" class="px-3 py-2 border rounded text-sm" />
-                <input id="filterTo" type="date" class="px-3 py-2 border rounded text-sm" />
-                <select id="filterPreset" class="px-3 py-2 border rounded text-sm">
-                  <option>Past 7 days</option>
-                  <option>Past 30 days</option>
-                  <option>Past 90 days</option>
-                </select>
-                <select id="filterMode" class="px-3 py-2 border rounded text-sm">
-                  <option>Online & Offline</option>
-                  <option>Online</option>
-                  <option>Offline</option>
-                </select>
+            <div class="px-6 py-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-white">P</div>
+                <div class="text-2xl font-semibold">Personal</div>
+                <span class="ml-2 px-2 py-0.5 text-xs rounded border">ID</span>
               </div>
+              <div class="text-xs text-gray-500">Beta user</div>
+            </div>
+            <div class="px-6 pb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <button class="btn-dark flex items-center gap-2"><span>👥</span><span>Invite team</span></button>
+              <button class="btn-dark flex items-center gap-2"><span>🎛️</span><span>Studio quickstart</span></button>
+              <button class="btn-dark flex items-center gap-2"><span>🔗</span><span>Tracing quickstart</span></button>
+              <button class="btn-dark flex items-center gap-2"><span>📊</span><span>Evaluation quickstart</span></button>
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -668,9 +670,9 @@
     const chartQuality = echarts.init(document.getElementById('chartQuality'))
     chartQuality.setOption({
       tooltip: {},
-      legend: { data: ['E2E Success', 'Formatting Adherence', 'Tool Accuracy', 'Semantic Correctness'] },
-      xAxis: { type: 'category', data: d },
-      yAxis: { type: 'value', min: 0, max: 1 },
+      legend: { data: ['E2E Success', 'Formatting Adherence', 'Tool Accuracy', 'Semantic Correctness'], textStyle: { color: '#cbd5e1' } },
+      xAxis: { type: 'category', data: d, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
+      yAxis: { type: 'value', min: 0, max: 1, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
       series: [
         { name: 'E2E Success', type: 'line', smooth: true, data: [0.12, 0.28, 0.36, 0.31, 0.42, 0.55, 0.60] },
         { name: 'Formatting Adherence', type: 'line', smooth: true, data: [0.10, 0.22, 0.47, 0.29, 0.35, 0.44, 0.50] },
@@ -681,9 +683,9 @@
     const chartEfficiency = echarts.init(document.getElementById('chartEfficiency'))
     chartEfficiency.setOption({
       tooltip: {},
-      legend: { data: ['Latency (ms)', 'Tokens (k)'] },
-      xAxis: { type: 'category', data: d },
-      yAxis: [{ type: 'value', name: 'Latency' }, { type: 'value', name: 'Tokens' }],
+      legend: { data: ['Latency (ms)', 'Tokens (k)'], textStyle: { color: '#cbd5e1' } },
+      xAxis: { type: 'category', data: d, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
+      yAxis: [{ type: 'value', name: 'Latency', axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }, { type: 'value', name: 'Tokens', axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }],
       series: [
         { name: 'Latency (ms)', type: 'bar', data: [120, 110, 140, 130, 90, 100, 115], yAxisIndex: 0 },
         { name: 'Tokens (k)', type: 'line', data: [9, 10, 11, 12, 13, 12, 11], yAxisIndex: 1, smooth: true }
@@ -692,9 +694,9 @@
     const chartSafety = echarts.init(document.getElementById('chartSafety'))
     chartSafety.setOption({
       tooltip: {},
-      legend: { data: ['Policy Adherence %', 'Safety Flags', 'Redactions'] },
-      xAxis: { type: 'category', data: d },
-      yAxis: [{ type: 'value', min: 0, max: 100 }, { type: 'value' }],
+      legend: { data: ['Policy Adherence %', 'Safety Flags', 'Redactions'], textStyle: { color: '#cbd5e1' } },
+      xAxis: { type: 'category', data: d, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
+      yAxis: [{ type: 'value', min: 0, max: 100, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }, { type: 'value', axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }],
       series: [
         { name: 'Policy Adherence %', type: 'line', data: [92, 93, 91, 94, 95, 96, 96], smooth: true, yAxisIndex: 0 },
         { name: 'Safety Flags', type: 'bar', data: [4, 3, 5, 2, 3, 2, 2], yAxisIndex: 1 },
@@ -704,9 +706,9 @@
     const chartReasoning = echarts.init(document.getElementById('chartReasoning'))
     chartReasoning.setOption({
       tooltip: {},
-      legend: { data: ['Explanation Depth', 'Self-Explanation Coverage %', 'Reasoning Steps'] },
-      xAxis: { type: 'category', data: d },
-      yAxis: [{ type: 'value' }, { type: 'value', min: 0, max: 100 }],
+      legend: { data: ['Explanation Depth', 'Self-Explanation Coverage %', 'Reasoning Steps'], textStyle: { color: '#cbd5e1' } },
+      xAxis: { type: 'category', data: d, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
+      yAxis: [{ type: 'value', axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }, { type: 'value', min: 0, max: 100, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }],
       series: [
         { name: 'Explanation Depth', type: 'bar', data: [2, 3, 3, 4, 4, 5, 5], yAxisIndex: 0 },
         { name: 'Self-Explanation Coverage %', type: 'line', data: [40, 45, 50, 55, 60, 62, 65], yAxisIndex: 1, smooth: true },
@@ -716,9 +718,9 @@
     const chartConsistency = echarts.init(document.getElementById('chartConsistency'))
     chartConsistency.setOption({
       tooltip: {},
-      legend: { data: ['Consistency %', 'Error Rate %', 'Retry Count'] },
-      xAxis: { type: 'category', data: d },
-      yAxis: [{ type: 'value', min: 0, max: 100 }, { type: 'value' }],
+      legend: { data: ['Consistency %', 'Error Rate %', 'Retry Count'], textStyle: { color: '#cbd5e1' } },
+      xAxis: { type: 'category', data: d, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
+      yAxis: [{ type: 'value', min: 0, max: 100, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }, { type: 'value', axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }],
       series: [
         { name: 'Consistency %', type: 'line', data: [70, 72, 74, 73, 75, 78, 80], yAxisIndex: 0, smooth: true },
         { name: 'Error Rate %', type: 'line', data: [5, 4.5, 4.8, 4.2, 4.0, 3.8, 3.5], yAxisIndex: 0, smooth: true },
@@ -729,9 +731,9 @@
     const evalQuality = echarts.init(document.getElementById('evalQuality'))
     evalQuality.setOption({
       tooltip: {},
-      legend: { data: ['E2E Success', 'Formatting', 'Tool Accuracy', 'Semantic'] },
-      xAxis: { type: 'category', data: d },
-      yAxis: { type: 'value', min: 0, max: 1 },
+      legend: { data: ['E2E Success', 'Formatting', 'Tool Accuracy', 'Semantic'], textStyle: { color: '#cbd5e1' } },
+      xAxis: { type: 'category', data: d, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
+      yAxis: { type: 'value', min: 0, max: 1, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
       series: [
         { name: 'E2E Success', type: 'line', smooth: true, data: [0.55, 0.58, 0.60, 0.62, 0.63, 0.66, 0.68] },
         { name: 'Formatting', type: 'line', smooth: true, data: [0.70, 0.72, 0.74, 0.73, 0.75, 0.77, 0.78] },
@@ -742,9 +744,9 @@
     const evalSafety = echarts.init(document.getElementById('evalSafety'))
     evalSafety.setOption({
       tooltip: {},
-      legend: { data: ['Policy %', 'Flags', 'Redactions'] },
-      xAxis: { type: 'category', data: d },
-      yAxis: [{ type: 'value', min: 0, max: 100 }, { type: 'value' }],
+      legend: { data: ['Policy %', 'Flags', 'Redactions'], textStyle: { color: '#cbd5e1' } },
+      xAxis: { type: 'category', data: d, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
+      yAxis: [{ type: 'value', min: 0, max: 100, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }, { type: 'value', axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }],
       series: [
         { name: 'Policy %', type: 'line', data: [94, 94, 95, 95, 96, 96, 97], smooth: true, yAxisIndex: 0 },
         { name: 'Flags', type: 'bar', data: [5, 4, 3, 4, 3, 2, 2], yAxisIndex: 1 },
@@ -754,9 +756,9 @@
     const evalConsistency = echarts.init(document.getElementById('evalConsistency'))
     evalConsistency.setOption({
       tooltip: {},
-      legend: { data: ['Consistency %', 'Error %', 'Retries'] },
-      xAxis: { type: 'category', data: d },
-      yAxis: [{ type: 'value', min: 0, max: 100 }, { type: 'value' }],
+      legend: { data: ['Consistency %', 'Error %', 'Retries'], textStyle: { color: '#cbd5e1' } },
+      xAxis: { type: 'category', data: d, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } },
+      yAxis: [{ type: 'value', min: 0, max: 100, axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }, { type: 'value', axisLabel: { color: '#94a3b8' }, axisLine: { lineStyle: { color: '#334155' } }, splitLine: { show: true, lineStyle: { color: '#1f2937' } } }],
       series: [
         { name: 'Consistency %', type: 'line', data: [76, 77, 78, 78, 79, 80, 81], yAxisIndex: 0, smooth: true },
         { name: 'Error %', type: 'line', data: [4.5, 4.3, 4.0, 3.9, 3.7, 3.6, 3.4], yAxisIndex: 0, smooth: true },
@@ -1321,7 +1323,12 @@
       sel.onchange = () => localStorage.setItem('department', sel.value)
     })()
 
-    
+    ;(function applyDarkTheme(){
+      document.body.classList.add('dark-theme')
+      document.body.classList.remove('bg-slate-100')
+      document.body.classList.add('bg-slate-900')
+    })()
+
   </script>
   </body>
   </html>
