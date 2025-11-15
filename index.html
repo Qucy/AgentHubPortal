@@ -477,12 +477,12 @@
     ]
 
     const apps = [
-      { id: 1, name: 'IWBP Virtual CIO', project: 'IWBP AI Project', desc: 'Virtual CIO assistant for portfolio insights and decisions', eimId: '68493210', useCaseId: 'UC00232134', status: 'Active', passRate: 0.69, safetyScore: 0.96, cost: 198.56, lastRunAt: '2025-11-15T09:05:00Z', baseRuns: 240, offlineBase: 64 },
-      { id: 2, name: 'Support Assistant', project: 'Customer Ops', desc: 'Automates customer support triage and ticket drafting', eimId: '91384752', useCaseId: 'UC00184573', status: 'Active', passRate: 0.74, safetyScore: 0.94, cost: 54.12, lastRunAt: '2025-11-13T12:22:00Z', baseRuns: 180, offlineBase: 42 },
-      { id: 3, name: 'Invoice Extractor', project: 'Finance', desc: 'Extracts invoice fields and normalizes vendor data', eimId: '50213987', useCaseId: 'UC00420391', status: 'Paused', passRate: 0.62, safetyScore: 0.92, cost: 12.88, lastRunAt: '2025-11-10T07:30:00Z', baseRuns: 90, offlineBase: 28 },
-      { id: 4, name: 'QA Evaluator', project: 'Quality', desc: 'Evaluates app outputs with heuristic and LLM judges', eimId: '76591230', useCaseId: 'UC00356781', status: 'Active', passRate: 0.71, safetyScore: 0.95, cost: 33.40, lastRunAt: '2025-11-12T16:05:00Z', baseRuns: 120, offlineBase: 36 },
-      { id: 5, name: 'RAG Knowledge Bot', project: 'Docs', desc: 'Retrieves knowledge base answers with citations', eimId: '12876459', useCaseId: 'UC00678901', status: 'Active', passRate: 0.77, safetyScore: 0.97, cost: 88.02, lastRunAt: '2025-11-11T10:11:00Z', baseRuns: 150, offlineBase: 40 },
-      { id: 6, name: 'Email Summarizer', project: 'Sales', desc: 'Summarizes email threads and drafts responses', eimId: '34019876', useCaseId: 'UC00246813', status: 'Paused', passRate: 0.55, safetyScore: 0.90, cost: 9.43, lastRunAt: '2025-11-09T19:45:00Z', baseRuns: 60, offlineBase: 20 }
+      { id: 1, name: 'IWBP Virtual CIO', version: 'v1.2.0', type: 'pro-code', project: 'IWBP AI Project', desc: 'Virtual CIO assistant for portfolio insights and decisions', eimId: '68493210', useCaseId: 'UC00232134', status: 'Active', passRate: 0.69, safetyScore: 0.96, cost: 198.56, lastRunAt: '2025-11-15T09:05:00Z', baseRuns: 240, offlineBase: 64 },
+      { id: 2, name: 'Support Assistant', version: 'v1.0.3', type: 'low-code', project: 'Customer Ops', desc: 'Automates customer support triage and ticket drafting', eimId: '91384752', useCaseId: 'UC00184573', status: 'Active', passRate: 0.74, safetyScore: 0.94, cost: 54.12, lastRunAt: '2025-11-13T12:22:00Z', baseRuns: 180, offlineBase: 42 },
+      { id: 3, name: 'Invoice Extractor', version: 'v0.9.5', type: 'pro-code', project: 'Finance', desc: 'Extracts invoice fields and normalizes vendor data', eimId: '50213987', useCaseId: 'UC00420391', status: 'Paused', passRate: 0.62, safetyScore: 0.92, cost: 12.88, lastRunAt: '2025-11-10T07:30:00Z', baseRuns: 90, offlineBase: 28 },
+      { id: 4, name: 'QA Evaluator', version: 'v1.1.1', type: 'low-code', project: 'Quality', desc: 'Evaluates app outputs with heuristic and LLM judges', eimId: '76591230', useCaseId: 'UC00356781', status: 'Active', passRate: 0.71, safetyScore: 0.95, cost: 33.40, lastRunAt: '2025-11-12T16:05:00Z', baseRuns: 120, offlineBase: 36 },
+      { id: 5, name: 'RAG Knowledge Bot', version: 'v2.0.0', type: 'pro-code', project: 'Docs', desc: 'Retrieves knowledge base answers with citations', eimId: '12876459', useCaseId: 'UC00678901', status: 'Active', passRate: 0.77, safetyScore: 0.97, cost: 88.02, lastRunAt: '2025-11-11T10:11:00Z', baseRuns: 150, offlineBase: 40 },
+      { id: 6, name: 'Email Summarizer', version: 'v0.8.2', type: 'low-code', project: 'Sales', desc: 'Summarizes email threads and drafts responses', eimId: '34019876', useCaseId: 'UC00246813', status: 'Paused', passRate: 0.55, safetyScore: 0.90, cost: 9.43, lastRunAt: '2025-11-09T19:45:00Z', baseRuns: 60, offlineBase: 20 }
     ]
 
     function setActive(id) {
@@ -527,7 +527,19 @@
             <div><div class="text-xs text-gray-500">Project</div><div class="font-semibold">${app.project}</div></div>
             <div><div class="text-xs text-gray-500">Status</div><div class="font-semibold">${app.status}</div></div>
             <div><div class="text-xs text-gray-500">Last Run At</div><div class="font-semibold">${formatTs(app.lastRunAt)}</div></div>
+            <div><div class="text-xs text-gray-500">Version</div><div class="font-semibold mono">${app.version || ''}</div></div>
+            <div><div class="text-xs text-gray-500">Type</div><div class="font-semibold"><span class="px-2 py-0.5 rounded text-xs ${app.type==='pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${app.type==='pro-code' ? 'Pro Code' : 'Low Code'}</span></div></div>
+            <div><div class="text-xs text-gray-500">EIM ID</div><div class="font-semibold mono">${app.eimId || ''}</div></div>
+            <div><div class="text-xs text-gray-500">Use Case ID</div><div class="font-semibold mono">${app.useCaseId || ''}</div></div>
+            <div><div class="text-xs text-gray-500">Success Rate</div><div class="font-semibold">${(app.passRate*100).toFixed(2)}%</div></div>
+            <div><div class="text-xs text-gray-500">Safety Score</div><div class="font-semibold">${((app.safetyScore||0)*100).toFixed(2)}%</div></div>
+            <div><div class="text-xs text-gray-500">Total Runs</div><div class="font-semibold">${computeRuns(app)}</div></div>
+            <div><div class="text-xs text-gray-500">Offline Eval Runs</div><div class="font-semibold">${computeOfflineRuns(app)}</div></div>
           </div>
+        </div>
+        <div class="p-4 bg-white rounded border">
+          <div class="text-sm font-semibold mb-2">Description</div>
+          <div class="text-sm text-gray-700">${app.desc || ''}</div>
         </div>
         <div class="p-4 bg-white rounded border">
           <div class="flex items-center mb-2">
@@ -838,6 +850,8 @@
           <div class="flex items-center gap-2 mb-2">
             <div class="w-2 h-2 rounded-full ${dot}"></div>
             <div class="font-semibold">${a.name}</div>
+            <span class="mono text-xs text-gray-500">${a.version || ''}</span>
+            <span class="px-2 py-0.5 rounded text-xs ${a.type==='pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${a.type==='pro-code' ? 'Pro Code' : 'Low Code'}</span>
           </div>
           <div class="text-sm text-gray-600">${a.desc || ''}</div>
           <div class="mt-2 grid grid-cols-2 gap-2 text-xs">
@@ -899,6 +913,8 @@
           <tr class="text-gray-500">
             <th class="text-left py-2 px-4">Name</th>
             <th class="text-left py-2 px-4">Description</th>
+            <th class="text-left py-2 px-4">Version</th>
+            <th class="text-left py-2 px-4">Type</th>
             <th class="text-left py-2 px-4">EIM ID</th>
             <th class="text-left py-2 px-4">Use Case ID</th>
             <th class="text-left py-2 px-4">Status</th>
@@ -913,6 +929,8 @@
             <tr class="hover:bg-slate-50">
               <td class="py-2 px-4 font-semibold">${a.name}</td>
               <td class="py-2 px-4">${a.desc || ''}</td>
+              <td class="py-2 px-4 mono">${a.version || ''}</td>
+              <td class="py-2 px-4"><span class="px-2 py-0.5 rounded text-xs ${a.type==='pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${a.type==='pro-code' ? 'Pro Code' : 'Low Code'}</span></td>
               <td class="py-2 px-4 mono">${a.eimId || ''}</td>
               <td class="py-2 px-4 mono">${a.useCaseId || ''}</td>
               <td class="py-2 px-4">${a.status}</td>
