@@ -111,6 +111,27 @@
           </a>
         </div>
         <div>
+          <div class="px-3 py-2 text-sm text-slate-200">Observability</div>
+          <a href="#/tracing" data-section="tracing"
+            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M5 12h4l3-6 3 12 3-6h3" />
+            </svg>
+            <span>Application Tracing</span>
+            <span id="countTracing" class="badge ml-auto">0</span>
+          </a>
+
+          <a href="#/users" data-section="users"
+            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M7 7a5 5 0 1 0 10 0 5 5 0 0 0-10 0ZM3 21a9 9 0  0 1 18 0" />
+            </svg>
+            <span>Monitoring</span>
+          </a>
+        </div>
+        <div>
           <div class="px-3 py-2 text-sm text-slate-200">Configuration</div>
           <a href="#/applications" data-section="applications"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
@@ -135,37 +156,7 @@
           </a>
         </div>
         <div>
-          <div class="px-3 py-2 text-sm text-slate-200">Observability</div>
-          <a href="#/tracing" data-section="tracing"
-            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              class="w-4 h-4 opacity-80">
-              <path d="M5 12h4l3-6 3 12 3-6h3" />
-            </svg>
-            <span>Tracing</span>
-            <span id="countTracing" class="badge ml-auto">0</span>
-          </a>
-
-          <a href="#/users" data-section="users"
-            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              class="w-4 h-4 opacity-80">
-              <path d="M7 7a5 5 0 1 0 10 0 5 5 0 0 0-10 0ZM3 21a9 9 0 0 1 18 0" />
-            </svg>
-            <span>Users</span>
-          </a>
-        </div>
-        <div>
           <div class="px-3 py-2 text-sm text-slate-200">Evaluation</div>
-          <a href="#/evaluation" data-section="evaluation"
-            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              class="w-4 h-4 opacity-80">
-              <path d="M7 4h10a2 2 0 0 1 2 2v12l-7-3-7 3V6a2 2 0 0 1 2-2Z" />
-            </svg>
-            <span>Overview</span>
-          </a>
-
           <a href="#/datasets" data-section="datasets"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -175,6 +166,35 @@
             </svg>
             <span>Datasets</span>
             <span id="countDatasets" class="badge ml-auto">0</span>
+          </a>
+          <a href="#/annotation" data-section="annotation"
+            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M4 4h16v12H4z" />
+              <path d="M6 8h12M6 12h8" />
+            </svg>
+            <span>Annotation</span>
+          </a>
+          <a href="#/evaluation" data-section="evaluation"
+            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80">
+              <path d="M7 4h10a2 2 0 0 1 2 2v12l-7-3-7 3V6a2 2 0 0 1 2-2Z" />
+            </svg>
+            <span>Evaluation</span>
+          </a>
+          <div class="px-3 py-2 text-sm text-slate-200">Agents</div>
+          <a href="#/low-code-agents" data-section="low-code-agents"
+            class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4 opacity-80">
+              <rect x="6" y="6" width="12" height="10" rx="2" />
+              <circle cx="10" cy="11" r="1.5" />
+              <circle cx="14" cy="11" r="1.5" />
+              <path d="M8 16h8" />
+            </svg>
+            <span>Low Code Agents</span>
+            <span class="ml-auto px-2 py-0.5 rounded text-xs bg-white/10 border border-slate-600">Waitlist</span>
           </a>
         </div>
 
@@ -392,9 +412,9 @@
           </section>
 
           <section id="tracing" data-page class="hidden space-y-4">
-            <div class="flex items-center">
-              <h2 class="text-2xl font-semibold">Tracing</h2>
-            </div>
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Application Tracing</h2>
+          </div>
             <div class="flex flex-wrap items-center gap-2">
               <input id="logSearch" placeholder="Search message" class="px-3 py-2 border rounded text-sm" />
               <select id="logLevel" class="px-3 py-2 border rounded text-sm">
@@ -419,11 +439,11 @@
             <div class="p-4 bg-white rounded border">No sessions.</div>
           </section>
 
-          <section id="users" data-page class="hidden space-y-4">
-            <h2 class="text-2xl font-semibold">Users</h2>
-            <p class="text-gray-600">Manage users and permissions.</p>
-            <div class="p-4 bg-white rounded border">No users.</div>
-          </section>
+        <section id="users" data-page class="hidden space-y-4">
+          <h2 class="text-2xl font-semibold">Monitoring</h2>
+          <p class="text-gray-600">Monitor system and user activity.</p>
+          <div class="p-4 bg-white rounded border">No monitoring data.</div>
+        </section>
 
           <section id="documentation" data-page class="hidden space-y-4">
             <h2 class="text-2xl font-semibold">Documentation</h2>
@@ -451,10 +471,10 @@
             </div>
           </section>
 
-          <section id="evaluation" data-page class="hidden space-y-6">
-            <div class="flex items-center">
-              <h2 class="text-2xl font-semibold">Evaluation Overview</h2>
-            </div>
+        <section id="evaluation" data-page class="hidden space-y-6">
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Evaluation</h2>
+          </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div class="p-4 bg-white rounded border">
                 <div class="text-xs text-gray-500">Overall Pass Rate</div>
@@ -487,7 +507,22 @@
                 <div id="evalConsistency" class="w-full h-64"></div>
               </div>
             </div>
-          </section>
+        </section>
+
+        <section id="annotation" data-page class="hidden space-y-4">
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Annotation</h2>
+          </div>
+          <div class="p-4 bg-white rounded border">No annotation queues.</div>
+        </section>
+
+        <section id="low-code-agents" data-page class="hidden space-y-4">
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Low Code Agents</h2>
+            <span class="ml-3 px-2 py-0.5 rounded text-xs bg-slate-100">Waitlist</span>
+          </div>
+          <div class="p-4 bg-white rounded border">Join the waitlist to enable low code agents.</div>
+        </section>
 
           <section id="llm-judge" data-page class="hidden space-y-4">
             <h2 class="text-2xl font-semibold">LLM-as-a-Judge</h2>
@@ -1565,7 +1600,7 @@
       } else if (target === 'metrics') {
         items = [mk('Metrics', '#/metrics')]
       } else if (target === 'tracing') {
-        items = [mk('Tracing', '#/tracing')]
+        items = [mk('Application Tracing', '#/tracing')]
       } else if (target === 'datasets') {
         items = [mk('Datasets', '#/datasets')]
       } else if (target === 'settings') {
@@ -1579,6 +1614,12 @@
       } else if (target === 'metric-detail') {
         const m = getMetrics().find(x => x.id === parts[1])
         items = [mk('Metrics', '#/metrics'), `<span class="text-slate-900">${m ? m.name : 'Metric'}</span>`]
+      } else if (target === 'users') {
+        items = [mk('Monitoring', '#/users')]
+      } else if (target === 'annotation') {
+        items = [mk('Annotation', '#/annotation')]
+      } else if (target === 'low-code-agents') {
+        items = [mk('Agents', '#/low-code-agents')]
       } else {
         items = [mk(target, `#/${target}`)]
       }
