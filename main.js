@@ -408,11 +408,11 @@ function initializeFilters() {
 
 // Navigation functions
 function navigateToApplication(appId) {
-    window.location.href = `application.html?id=${appId}`;
+    window.location.href = `index.html#/app/${appId}`;
 }
 
 function navigateToTrace(appId, traceId) {
-    window.location.href = `trace.html?app=${appId}&trace=${traceId}`;
+    window.location.href = `index.html#/tracing`;
 }
 
 // Utility functions

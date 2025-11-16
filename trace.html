@@ -169,7 +169,7 @@
             </div>
             <div class="space-y-1">
                 <p class="px-3 text-xs uppercase tracking-wide text-slate-400">Configuration</p>
-                <a href="application.html" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Applications</a>
+                <a href="index.html#/applications" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Applications</a>
                 <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Agents</a>
             </div>
             <div class="space-y-1">
@@ -180,7 +180,7 @@
             </div>
             <div class="space-y-1">
                 <p class="px-3 text-xs uppercase tracking-wide text-slate-400">Evaluation</p>
-                <a href="evaluation.html" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">LLM-as-a-Judge</a>
+                <a href="index.html#/evaluation" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">LLM-as-a-Judge</a>
                 <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Human Annotation</a>
                 <a href="#" class="block px-3 py-2 rounded-md text-slate-200 hover:bg-slate-800">Datasets</a>
             </div>
@@ -215,7 +215,7 @@
         <div class="breadcrumb">
             <a href="index.html">Dashboard</a>
             <span class="separator">/</span>
-            <a href="application.html" id="app-link">Application</a>
+            <a href="index.html#/applications" id="app-link">Application</a>
             <span class="separator">/</span>
             <span id="trace-name" class="text-gray-900 font-medium">Execution Trace</span>
         </div>
@@ -450,7 +450,7 @@
             const app = window.AgentPortal.applicationsData.find(a => a.id === appId);
             if (app) {
                 document.getElementById('app-link').textContent = app.name;
-                document.getElementById('app-link').href = `application.html?id=${appId}`;
+                document.getElementById('app-link').href = `index.html#/app/${appId}`;
             }
         }
 
