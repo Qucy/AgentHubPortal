@@ -82,16 +82,41 @@
     .badge {
       font-size: .75rem;
       padding: 0 .375rem;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      border-radius: 9999px
+      border-radius: 9999px;
+      background-color: #cbd5e1;
+      color: #0f172a;
+      border: 1px solid #94a3b8
     }
+    .dark-theme .badge {
+      background-color: #1b2030;
+      color: var(--text);
+      border: 1px solid var(--border)
+    }
+
+    .pill { font-size: .75rem; padding: 0 .375rem; border-radius: 9999px; display: inline-block }
+    .pill-green { background: #86efac; color: #065f46 }
+    .pill-amber { background: #fde68a; color: #92400e }
+    .pill-red { background: #fecaca; color: #7f1d1d }
+    .pill-gray { background: #e5e7eb; color: #374151 }
+    .dark-theme .pill-green { background: #064e3b; color: #d1fae5 }
+    .dark-theme .pill-amber { background: #78350f; color: #fde68a }
+    .dark-theme .pill-red { background: #7f1d1d; color: #fecaca }
+    .dark-theme .pill-gray { background: #374151; color: #e5e7eb }
+
+    .scope-app { background:#d1fae5; color:#065f46 }
+    .scope-agent { background:#bfdbfe; color:#1e3a8a }
+    .scope-step { background:#ddd6fe; color:#4c1d95 }
+    .dark-theme .scope-app { background:#064e3b; color:#d1fae5 }
+    .dark-theme .scope-agent { background:#1e40af; color:#bfdbfe }
+    .dark-theme .scope-step { background:#4c1d95; color:#ddd6fe }
+
+    #sidebar nav a[data-section] { font-size: .875rem }
   </style>
 </head>
 
 <body class="bg-slate-100">
   <div class="h-screen flex overflow-hidden">
-    <aside class="w-64 bg-black text-slate-200 flex flex-col h-screen">
+    <aside id="sidebar" class="flex flex-col h-screen">
       <div class="p-4 border-b border-slate-700">
         <div class="flex items-center gap-2">
           <img src="./resources/hsbc_logo.png" alt="" class="h-5 w-auto object-contain" />
@@ -122,7 +147,7 @@
             <span id="countTracing" class="badge ml-auto">0</span>
           </a>
 
-          <a href="#/users" data-section="users"
+          <a href="#/monitoring" data-section="monitoring"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               class="w-4 h-4 opacity-80">
@@ -132,7 +157,7 @@
           </a>
         </div>
         <div>
-          <div class="px-3 py-2 text-sm text-slate-200">Configuration</div>
+          <div class="px-3 py-2 text-sm text-slate-200">Management</div>
           <a href="#/applications" data-section="applications"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-700 cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -199,7 +224,7 @@
         </div>
 
       </nav>
-      <div class="mt-auto p-4 border-t border-slate-800 relative">
+      <div class="mt-auto p-4 border-t relative" id="sidebarFooter">
         <div class="space-y-2 mb-3">
           <a href="#/documentation" data-section="documentation"
             class="flex items-center gap-2 px-3 py-2 rounded hover:bg-slate-800 cursor-pointer">
@@ -236,6 +261,15 @@
             </svg>
             <span>Settings</span>
           </a>
+          <a href="javascript:void(0)" id="themeButton"
+            class="flex items-center gap-2 px-3 py-2 rounded cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              class="w-4 h-4 opacity-80" id="themeIcon">
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+            <span>Theme</span>
+          </a>
+          <div id="themeMenu" class="hidden absolute left-4 bottom-32 rounded shadow-lg w-48"></div>
         </div>
         <button id="accountButton" class="w-full flex items-center gap-3 px-3 py-2 rounded hover:bg-slate-700">
           <img src="https://avatars.githubusercontent.com/u/0?v=4" alt="avatar"
@@ -243,7 +277,7 @@
           <span class="text-sm">qucy@example.com</span>
         </button>
         <div id="accountMenu"
-          class="hidden absolute left-4 bottom-16 bg-black border border-slate-700 rounded shadow-lg w-48">
+          class="hidden absolute left-4 bottom-16 rounded shadow-lg w-48">
           <button id="logoutBtn" class="block w-full text-left px-3 py-2 hover:bg-slate-700 text-sm">Logout</button>
         </div>
       </div>
@@ -267,8 +301,160 @@
                 <button class="btn-dark flex items-center gap-2"><span>👥</span><span>Invite team</span></button>
                 <button class="btn-dark flex items-center gap-2"><span>🎛️</span><span>Studio quickstart</span></button>
                 <button class="btn-dark flex items-center gap-2"><span>🔗</span><span>Tracing quickstart</span></button>
-                <button class="btn-dark flex items-center gap-2"><span>📊</span><span>Evaluation
-                    quickstart</span></button>
+                <button class="btn-dark flex items-center gap-2"><span>📊</span><span>Evaluation quickstart</span></button>
+              </div>
+            </div>
+            <div class="p-4 bg-white rounded border">
+              <div class="flex items-center">
+                <h2 class="text-2xl font-semibold">Observability</h2>
+                <a href="#/monitoring" class="ml-auto px-3 py-1 border rounded text-sm">View Monitoring</a>
+              </div>
+              <div class="mt-3 inline-flex border rounded overflow-hidden">
+                <button id="obsTraceTab" class="px-3 py-1 text-sm bg-slate-800 text-white">Application Tracing <span id="obsTraceCount" class="badge ml-2">0</span></button>
+                <button id="obsDashTab" class="px-3 py-1 text-sm">Dashboards <span id="obsDashCount" class="badge ml-2">0</span></button>
+              </div>
+              <div id="obsTraceContent" class="mt-3 overflow-x-auto">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="text-gray-500">
+                      <th class="text-left py-2 px-4">Application Name</th>
+                      <th class="text-left py-2 px-4">Most Recent Run (7D)</th>
+                      <th class="text-left py-2 px-4">Feedback (7D)</th>
+                      <th class="text-left py-2 px-4">Error Rate (7D)</th>
+                      <th class="text-left py-2 px-4">Run Count (7D)</th>
+                      <th class="text-left py-2 px-4">P50 Latency (7D)</th>
+                      <th class="text-left py-2 px-4">P99 Latency (7D)</th>
+                      <th class="text-left py-2 px-4">Total Cost (7D)</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y" id="obsTraceBody"></tbody>
+                </table>
+              </div>
+              <div id="obsDashContent" class="mt-3 overflow-x-auto hidden">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="text-gray-500">
+                      <th class="text-left py-2 px-4">Dashboard</th>
+                      <th class="text-left py-2 px-4">Owner</th>
+                      <th class="text-left py-2 px-4">Widgets</th>
+                      <th class="text-left py-2 px-4">Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y" id="obsDashBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="p-4 bg-white rounded border">
+              <div class="flex items-center">
+                <h2 class="text-2xl font-semibold">Management</h2>
+                <a href="#/applications" class="ml-auto px-3 py-1 border rounded text-sm">View Applications</a>
+              </div>
+              <div class="mt-3 inline-flex border rounded overflow-hidden">
+                <button id="cfgAppsTab" class="px-3 py-1 text-sm bg-slate-800 text-white">Applications <span id="cfgAppsCount" class="badge ml-2">0</span></button>
+                <button id="cfgMetricsTab" class="px-3 py-1 text-sm">Metrics <span id="cfgMetricsCount" class="badge ml-2">0</span></button>
+              </div>
+              <div id="cfgAppsContent" class="mt-3 overflow-x-auto">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="text-gray-500">
+                      <th class="text-left py-2 px-4">Name</th>
+                      <th class="text-left py-2 px-4">EIM ID</th>
+                      <th class="text-left py-2 px-4">Use Case ID</th>
+                      <th class="text-left py-2 px-4">Type</th>
+                      <th class="text-left py-2 px-4">Status</th>
+                      <th class="text-left py-2 px-4">Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y" id="cfgAppsBody"></tbody>
+                </table>
+              </div>
+              <div id="cfgMetricsContent" class="mt-3 overflow-x-auto hidden">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="text-gray-500">
+                      <th class="text-left py-2 px-4">Name</th>
+                      <th class="text-left py-2 px-4">Category</th>
+                      <th class="text-left py-2 px-4">Scope</th>
+                      <th class="text-left py-2 px-4">In Use</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y" id="cfgMetricsBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="p-4 bg-white rounded border">
+              <div class="flex items-center">
+                <h2 class="text-2xl font-semibold">Evaluation</h2>
+                <a href="#/evaluation" class="ml-auto px-3 py-1 border rounded text-sm">View Evaluation</a>
+              </div>
+              <div class="mt-3 inline-flex border rounded overflow-hidden">
+                <button id="evalDatasetsTab" class="px-3 py-1 text-sm bg-slate-800 text-white">Datasets <span id="evalDatasetsCount" class="badge ml-2">0</span></button>
+                <button id="evalAnnotationTab" class="px-3 py-1 text-sm">Annotation <span id="evalAnnotationCount" class="badge ml-2">0</span></button>
+                <button id="evalOverviewTab" class="px-3 py-1 text-sm">Evaluation <span id="evalOverviewCount" class="badge ml-2">0</span></button>
+              </div>
+              <div id="evalDatasetsContent" class="mt-3 overflow-x-auto">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="text-gray-500">
+                      <th class="text-left py-2 px-4">Name</th>
+                      <th class="text-left py-2 px-4">Type</th>
+                      <th class="text-left py-2 px-4">Items</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y" id="evalDatasetsBody"></tbody>
+                </table>
+              </div>
+              <div id="evalAnnotationContent" class="mt-3 overflow-x-auto hidden">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="text-gray-500">
+                      <th class="text-left py-2 px-4">Queue</th>
+                      <th class="text-left py-2 px-4">Pending</th>
+                      <th class="text-left py-2 px-4">Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y" id="evalAnnotationBody"></tbody>
+                </table>
+              </div>
+              <div id="evalOverviewContent" class="mt-3 overflow-x-auto hidden">
+                <table class="min-w-full text-sm">
+                  <thead>
+                    <tr class="text-gray-500">
+                      <th class="text-left py-2 px-4">Metric</th>
+                      <th class="text-left py-2 px-4">Value</th>
+                      <th class="text-left py-2 px-4">Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y" id="evalOverviewBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section id="monitoring" data-page class="hidden space-y-6">
+            <div class="bg-white/80 backdrop-blur border">
+              <div class="px-6 py-3 flex items-center gap-4">
+                <div class="text-lg font-semibold">Monitoring Dashboard</div>
+              </div>
+              <div class="px-6 py-3 border-t bg-white">
+                <div class="flex flex-wrap items-center gap-2">
+                  <select id="filterApp" class="px-3 py-2 border rounded text-sm">
+                    <option>IWPB AI Project</option>
+                    <option>Demo Project</option>
+                  </select>
+                  <input id="filterFrom" type="date" class="px-3 py-2 border rounded text-sm" />
+                  <input id="filterTo" type="date" class="px-3 py-2 border rounded text-sm" />
+                  <select id="filterPreset" class="px-3 py-2 border rounded text-sm">
+                    <option>Past 7 days</option>
+                    <option>Past 30 days</option>
+                    <option>Past 90 days</option>
+                  </select>
+                  <select id="filterMode" class="px-3 py-2 border rounded text-sm">
+                    <option>Online & Offline</option>
+                    <option>Online</option>
+                    <option>Offline</option>
+                  </select>
+                </div>
               </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -629,8 +815,14 @@
     function setActive(id) {
       links.forEach(a => {
         const active = a.getAttribute('data-section') === id
-        a.classList.toggle('bg-slate-700', active)
         a.classList.toggle('font-semibold', active)
+        a.classList.remove('bg-slate-700')
+        a.classList.remove('bg-gray-200')
+        a.classList.remove('bg-gray-100')
+        if (active) {
+          const theme = localStorage.getItem('theme') || 'light'
+          a.classList.add(theme === 'dark' ? 'bg-slate-700' : 'bg-gray-100')
+        }
       })
       pages.forEach(p => p.classList.toggle('hidden', p.id !== id))
     }
@@ -841,6 +1033,190 @@
         const idx = apps.findIndex(a => a.id === app.id)
         if (idx >= 0) apps[idx] = { ...apps[idx], name, desc, status }
         location.hash = '#/applications'
+      }
+    }
+
+    function ensureHome() {
+      const obsTrace = document.getElementById('obsTraceTab')
+      const obsDash = document.getElementById('obsDashTab')
+      const tc = document.getElementById('obsTraceContent')
+      const dc = document.getElementById('obsDashContent')
+      const activateObs = v => {
+        const isTrace = v === 'trace'
+        if (obsTrace && obsDash) {
+          obsTrace.classList.toggle('bg-slate-800', isTrace)
+          obsTrace.classList.toggle('text-white', isTrace)
+          obsDash.classList.toggle('bg-slate-800', !isTrace)
+          obsDash.classList.toggle('text-white', !isTrace)
+        }
+        if (tc && dc) {
+          tc.classList.toggle('hidden', !isTrace)
+          dc.classList.toggle('hidden', isTrace)
+        }
+      }
+      if (obsTrace) obsTrace.onclick = () => activateObs('trace')
+      if (obsDash) obsDash.onclick = () => activateObs('dash')
+      activateObs('trace')
+      const traceBody = document.getElementById('obsTraceBody')
+      if (traceBody) {
+        const list = apps.slice(0, 5)
+        traceBody.innerHTML = list.map(a => {
+          const feedback = `${Math.round(Math.random()*5)}%`
+          const errorRate = Math.round(Math.random()*7)
+          const runs7d = computeRuns(a)
+          const p50 = `${Math.round(120 + Math.random()*180)} ms`
+          const p99 = `${Math.round(300 + Math.random()*400)} ms`
+          const cost7d = `$${(a.cost * (runs7d/30)).toFixed(2)}`
+          const erClass = errorRate === 0 ? 'pill-green' : (errorRate < 5 ? 'pill-amber' : 'pill-red')
+          return `
+          <tr>
+            <td class="py-2 px-4">${a.name}</td>
+            <td class="py-2 px-4">${formatTs(a.lastRunAt)}</td>
+            <td class="py-2 px-4">${feedback}</td>
+            <td class="py-2 px-4"><span class="pill ${erClass}">${errorRate}%</span></td>
+            <td class="py-2 px-4">${runs7d}</td>
+            <td class="py-2 px-4">${p50}</td>
+            <td class="py-2 px-4">${p99}</td>
+            <td class="py-2 px-4">${cost7d}</td>
+          </tr>
+          `
+        }).join('')
+        const tcEl = document.getElementById('obsTraceCount'); if (tcEl) tcEl.textContent = String(list.length)
+      }
+      const dashBody = document.getElementById('obsDashBody')
+      if (dashBody) {
+        const items = [
+          { name: 'Quality Overview', owner: 'Ops', widgets: 6 },
+          { name: 'Safety Monitoring', owner: 'Risk', widgets: 4 },
+          { name: 'Efficiency KPIs', owner: 'Platform', widgets: 5 }
+        ]
+        dashBody.innerHTML = items.map(x => `
+          <tr>
+            <td class="py-2 px-4">${x.name}</td>
+            <td class="py-2 px-4">${x.owner}</td>
+            <td class="py-2 px-4">${x.widgets}</td>
+            <td class="py-2 px-4">${new Date().toLocaleDateString()}</td>
+          </tr>
+        `).join('')
+        const dcEl = document.getElementById('obsDashCount'); if (dcEl) dcEl.textContent = String(items.length)
+      }
+      const cfgAppsTab = document.getElementById('cfgAppsTab')
+      const cfgMetricsTab = document.getElementById('cfgMetricsTab')
+      const cfgAppsC = document.getElementById('cfgAppsContent')
+      const cfgMetricsC = document.getElementById('cfgMetricsContent')
+      const activateCfg = v => {
+        const isApps = v === 'apps'
+        if (cfgAppsTab && cfgMetricsTab) {
+          cfgAppsTab.classList.toggle('bg-slate-800', isApps)
+          cfgAppsTab.classList.toggle('text-white', isApps)
+          cfgMetricsTab.classList.toggle('bg-slate-800', !isApps)
+          cfgMetricsTab.classList.toggle('text-white', !isApps)
+        }
+        if (cfgAppsC && cfgMetricsC) {
+          cfgAppsC.classList.toggle('hidden', !isApps)
+          cfgMetricsC.classList.toggle('hidden', isApps)
+        }
+      }
+      if (cfgAppsTab) cfgAppsTab.onclick = () => activateCfg('apps')
+      if (cfgMetricsTab) cfgMetricsTab.onclick = () => activateCfg('metrics')
+      activateCfg('apps')
+      const cfgAppsBody = document.getElementById('cfgAppsBody')
+      if (cfgAppsBody) {
+        const list = apps.slice(0, 5)
+        cfgAppsBody.innerHTML = list.map(a => `
+          <tr>
+            <td class="py-2 px-4">${a.name}</td>
+            <td class="py-2 px-4 mono">${a.eimId || ''}</td>
+            <td class="py-2 px-4 mono">${a.useCaseId || ''}</td>
+            <td class="py-2 px-4"><span class="px-2 py-0.5 rounded text-xs ${a.type === 'pro-code' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">${a.type === 'pro-code' ? 'Pro Code' : 'Low Code'}</span></td>
+            <td class="py-2 px-4">${a.status}</td>
+            <td class="py-2 px-4">${formatTs(a.lastRunAt)}</td>
+          </tr>
+        `).join('')
+        const acEl = document.getElementById('cfgAppsCount'); if (acEl) acEl.textContent = String(apps.length)
+      }
+      const cfgMetricsBody = document.getElementById('cfgMetricsBody')
+      if (cfgMetricsBody) {
+        const items = getMetrics().slice(0, 6)
+        const scopeChip = s => `<span class="px-2 py-0.5 rounded text-xs bg-slate-100 mr-1">${s}</span>`
+        cfgMetricsBody.innerHTML = items.map(m => `
+          <tr>
+            <td class="py-2 px-4">${m.name}</td>
+            <td class="py-2 px-4">${m.category}</td>
+            <td class="py-2 px-4">${(Array.isArray(m.scope)?m.scope:[]).map(scopeChip).join('')}</td>
+            <td class="py-2 px-4"><span class="pill ${m.enabled ? 'pill-green' : 'pill-gray'}">${m.enabled ? 'In Use' : 'Not In Use'}</span></td>
+          </tr>
+        `).join('')
+        const mcEl = document.getElementById('cfgMetricsCount'); if (mcEl) mcEl.textContent = String(getMetrics().length)
+      }
+      const dsTab = document.getElementById('evalDatasetsTab')
+      const anTab = document.getElementById('evalAnnotationTab')
+      const evTab = document.getElementById('evalOverviewTab')
+      const dsC = document.getElementById('evalDatasetsContent')
+      const anC = document.getElementById('evalAnnotationContent')
+      const evC = document.getElementById('evalOverviewContent')
+      const activateEval = v => {
+        const isDs = v === 'datasets'
+        const isAn = v === 'annotation'
+        const isEv = v === 'evaluation'
+        if (dsTab && anTab && evTab) {
+          dsTab.classList.toggle('bg-slate-800', isDs)
+          dsTab.classList.toggle('text-white', isDs)
+          anTab.classList.toggle('bg-slate-800', isAn)
+          anTab.classList.toggle('text-white', isAn)
+          evTab.classList.toggle('bg-slate-800', isEv)
+          evTab.classList.toggle('text-white', isEv)
+        }
+        if (dsC && anC && evC) {
+          dsC.classList.toggle('hidden', !isDs)
+          anC.classList.toggle('hidden', !isAn)
+          evC.classList.toggle('hidden', !isEv)
+        }
+      }
+      if (dsTab) dsTab.onclick = () => activateEval('datasets')
+      if (anTab) anTab.onclick = () => activateEval('annotation')
+      if (evTab) evTab.onclick = () => activateEval('evaluation')
+      activateEval('datasets')
+      const dsBody = document.getElementById('evalDatasetsBody')
+      if (dsBody) {
+        dsBody.innerHTML = datasets.slice(0, 5).map(d => `
+          <tr>
+            <td class="py-2 px-4">${d.name}</td>
+            <td class="py-2 px-4">${d.type}</td>
+            <td class="py-2 px-4">${d.items}</td>
+          </tr>
+        `).join('')
+        const dscEl = document.getElementById('evalDatasetsCount'); if (dscEl) dscEl.textContent = String(datasets.length)
+      }
+      const anBody = document.getElementById('evalAnnotationBody')
+      if (anBody) {
+        const queues = [
+          { name: 'Safety Review', pending: 12 },
+          { name: 'Formatting Check', pending: 7 }
+        ]
+        anBody.innerHTML = queues.map(q => `
+          <tr>
+            <td class="py-2 px-4">${q.name}</td>
+            <td class="py-2 px-4">${q.pending}</td>
+            <td class="py-2 px-4">${new Date().toLocaleDateString()}</td>
+          </tr>
+        `).join('')
+        const ancEl = document.getElementById('evalAnnotationCount'); if (ancEl) ancEl.textContent = String(queues.length)
+      }
+      const evBody = document.getElementById('evalOverviewBody')
+      if (evBody) {
+        const items = [
+          { metric: 'Pass Rate', value: '71.2%' },
+          { metric: 'Dataset Coverage', value: '68%' }
+        ]
+        evBody.innerHTML = items.map(x => `
+          <tr>
+            <td class="py-2 px-4">${x.metric}</td>
+            <td class="py-2 px-4">${x.value}</td>
+            <td class="py-2 px-4">${new Date().toLocaleDateString()}</td>
+          </tr>
+        `).join('')
+        const evcEl = document.getElementById('evalOverviewCount'); if (evcEl) evcEl.textContent = String(items.length)
       }
     }
 
@@ -1490,16 +1866,14 @@
       wrap.className = 'overflow-x-auto'
       const table = document.createElement('table')
       table.className = 'min-w-full text-sm bg-white rounded border'
+      const scopeChip = s => `<span class="px-2 py-0.5 rounded text-xs bg-slate-100 mr-1">${s}</span>`
       table.innerHTML = `
         <thead class="bg-slate-50">
           <tr class="text-gray-700">
             <th class="text-left py-2 px-4">Name</th>
             <th class="text-left py-2 px-4">Category</th>
             <th class="text-left py-2 px-4">Scope</th>
-            <th class="text-left py-2 px-4">Method</th>
-            <th class="text-left py-2 px-4">Needs GT</th>
-            <th class="text-left py-2 px-4">Enabled</th>
-            <th class="text-left py-2 px-4">Description</th>
+            <th class="text-left py-2 px-4">In Use</th>
             <th class="text-left py-2 px-4">View</th>
           </tr>
         </thead>
@@ -1508,11 +1882,8 @@
             <tr class="hover:bg-slate-50">
               <td class="py-2 px-4 font-semibold">${m.name}</td>
               <td class="py-2 px-4">${m.category}</td>
-              <td class="py-2 px-4">${Array.isArray(m.scope) ? m.scope.join(', ') : (m.scope || '')}</td>
-              <td class="py-2 px-4">${m.method || ''}</td>
-              <td class="py-2 px-4">${m.requiresGroundTruth ? 'Yes' : 'No'}</td>
-              <td class="py-2 px-4">${m.enabled ? 'Yes' : 'No'}</td>
-              <td class="py-2 px-4">${m.description || ''}</td>
+              <td class="py-2 px-4">${(Array.isArray(m.scope) ? m.scope : []).map(scopeChip).join('')}</td>
+              <td class="py-2 px-4"><span class="pill ${m.enabled ? 'pill-green' : 'pill-gray'}">${m.enabled ? 'In Use' : 'Not In Use'}</span></td>
               <td class="py-2 px-4">
                 <a href="#/metric/${m.id}" class="px-3 py-1 border rounded">View</a>
               </td>
@@ -1522,7 +1893,7 @@
       `
       wrap.appendChild(table)
       content.appendChild(wrap)
-      // View buttons now navigate to dedicated metric page
+      // View links navigate to metric detail page
     }
 
     function showMetricForm(id) {
@@ -1614,8 +1985,8 @@
       } else if (target === 'metric-detail') {
         const m = getMetrics().find(x => x.id === parts[1])
         items = [mk('Metrics', '#/metrics'), `<span class="text-slate-900">${m ? m.name : 'Metric'}</span>`]
-      } else if (target === 'users') {
-        items = [mk('Monitoring', '#/users')]
+      } else if (target === 'monitoring') {
+        items = [mk('Monitoring', '#/monitoring')]
       } else if (target === 'annotation') {
         items = [mk('Annotation', '#/annotation')]
       } else if (target === 'low-code-agents') {
@@ -1645,11 +2016,62 @@
       if (logout) logout.onclick = () => { menu.classList.add('hidden') }
     }
 
-    ; (function applyDarkTheme() {
-      document.body.classList.add('dark-theme')
-      document.body.classList.remove('bg-slate-100')
-      document.body.classList.add('bg-slate-900')
-    })()
+    function setTheme(mode) {
+      const body = document.body
+      const sidebar = document.getElementById('sidebar')
+      const footer = document.getElementById('sidebarFooter')
+      const themeMenu = document.getElementById('themeMenu')
+      body.classList.toggle('dark-theme', mode === 'dark')
+      body.classList.toggle('bg-slate-900', mode === 'dark')
+      body.classList.toggle('bg-slate-100', mode === 'light')
+      localStorage.setItem('theme', mode)
+      if (sidebar) {
+        sidebar.className = 'w-64 flex flex-col h-screen ' + (mode === 'dark' ? 'bg-black text-slate-200' : 'bg-white text-slate-800 border-r border-slate-200')
+      }
+      if (footer) {
+        footer.className = 'mt-auto p-4 border-t relative ' + (mode === 'dark' ? 'border-slate-800' : 'border-slate-200')
+      }
+      if (themeMenu) {
+        themeMenu.className = 'hidden absolute left-4 bottom-32 rounded shadow-lg w-48 ' + (mode === 'dark' ? 'bg-black border border-slate-700' : 'bg-white border border-slate-200')
+        themeMenu.innerHTML = `
+          <button id="chooseLight" class="block w-full text-left px-3 py-2 ${mode==='dark'?'hover:bg-slate-700':'hover:bg-gray-100'} text-sm">Light</button>
+          <button id="chooseDark" class="block w-full text-left px-3 py-2 ${mode==='dark'?'hover:bg-slate-700':'hover:bg-gray-100'} text-sm">Dark</button>
+        `
+        const cl = document.getElementById('chooseLight')
+        const cd = document.getElementById('chooseDark')
+        if (cl) cl.onclick = () => { setTheme('light'); themeMenu.classList.add('hidden') }
+        if (cd) cd.onclick = () => { setTheme('dark'); themeMenu.classList.add('hidden') }
+      }
+      const icon = document.getElementById('themeIcon')
+      if (icon) {
+        icon.innerHTML = mode === 'dark' ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>' : '<circle cx="12" cy="12" r="4" />'
+      }
+      Array.from(document.querySelectorAll('[data-section]')).forEach(a => {
+        a.classList.toggle('hover:bg-slate-700', mode === 'dark')
+        a.classList.toggle('hover:bg-gray-100', mode === 'light')
+      })
+      const current = (location.hash.replace('#/','') || 'overview').split('/')
+      const t = current[0] === 'app' && current[1] ? 'app-detail' : (current[0] === 'app-config' && current[1] ? 'app-config' : (current[0] === 'metric' && current[1] ? 'metric-detail' : current[0]))
+      setActive(t || 'overview')
+    }
+
+    function initThemeMenu() {
+      const btn = document.getElementById('themeButton')
+      const menu = document.getElementById('themeMenu')
+      if (!btn || !menu) return
+      btn.onclick = () => {
+        if (menu.classList.contains('hidden')) {
+          const saved = localStorage.getItem('theme') || 'light'
+          setTheme(saved)
+          menu.classList.remove('hidden')
+        } else {
+          menu.classList.add('hidden')
+        }
+      }
+      document.addEventListener('click', (e) => { if (!btn.contains(e.target) && !menu.contains(e.target)) menu.classList.add('hidden') })
+      const saved = localStorage.getItem('theme') || 'light'
+      setTheme(saved)
+    }
 
     function updateNavCounts() {
       const a = document.getElementById('countApps'); if (a) a.textContent = String(Array.isArray(apps) ? apps.length : 0)
@@ -1659,8 +2081,12 @@
     }
     updateNavCounts()
     initAccountMenu()
+    initThemeMenu()
+    ensureHome()
 
   </script>
 </body>
 
 </html>
+    :root { --sidebar-width: clamp(220px, 22vw, 320px) }
+    #sidebar { width: var(--sidebar-width) }
