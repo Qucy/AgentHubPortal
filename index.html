@@ -953,6 +953,58 @@
       const thr = m.thresholds && m.thresholds.type && m.thresholds.type !== 'none' ? `with ${m.thresholds.type} threshold ${m.thresholds.value}` : 'with no fixed threshold'
       return `Measured ${method}, ${gt}, aggregated at ${scope}, ${thr}, and tracked over time to detect performance drift and quality issues.`
     }
+
+    var levelConfigsMap = {}
+    ;(() => {
+      const mk = (metricId, level, method) => ({
+        configId: crypto && crypto.randomUUID ? crypto.randomUUID() : `${metricId}-${level}-${Math.random().toString(36).slice(2)}`,
+        metricId,
+        level,
+        evaluationMethod: method || 'heuristic',
+        methodParams: { window: '7d', aggregation: 'avg' },
+        passThreshold: +(0.7 + (Math.random()*0.2-0.1)).toFixed(2),
+        valueRange: { min: 0, max: 1 },
+        isLevelEnabled: true,
+        createdAt: new Date(Date.now()-7*24*3600*1000).toISOString(),
+        updatedAt: new Date().toISOString()
+      })
+      const map = {}
+      ;(defaultMetrics || []).forEach(dm => {
+        const scope = Array.isArray(dm.scope) ? dm.scope : []
+        const list = []
+        if (scope.includes('Application')) list.push(mk(dm.id, 'Application', dm.method))
+        if (scope.includes('Agent')) list.push(mk(dm.id, 'Agent', dm.method))
+        if (scope.includes('Step')) list.push(mk(dm.id, 'Step', dm.method))
+        map[dm.id] = list
+      })
+      levelConfigsMap = map
+    })()
+
+    function getLevelConfigs(metricId) {
+      try {
+        if (levelConfigsMap && levelConfigsMap[metricId]) return levelConfigsMap[metricId]
+        const items = getMetrics()
+        const m = items.find(x => x.id === metricId) || {}
+        const scope = Array.isArray(m.scope) ? m.scope : []
+        const mk = (level, method) => ({
+          configId: `${metricId}-${level}-${Math.random().toString(36).slice(2)}`,
+          metricId,
+          level,
+          evaluationMethod: method || 'heuristic',
+          methodParams: { window: '7d', aggregation: 'avg' },
+          passThreshold: 0.7,
+          valueRange: { min: 0, max: 1 },
+          isLevelEnabled: true,
+          createdAt: new Date(Date.now()-7*24*3600*1000).toISOString(),
+          updatedAt: new Date().toISOString()
+        })
+        const res = []
+        if (scope.includes('Application')) res.push(mk('Application', m.method))
+        if (scope.includes('Agent')) res.push(mk('Agent', m.method))
+        if (scope.includes('Step')) res.push(mk('Step', m.method))
+        return res
+      } catch { return [] }
+    }
     function ensureMetricDetail(id) {
       const items = getMetrics()
       const m = items.find(x => x.id === id)
@@ -963,6 +1015,8 @@
       const scopeChips = (Array.isArray(m.scope) ? m.scope : []).map(s => `<span class="px-2 py-1 rounded text-xs ${scopeColors[s] || 'bg-slate-200 text-slate-800'}">${s}</span>`).join(' ')
       const thresholds = m.thresholds || { type: 'none', value: '' }
       const enableCls = m.enabled ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+      const levels = getLevelConfigs(m.id)
+      const tabs = levels.map(l => l.level)
       wrap.innerHTML = `
         <div class="p-4 bg-white rounded border">
           <div class="flex items-center justify-between">
@@ -1002,18 +1056,39 @@
           </div>
         </div>
         <div class="p-4 bg-white rounded border">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <div class="text-sm font-semibold mb-1">Rationale</div>
-              <div class="text-sm">${genMetricRationale(m)}</div>
-            </div>
-            <div>
-              <div class="text-sm font-semibold mb-1">Measurement</div>
-              <div class="text-sm">${genMetricMeasurement(m)}</div>
-            </div>
+          <div class="mb-3 inline-flex border rounded overflow-hidden">
+            ${tabs.map((t,i) => `<button class="px-3 py-1 text-sm ${i===0?'bg-slate-800 text-white':''}" data-mtab="${t}">${t}</button>`).join('')}
           </div>
+          ${levels.map((lc,i) => `
+            <div class="${i===0?'':'hidden'}" data-mcontent="${lc.level}">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div><div class="text-gray-500">Evaluation Method</div><div class="font-semibold">${lc.evaluationMethod}</div></div>
+                <div><div class="text-gray-500">Pass Threshold</div><div class="font-semibold">${lc.passThreshold}</div></div>
+                <div><div class="text-gray-500">Value Range</div><div class="font-semibold">${lc.valueRange.min} - ${lc.valueRange.max}</div></div>
+                <div><div class="text-gray-500">Params</div><div class="font-semibold mono">${JSON.stringify(lc.methodParams)}</div></div>
+                <div><div class="text-gray-500">Enabled</div><div class="font-semibold">${lc.isLevelEnabled ? 'Yes' : 'No'}</div></div>
+                <div><div class="text-gray-500">Updated</div><div class="font-semibold">${formatTs(lc.updatedAt)}</div></div>
+              </div>
+              <div class="mt-4">
+                <div class="text-sm font-semibold mb-1">Rationale</div>
+                <div class="text-sm">${genMetricRationale(m)}</div>
+              </div>
+            </div>
+          `).join('')}
         </div>
       `
+      const btns = wrap.querySelectorAll('[data-mtab]')
+      const contents = wrap.querySelectorAll('[data-mcontent]')
+      const activate = lvl => {
+        btns.forEach(b => {
+          const on = b.getAttribute('data-mtab') === lvl
+          b.classList.toggle('bg-slate-800', on)
+          b.classList.toggle('text-white', on)
+        })
+        contents.forEach(c => c.classList.toggle('hidden', c.getAttribute('data-mcontent') !== lvl))
+      }
+      btns.forEach(b => b.onclick = () => activate(b.getAttribute('data-mtab')))
+      if (btns[0]) activate(btns[0].getAttribute('data-mtab'))
     }
 
     function ensureAppConfig(id) {
@@ -1720,42 +1795,50 @@
       return wrap
     }
     function ensureTracing() {
-      const appSel = document.getElementById('logApp')
-      if (appSel && appSel.options.length <= 1) {
-        const apps = Array.from(new Set(logs.map(l => l.app)))
-        appSel.innerHTML = '<option value="all">All Applications</option>' + apps.map(a => `<option value="${a}">${a}</option>`).join('')
-      }
       const container = document.getElementById('tracingContent'); if (!container) return
-      const re = () => {
-        const q = (document.getElementById('logSearch')?.value || '').toLowerCase()
-        const level = document.getElementById('logLevel')?.value || 'all'
-        const app = document.getElementById('logApp')?.value || 'all'
-        const f = document.getElementById('logFrom')?.value
-        const t = document.getElementById('logTo')?.value
-        const from = f ? new Date(f).getTime() : NaN
-        const to = t ? new Date(t).getTime() : NaN
-        const list = logs.filter(l =>
-          (!q || `${l.msg} ${l.meta}`.toLowerCase().includes(q)) &&
-          (level === 'all' || l.level === level) &&
-          (app === 'all' || l.app === app) &&
-          (isNaN(from) || new Date(l.ts).getTime() >= from) &&
-          (isNaN(to) || new Date(l.ts).getTime() <= to)
-        )
-        container.innerHTML = ''
-        container.appendChild(renderLogs(list))
-      }
-      const bindInput = id => { const el = document.getElementById(id); if (el) el.oninput = re }
-      const bindChange = id => { const el = document.getElementById(id); if (el) el.onchange = re }
-      bindInput('logSearch'); bindChange('logLevel'); bindChange('logApp'); bindChange('logFrom'); bindChange('logTo')
-      const reset = document.getElementById('logReset'); if (reset) reset.onclick = () => {
-        document.getElementById('logSearch').value = ''
-        document.getElementById('logLevel').value = 'all'
-        document.getElementById('logApp').value = 'all'
-        document.getElementById('logFrom').value = ''
-        document.getElementById('logTo').value = ''
-        re()
-      }
-      re()
+      const list = apps.slice(0, Math.max(5, apps.length))
+      const head = `
+        <thead>
+          <tr class="text-gray-500">
+            <th class="text-left py-2 px-4">Application Name</th>
+            <th class="text-left py-2 px-4">Most Recent Run (7D)</th>
+            <th class="text-left py-2 px-4">Feedback (7D)</th>
+            <th class="text-left py-2 px-4">Error Rate (7D)</th>
+            <th class="text-left py-2 px-4">Run Count (7D)</th>
+            <th class="text-left py-2 px-4">P50 Latency (7D)</th>
+            <th class="text-left py-2 px-4">P99 Latency (7D)</th>
+            <th class="text-left py-2 px-4">Total Tokens (7D)</th>
+            <th class="text-left py-2 px-4">Total Cost (7D)</th>
+          </tr>
+        </thead>`
+      const rows = list.map(a => {
+        const feedback = `${Math.round(Math.random()*5)}%`
+        const errorRate = Math.round(Math.random()*7)
+        const runs7d = computeRuns(a)
+        const p50 = `${Math.round(120 + Math.random()*180)} ms`
+        const p99 = `${Math.round(300 + Math.random()*400)} ms`
+        const tokens = Math.round(50000 + Math.random()*50000)
+        const cost7d = `$${(a.cost * (runs7d/30)).toFixed(2)}`
+        const erClass = errorRate === 0 ? 'pill-green' : (errorRate < 5 ? 'pill-amber' : 'pill-red')
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-2 px-4">${a.name}</td>
+            <td class="py-2 px-4">${formatTs(a.lastRunAt)}</td>
+            <td class="py-2 px-4">${feedback}</td>
+            <td class="py-2 px-4"><span class="pill ${erClass}">${errorRate}%</span></td>
+            <td class="py-2 px-4">${runs7d}</td>
+            <td class="py-2 px-4">${p50}</td>
+            <td class="py-2 px-4">${p99}</td>
+            <td class="py-2 px-4">${tokens}</td>
+            <td class="py-2 px-4">${cost7d}</td>
+          </tr>
+        `
+      }).join('')
+      const table = document.createElement('table')
+      table.className = 'min-w-full text-sm'
+      table.innerHTML = head + `<tbody class="divide-y">${rows}</tbody>`
+      container.innerHTML = ''
+      container.appendChild(table)
     }
 
     const datasets = [
