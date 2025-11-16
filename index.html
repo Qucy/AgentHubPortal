@@ -92,6 +92,26 @@
       color: var(--text);
       border: 1px solid var(--border)
     }
+    .chip { background-color: #e2e8f0; color: #0f172a; border: 1px solid #cbd5e1 }
+    .scope-app-blue { background-color:#bfdbfe; color:#1e3a8a }
+    .scope-agent-purple { background-color:#ddd6fe; color:#4c1d95 }
+    .scope-step-yellow { background-color:#fde68a; color:#92400e }
+    .dark-theme .bg-slate-100 { background-color: var(--panelSoft) !important; color: var(--text) !important; border: 1px solid var(--border) }
+    .dark-theme .chip { background-color: var(--panelSoft); color: var(--text); border: 1px solid var(--border) }
+    .dark-theme .scope-app-blue { background-color:#bfdbfe; color:#1e3a8a }
+    .dark-theme .scope-agent-purple { background-color:#ddd6fe; color:#4c1d95 }
+    .dark-theme .scope-step-yellow { background-color:#fde68a; color:#92400e }
+
+    .cat-quality { background-color:#d1fae5; color:#065f46; border:1px solid #a7f3d0 }
+    .cat-efficiency { background-color:#bfdbfe; color:#1e3a8a; border:1px solid #93c5fd }
+    .cat-safety { background-color:#fecaca; color:#7f1d1d; border:1px solid #fca5a5 }
+    .cat-reasoning { background-color:#ddd6fe; color:#4c1d95; border:1px solid #c4b5fd }
+    .cat-consistency { background-color:#fde68a; color:#92400e; border:1px solid #fcd34d }
+    .dark-theme .cat-quality { background-color:#d1fae5; color:#065f46; border:1px solid #a7f3d0 }
+    .dark-theme .cat-efficiency { background-color:#bfdbfe; color:#1e3a8a; border:1px solid #93c5fd }
+    .dark-theme .cat-safety { background-color:#fecaca; color:#7f1d1d; border:1px solid #fca5a5 }
+    .dark-theme .cat-reasoning { background-color:#ddd6fe; color:#4c1d95; border:1px solid #c4b5fd }
+    .dark-theme .cat-consistency { background-color:#fde68a; color:#92400e; border:1px solid #fcd34d }
 
     .pill { font-size: .75rem; padding: 0 .375rem; border-radius: 9999px; display: inline-block }
     .pill-green { background: #86efac; color: #065f46 }
@@ -376,6 +396,8 @@
                       <th class="text-left py-2 px-4">Category</th>
                       <th class="text-left py-2 px-4">Scope</th>
                       <th class="text-left py-2 px-4">In Use</th>
+                      <th class="text-left py-2 px-4">Created</th>
+                      <th class="text-left py-2 px-4">Updated</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y" id="cfgMetricsBody"></tbody>
@@ -1138,13 +1160,29 @@
       const cfgMetricsBody = document.getElementById('cfgMetricsBody')
       if (cfgMetricsBody) {
         const items = getMetrics().slice(0, 6)
-        const scopeChip = s => `<span class="px-2 py-0.5 rounded text-xs bg-slate-100 mr-1">${s}</span>`
+        const scopeChip = s => {
+          const map = { 'Application': 'scope-app-blue', 'Agent': 'scope-agent-purple', 'Step': 'scope-step-yellow' }
+          const cls = map[s] || 'chip'
+          return `<span class="chip px-2 py-0.5 rounded text-xs ${cls} mr-1">${s}</span>`
+        }
+        const catClass = c => {
+          const map = {
+            'Task Quality':'cat-quality',
+            'Efficiency':'cat-efficiency',
+            'Safety & Adherence':'cat-safety',
+            'Reasoning & Explainability':'cat-reasoning',
+            'Consistency & Reliability':'cat-consistency'
+          }
+          return map[c] || 'chip'
+        }
         cfgMetricsBody.innerHTML = items.map(m => `
           <tr>
             <td class="py-2 px-4">${m.name}</td>
-            <td class="py-2 px-4">${m.category}</td>
+            <td class="py-2 px-4"><span class="chip px-2 py-0.5 rounded text-xs ${catClass(m.category)}">${m.category}</span></td>
             <td class="py-2 px-4">${(Array.isArray(m.scope)?m.scope:[]).map(scopeChip).join('')}</td>
             <td class="py-2 px-4"><span class="pill ${m.enabled ? 'pill-green' : 'pill-gray'}">${m.enabled ? 'In Use' : 'Not In Use'}</span></td>
+            <td class="py-2 px-4">${formatTs(m.createdAt)}</td>
+            <td class="py-2 px-4">${formatTs(m.updatedAt)}</td>
           </tr>
         `).join('')
         const mcEl = document.getElementById('cfgMetricsCount'); if (mcEl) mcEl.textContent = String(getMetrics().length)
@@ -1837,7 +1875,7 @@
       let items = loadMetrics()
       const map = Object.fromEntries(defaultMetrics.map(m => [m.id, m]))
       if (!items || items.length === 0) {
-        items = defaultMetrics
+        items = defaultMetrics.map(m => ({ ...m, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }))
       } else {
         items = items.map(m => {
           const d = map[m.id] || {}
@@ -1846,11 +1884,13 @@
             requiresGroundTruth: typeof m.requiresGroundTruth === 'boolean' ? m.requiresGroundTruth : (typeof d.requiresGroundTruth === 'boolean' ? d.requiresGroundTruth : false),
             method: m.method ?? d.method ?? '',
             scope: Array.isArray(m.scope) ? m.scope : (Array.isArray(d.scope) ? d.scope : []),
-            thresholds: m.thresholds ? m.thresholds : { type: 'none', value: '' }
+            thresholds: m.thresholds ? m.thresholds : { type: 'none', value: '' },
+            createdAt: m.createdAt || d.createdAt || new Date().toISOString(),
+            updatedAt: m.updatedAt || d.updatedAt || new Date().toISOString()
           }
         })
         const existing = new Set(items.map(m => m.id))
-        defaultMetrics.forEach(dm => { if (!existing.has(dm.id)) items.push(dm) })
+        defaultMetrics.forEach(dm => { if (!existing.has(dm.id)) items.push({ ...dm, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }) })
       }
       saveMetrics(items)
       return items
@@ -1866,7 +1906,21 @@
       wrap.className = 'overflow-x-auto'
       const table = document.createElement('table')
       table.className = 'min-w-full text-sm bg-white rounded border'
-      const scopeChip = s => `<span class="px-2 py-0.5 rounded text-xs bg-slate-100 mr-1">${s}</span>`
+      const scopeChip = s => {
+        const map = { 'Application': 'scope-app-blue', 'Agent': 'scope-agent-purple', 'Step': 'scope-step-yellow' }
+        const cls = map[s] || 'chip'
+        return `<span class="chip px-2 py-0.5 rounded text-xs ${cls} mr-1">${s}</span>`
+      }
+      const catClass = c => {
+        const map = {
+          'Task Quality':'cat-quality',
+          'Efficiency':'cat-efficiency',
+          'Safety & Adherence':'cat-safety',
+          'Reasoning & Explainability':'cat-reasoning',
+          'Consistency & Reliability':'cat-consistency'
+        }
+        return map[c] || 'chip'
+      }
       table.innerHTML = `
         <thead class="bg-slate-50">
           <tr class="text-gray-700">
@@ -1874,6 +1928,8 @@
             <th class="text-left py-2 px-4">Category</th>
             <th class="text-left py-2 px-4">Scope</th>
             <th class="text-left py-2 px-4">In Use</th>
+            <th class="text-left py-2 px-4">Created</th>
+            <th class="text-left py-2 px-4">Updated</th>
             <th class="text-left py-2 px-4">View</th>
           </tr>
         </thead>
@@ -1881,9 +1937,11 @@
           ${items.map(m => `
             <tr class="hover:bg-slate-50">
               <td class="py-2 px-4 font-semibold">${m.name}</td>
-              <td class="py-2 px-4">${m.category}</td>
+              <td class="py-2 px-4"><span class="chip px-2 py-0.5 rounded text-xs ${catClass(m.category)}">${m.category}</span></td>
               <td class="py-2 px-4">${(Array.isArray(m.scope) ? m.scope : []).map(scopeChip).join('')}</td>
               <td class="py-2 px-4"><span class="pill ${m.enabled ? 'pill-green' : 'pill-gray'}">${m.enabled ? 'In Use' : 'Not In Use'}</span></td>
+              <td class="py-2 px-4">${formatTs(m.createdAt)}</td>
+              <td class="py-2 px-4">${formatTs(m.updatedAt)}</td>
               <td class="py-2 px-4">
                 <a href="#/metric/${m.id}" class="px-3 py-1 border rounded">View</a>
               </td>
