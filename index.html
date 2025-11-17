@@ -791,6 +791,7 @@
   <script>
     const links = Array.from(document.querySelectorAll('[data-section]'))
     const pages = Array.from(document.querySelectorAll('[data-page]'))
+    var metricsAppContext = null
     const defaultMetrics = [
       { id: 'accuracy', name: 'Accuracy', category: 'Task Quality', description: 'Proportion of correct outputs', enabled: true, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent', 'Step'] },
       { id: 'precision', name: 'Precision', category: 'Task Quality', description: 'Correct positive predictions', enabled: false, requiresGroundTruth: true, method: 'Statistical', scope: ['Application', 'Agent'] },
@@ -2247,6 +2248,7 @@
       const filters = document.getElementById('metricsFilters')
       const appsC = document.getElementById('metricsAppsContent')
       const listC = document.getElementById('metricsContent')
+      metricsAppContext = null
       if (filters) filters.classList.add('hidden')
       if (listC) listC.classList.add('hidden')
       if (appsC) appsC.classList.remove('hidden')
@@ -2283,20 +2285,23 @@
       container.innerHTML = ''
       container.appendChild(grid)
       container.querySelectorAll('[data-app-view]').forEach(btn => {
-        btn.onclick = () => switchMetricsToList()
+        btn.onclick = () => switchMetricsToList(btn.getAttribute('data-app-view'))
       })
     }
 
-    function switchMetricsToList() {
+    function switchMetricsToList(appId) {
       const filters = document.getElementById('metricsFilters')
       const appsC = document.getElementById('metricsAppsContent')
       const listC = document.getElementById('metricsContent')
+      const app = (apps || []).find(a => String(a.id) === String(appId)) || null
+      metricsAppContext = app
       if (filters) filters.classList.remove('hidden')
       if (appsC) appsC.classList.add('hidden')
       if (listC) {
         listC.classList.remove('hidden')
         renderMetricsList()
       }
+      updateBreadcrumb('metrics', ['metrics'])
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
@@ -2316,7 +2321,13 @@
         const app = apps.find(a => String(a.id) === String(parts[1]))
         items = [mk('Applications', '#/applications'), `<span class="text-slate-900">${app ? 'Configure ' + app.name : 'Configure'}</span>`]
       } else if (target === 'metrics') {
-        items = [mk('Metrics', '#/metrics')]
+        const ctx = typeof metricsAppContext === 'object' && metricsAppContext ? metricsAppContext : null
+        if (ctx) {
+          const label = ctx.project ? `Project ${ctx.project} metrics` : `${ctx.name} metrics`
+          items = [mk('Metrics', '#/metrics'), `<span class="text-slate-900">${label}</span>`]
+        } else {
+          items = [mk('Metrics', '#/metrics')]
+        }
       } else if (target === 'tracing') {
         items = [mk('Application Tracing', '#/tracing')]
       } else if (target === 'datasets') {
