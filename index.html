@@ -583,7 +583,14 @@
                 <input id="metricsSearch" placeholder="Search metrics" class="px-3 py-2 border rounded text-sm" />
               </div>
             </div>
+            <div class="flex items-center">
+              <div class="inline-flex border rounded overflow-hidden">
+                <button id="metricsViewApps" class="px-3 py-1 text-sm bg-slate-800 text-white">Applications</button>
+                <button id="metricsViewList" class="px-3 py-1 text-sm">Metrics</button>
+              </div>
+            </div>
 
+            <div id="metricsAppsContent" class="space-y-4"></div>
             <div id="metricsContent" class="space-y-4"></div>
             <div id="metricDetail" class="hidden p-4 bg-white rounded border">
               <div class="text-lg font-semibold mb-2" id="mdName"></div>
@@ -1100,8 +1107,15 @@
             const mp = lc.methodParams || {}
             const dm = mp.data_mapping ? Object.entries(mp.data_mapping).map(([k,v]) => `${k}: ${v}`).join(', ') : ''
             const promptId = `mPrompt_${id}_${lc.level}`
+            const promptText = mp.prompt_template || '(No prompt template configured)'
             return `
             <div class="${i===0?'':'hidden'}" data-mcontent="${lc.level}">
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-semibold">Configuration — ${lc.level}</div>
+                <button title="Edit" aria-label="Edit" data-edit-level="${lc.level}" class="w-8 h-8 flex items-center justify-center rounded border">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>
+                </button>
+              </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div><div class="text-gray-500">Evaluation Method</div><div class="font-semibold">${lc.evaluationMethod}</div></div>
                 <div><div class="text-gray-500">Pass Threshold</div><div class="font-semibold">${lc.passThreshold}</div></div>
@@ -1113,8 +1127,30 @@
               </div>
               <div class="mt-4">
                 <div class="text-sm font-semibold mb-1">Prompt Template</div>
-                <div id="${promptId}" class="text-xs bg-slate-50 rounded border p-2 max-h-24 overflow-hidden">${mp.prompt_template || ''}</div>
+                <div id="${promptId}" class="text-xs bg-slate-50 rounded border p-2 max-h-24 overflow-hidden">${promptText}</div>
                 <button data-expand="${promptId}" class="mt-1 px-2 py-1 border rounded text-xs">Expand</button>
+              </div>
+              <div class="mt-4 hidden" data-editor="${lc.level}">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <label class="block">Model<input id="editModel_${id}_${lc.level}" class="mt-1 w-full px-2 py-1 border rounded" value="${mp.model || ''}" /></label>
+                  <label class="block">Pass Threshold<input id="editPass_${id}_${lc.level}" type="number" step="0.01" min="0" max="1" class="mt-1 w-full px-2 py-1 border rounded" value="${lc.passThreshold}" /></label>
+                  <div class="grid grid-cols-2 gap-2">
+                    <label class="block">Min<input id="editMin_${id}_${lc.level}" type="number" step="0.01" class="mt-1 w-full px-2 py-1 border rounded" value="${lc.valueRange.min}" /></label>
+                    <label class="block">Max<input id="editMax_${id}_${lc.level}" type="number" step="0.01" class="mt-1 w-full px-2 py-1 border rounded" value="${lc.valueRange.max}" /></label>
+                  </div>
+                  <label class="block">Enabled<select id="editEnabled_${id}_${lc.level}" class="mt-1 w-full px-2 py-1 border rounded"><option ${lc.isLevelEnabled?'selected':''} value="yes">Yes</option><option ${lc.isLevelEnabled?'':'selected'} value="no">No</option></select></label>
+                  <label class="block">Input Mapping<input id="editMapInput_${id}_${lc.level}" class="mt-1 w-full px-2 py-1 border rounded" value="${mp.data_mapping && mp.data_mapping.input ? mp.data_mapping.input : ''}" /></label>
+                  <label class="block">Output Mapping<input id="editMapOutput_${id}_${lc.level}" class="mt-1 w-full px-2 py-1 border rounded" value="${mp.data_mapping && mp.data_mapping.output ? mp.data_mapping.output : ''}" /></label>
+                  <label class="block">Trajectory Mapping<input id="editMapTraj_${id}_${lc.level}" class="mt-1 w-full px-2 py-1 border rounded" value="${mp.data_mapping && mp.data_mapping.trajectory ? mp.data_mapping.trajectory : ''}" /></label>
+                </div>
+                <div class="mt-3">
+                  <label class="block text-sm font-semibold">Prompt Template</label>
+                  <textarea id="editPrompt_${id}_${lc.level}" class="mt-1 w-full px-2 py-1 border rounded h-28">${promptText}</textarea>
+                </div>
+                <div class="mt-3 flex gap-2">
+                  <button data-save-level="${lc.level}" class="px-3 py-2 border rounded">Save</button>
+                  <button data-cancel-level="${lc.level}" class="px-3 py-2 border rounded">Cancel</button>
+                </div>
               </div>
               <div class="mt-4">
                 <div class="text-sm font-semibold mb-1">Rationale</div>
@@ -1144,6 +1180,72 @@
           const collapsed = el.classList.contains('max-h-24')
           el.classList.toggle('max-h-24', !collapsed)
           btn.textContent = collapsed ? 'Collapse' : 'Expand'
+        }
+      })
+      const metricId = m.id
+      const levelMap = {}
+      levels.forEach(lc => { levelMap[lc.level] = lc })
+      wrap.querySelectorAll('[data-edit-level]').forEach(btn => {
+        btn.onclick = () => {
+          const lvl = btn.getAttribute('data-edit-level')
+          const c = wrap.querySelector(`[data-mcontent="${lvl}"]`)
+          if (!c) return
+          const editor = c.querySelector(`[data-editor="${lvl}"]`)
+          if (!editor) return
+          editor.classList.remove('hidden')
+        }
+      })
+      wrap.querySelectorAll('[data-cancel-level]').forEach(btn => {
+        btn.onclick = () => {
+          const lvl = btn.getAttribute('data-cancel-level')
+          const c = wrap.querySelector(`[data-mcontent="${lvl}"]`)
+          if (!c) return
+          const editor = c.querySelector(`[data-editor="${lvl}"]`)
+          if (editor) editor.classList.add('hidden')
+        }
+      })
+      wrap.querySelectorAll('[data-save-level]').forEach(btn => {
+        btn.onclick = () => {
+          const lvl = btn.getAttribute('data-save-level')
+          const c = wrap.querySelector(`[data-mcontent="${lvl}"]`)
+          if (!c) return
+          const getVal = id => {
+            const el = document.getElementById(id)
+            return el ? el.value : ''
+          }
+          const pass = parseFloat(getVal(`editPass_${id}_${lvl}`))
+          const min = parseFloat(getVal(`editMin_${id}_${lvl}`))
+          const max = parseFloat(getVal(`editMax_${id}_${lvl}`))
+          const enabled = (getVal(`editEnabled_${id}_${lvl}`) || 'yes') === 'yes'
+          const model = getVal(`editModel_${id}_${lvl}`)
+          const prompt = getVal(`editPrompt_${id}_${lvl}`)
+          const mapInput = getVal(`editMapInput_${id}_${lvl}`)
+          const mapOutput = getVal(`editMapOutput_${id}_${lvl}`)
+          const mapTraj = getVal(`editMapTraj_${id}_${lvl}`)
+          const mapping = {}
+          if (mapInput) mapping.input = mapInput
+          if (mapOutput) mapping.output = mapOutput
+          if (mapTraj) mapping.trajectory = mapTraj
+          const arr = levelConfigsMap[metricId] || []
+          const idx = arr.findIndex(x => x.level === lvl)
+          const now = new Date().toISOString()
+          const patch = {
+            passThreshold: isNaN(pass) ? levelMap[lvl].passThreshold : pass,
+            valueRange: { min: isNaN(min) ? levelMap[lvl].valueRange.min : min, max: isNaN(max) ? levelMap[lvl].valueRange.max : max },
+            isLevelEnabled: enabled,
+            methodParams: { ...(levelMap[lvl].methodParams || {}), model, prompt_template: prompt, data_mapping: mapping },
+            updatedAt: now
+          }
+          if (idx >= 0) {
+            levelConfigsMap[metricId][idx] = { ...levelConfigsMap[metricId][idx], ...patch }
+          } else {
+            levelConfigsMap[metricId] = [ ...(levelConfigsMap[metricId] || []), { configId: `${metricId}-${lvl}-${Math.random().toString(36).slice(2)}`, metricId, level: lvl, evaluationMethod: levelMap[lvl].evaluationMethod, ...patch } ]
+          }
+          ensureMetricDetail(metricId)
+          setTimeout(() => {
+            const b = document.querySelector(`[data-mtab="${lvl}"]`)
+            if (b) b.click()
+          }, 0)
         }
       })
       if (btns[0]) activate(btns[0].getAttribute('data-mtab'))
@@ -2149,7 +2251,77 @@
     function ensureMetrics() {
       getMetrics()
       bindMetricsEvents()
-      renderMetricsList()
+      const appsBtn = document.getElementById('metricsViewApps')
+      const listBtn = document.getElementById('metricsViewList')
+      const appsC = document.getElementById('metricsAppsContent')
+      const listC = document.getElementById('metricsContent')
+      const activate = v => {
+        const isApps = v === 'apps'
+        if (appsBtn && listBtn) {
+          appsBtn.classList.toggle('bg-slate-800', isApps)
+          appsBtn.classList.toggle('text-white', isApps)
+          listBtn.classList.toggle('bg-slate-800', !isApps)
+          listBtn.classList.toggle('text-white', !isApps)
+        }
+        if (appsC && listC) {
+          appsC.classList.toggle('hidden', !isApps)
+          listC.classList.toggle('hidden', isApps)
+        }
+        if (isApps) {
+          renderMetricsApplications()
+        } else {
+          renderMetricsList()
+        }
+      }
+      if (appsBtn) appsBtn.onclick = () => activate('apps')
+      if (listBtn) listBtn.onclick = () => activate('list')
+      activate('apps')
+    }
+
+    function renderMetricsApplications() {
+      const container = document.getElementById('metricsAppsContent')
+      if (!container) return
+      const total = (defaultMetrics || []).filter(m => Array.isArray(m.scope) && m.scope.includes('Application'))
+      const online = total.filter(m => !m.requiresGroundTruth)
+      const offline = total.filter(m => m.requiresGroundTruth)
+      const inUse = total.filter(m => m.enabled)
+      const table = document.createElement('table')
+      table.className = 'min-w-full text-sm'
+      table.innerHTML = `
+        <thead>
+          <tr class="text-gray-500">
+            <th class="text-left py-2 px-4">Application</th>
+            <th class="text-right py-2 px-4">Total Metrics</th>
+            <th class="text-right py-2 px-4">Online</th>
+            <th class="text-right py-2 px-4">Offline</th>
+            <th class="text-right py-2 px-4">In Use</th>
+            <th class="text-left py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          ${(apps || []).map(a => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2 px-4 font-semibold">${a.name}</td>
+              <td class="py-2 px-4 text-right">${total.length}</td>
+              <td class="py-2 px-4 text-right">${online.length}</td>
+              <td class="py-2 px-4 text-right">${offline.length}</td>
+              <td class="py-2 px-4 text-right">${inUse.length}</td>
+              <td class="py-2 px-4">
+                <button class="px-3 py-1 border rounded" data-app-view="${a.id}">View Metrics</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `
+      container.innerHTML = ''
+      container.appendChild(table)
+      container.querySelectorAll('[data-app-view]').forEach(btn => {
+        btn.onclick = () => {
+          const listBtn = document.getElementById('metricsViewList')
+          if (listBtn) listBtn.click()
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      })
     }
 
     function updateBreadcrumb(target, parts) {
