@@ -581,10 +581,41 @@
                   <option value="Consistency & Reliability">Consistency & Reliability</option>
                 </select>
                 <input id="metricsSearch" placeholder="Search metrics" class="px-3 py-2 border rounded text-sm" />
+                <button id="metricNew" class="px-3 py-2 border rounded text-sm">New Metric</button>
               </div>
             </div>
             <div id="metricsAppsContent" class="space-y-4"></div>
             <div id="metricsContent" class="hidden space-y-4"></div>
+            <div id="metricsForm" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div class="bg-white w-full max-w-2xl rounded border p-4">
+                <div class="text-lg font-semibold mb-2">New Metric</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <label class="block">Name<input id="mfName" class="mt-1 w-full px-2 py-1 border rounded" /></label>
+                  <label class="block">Category<select id="mfCategory" class="mt-1 w-full px-2 py-1 border rounded">
+                    <option>Task Quality</option>
+                    <option>Efficiency</option>
+                    <option>Safety & Adherence</option>
+                    <option>Reasoning & Explainability</option>
+                    <option>Consistency & Reliability</option>
+                  </select></label>
+                  <label class="block md:col-span-2">Description<textarea id="mfDesc" class="mt-1 w-full px-2 py-1 border rounded h-20"></textarea></label>
+                  <label class="inline-flex items-center gap-2"><input type="checkbox" id="mfEnabled" /> In Use</label>
+                  <label class="inline-flex items-center gap-2"><input type="checkbox" id="mfNeedsGT" /> Requires Ground Truth</label>
+                  <label class="block">Method<input id="mfMethod" class="mt-1 w-full px-2 py-1 border rounded" /></label>
+                  <div class="grid grid-cols-3 gap-2">
+                    <label class="inline-flex items-center gap-2"><input type="checkbox" id="mfScopeApp" /> Application</label>
+                    <label class="inline-flex items-center gap-2"><input type="checkbox" id="mfScopeAgent" /> Agent</label>
+                    <label class="inline-flex items-center gap-2"><input type="checkbox" id="mfScopeStep" /> Step</label>
+                  </div>
+                  <label class="block">Threshold Type<select id="mfThreshType" class="mt-1 w-full px-2 py-1 border rounded"><option value="none">None</option><option value="pass_rate">Pass Rate</option><option value="min">Min</option><option value="max">Max</option></select></label>
+                  <label class="block">Threshold Value<input id="mfThreshVal" class="mt-1 w-full px-2 py-1 border rounded" /></label>
+                </div>
+                <div class="mt-4 flex justify-end gap-2">
+                  <button id="mfCancel" class="px-3 py-2 border rounded">Cancel</button>
+                  <button id="mfSave" class="px-3 py-2 border rounded">Save</button>
+                </div>
+              </div>
+            </div>
             <div id="metricDetail" class="hidden p-4 bg-white rounded border">
               <div class="text-lg font-semibold mb-2" id="mdName"></div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -1275,6 +1306,29 @@
             <a href="#/applications" class="px-3 py-2 border rounded">Back</a>
           </div>
         </div>
+        <div class="p-4 bg-white rounded border">
+          <div class="flex items-center mb-2">
+            <div class="text-sm font-semibold">Metric Mapping</div>
+            <div class="ml-auto flex gap-2">
+              <select id="mapCategory" class="px-3 py-1 border rounded text-sm">
+                <option value="all">All Categories</option>
+                <option value="Task Quality">Task Quality</option>
+                <option value="Efficiency">Efficiency</option>
+                <option value="Safety & Adherence">Safety & Adherence</option>
+                <option value="Reasoning & Explainability">Reasoning & Explainability</option>
+                <option value="Consistency & Reliability">Consistency & Reliability</option>
+              </select>
+              <input id="mapSearch" placeholder="Search metrics" class="px-3 py-1 border rounded text-sm" />
+              <button id="mapReset" class="px-3 py-1 border rounded text-sm">Reset</button>
+            </div>
+          </div>
+          <div id="mapStats" class="text-xs text-gray-600 mb-2"></div>
+          <div id="mapTableWrap"></div>
+          <div class="mt-3 flex gap-2">
+            <button id="mapSave" class="px-3 py-2 border rounded">Save Mapping</button>
+            <button id="mapClear" class="px-3 py-2 border rounded">Clear Mapping</button>
+          </div>
+        </div>
       `
       const save = document.getElementById('cfgSave')
       if (save) save.onclick = () => {
@@ -1486,6 +1540,7 @@
         const evcEl = document.getElementById('evalOverviewCount'); if (evcEl) evcEl.textContent = String(items.length)
       }
     }
+
 
     function renderAppCharts(id, app) {
       const dates = ['09/01', '09/10', '09/20', '09/30', '10/10', '10/20', '11/01']
@@ -2167,7 +2222,7 @@
             <th class="text-left py-2 px-4">In Use</th>
             <th class="text-left py-2 px-4">Created</th>
             <th class="text-left py-2 px-4">Updated</th>
-            <th class="text-left py-2 px-4">View</th>
+            <th class="text-left py-2 px-4">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y">
@@ -2180,7 +2235,11 @@
               <td class="py-2 px-4">${formatTs(m.createdAt)}</td>
               <td class="py-2 px-4">${formatTs(m.updatedAt)}</td>
               <td class="py-2 px-4">
-                <a href="#/metric/${m.id}" class="px-3 py-1 border rounded">View</a>
+                <div class="inline-flex gap-2">
+                  <a href="#/metric/${m.id}" class="px-3 py-1 border rounded">View</a>
+                  <button class="px-3 py-1 border rounded" data-m-edit="${m.id}">Edit</button>
+                  <button class="px-3 py-1 border rounded" data-m-del="${m.id}">Delete</button>
+                </div>
               </td>
             </tr>
           `).join('')}
@@ -2188,7 +2247,12 @@
       `
       wrap.appendChild(table)
       content.appendChild(wrap)
-      // View links navigate to metric detail page
+      content.querySelectorAll('[data-m-edit]').forEach(btn => btn.onclick = () => showMetricForm(btn.getAttribute('data-m-edit')))
+      content.querySelectorAll('[data-m-del]').forEach(btn => btn.onclick = () => {
+        const id = btn.getAttribute('data-m-del')
+        if (!confirm('Deleting this metric cannot be reversed. Continue?')) return
+        deleteMetric(id)
+      })
     }
 
     function showMetricForm(id) {
@@ -2214,6 +2278,29 @@
     function hideMetricForm() {
       const form = document.getElementById('metricsForm'); if (form) form.classList.add('hidden')
     }
+    function saveMetricFromForm() {
+      const items = getMetrics()
+      const editing = document.getElementById('metricsForm')?.dataset.editing || ''
+      const id = editing || (crypto && crypto.randomUUID ? crypto.randomUUID() : `m-${Date.now()}`)
+      const name = document.getElementById('mfName').value.trim()
+      const category = document.getElementById('mfCategory').value
+      const description = document.getElementById('mfDesc').value.trim()
+      const enabled = document.getElementById('mfEnabled').checked
+      const requiresGroundTruth = document.getElementById('mfNeedsGT').checked
+      const method = document.getElementById('mfMethod').value.trim()
+      const scope = []
+      if (document.getElementById('mfScopeApp').checked) scope.push('Application')
+      if (document.getElementById('mfScopeAgent').checked) scope.push('Agent')
+      if (document.getElementById('mfScopeStep').checked) scope.push('Step')
+      const thresholds = { type: document.getElementById('mfThreshType').value, value: document.getElementById('mfThreshVal').value }
+      const now = new Date().toISOString()
+      const payload = { id, name, category, description, enabled, requiresGroundTruth, method, scope, thresholds, createdAt: editing ? (items.find(x => x.id === editing)?.createdAt || now) : now, updatedAt: now }
+      const idx = items.findIndex(x => x.id === id)
+      if (idx >= 0) items[idx] = payload; else items.unshift(payload)
+      saveMetrics(items)
+      hideMetricForm()
+      renderMetricsList()
+    }
     function deleteMetric(id) {
       const items = getMetrics().filter(m => m.id !== id)
       saveMetrics(items)
@@ -2222,6 +2309,9 @@
     function bindMetricsEvents() {
       const sel = document.getElementById('metricsCategory'); if (sel) sel.onchange = renderMetricsList
       const search = document.getElementById('metricsSearch'); if (search) search.oninput = renderMetricsList
+      const newBtn = document.getElementById('metricNew'); if (newBtn) newBtn.onclick = () => showMetricForm('')
+      const cancelBtn = document.getElementById('mfCancel'); if (cancelBtn) cancelBtn.onclick = hideMetricForm
+      const saveBtn = document.getElementById('mfSave'); if (saveBtn) saveBtn.onclick = saveMetricFromForm
       renderMetricsList()
     }
     function showMetricDetail(id) {
