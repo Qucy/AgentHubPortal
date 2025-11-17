@@ -822,7 +822,14 @@
       { id: 'consistency', name: 'Run-to-Run Consistency (%)', category: 'Consistency & Reliability', description: 'Stability across runs', enabled: true, requiresGroundTruth: false, method: 'Repeated Trials', scope: ['Application', 'Agent'] },
       { id: 'error-rate', name: 'Error Rate (%)', category: 'Consistency & Reliability', description: 'Failures per runs', enabled: true, requiresGroundTruth: false, method: 'Rule-based', scope: ['Application', 'Agent'] },
       { id: 'retry', name: 'Retry Count', category: 'Consistency & Reliability', description: 'Retries needed', enabled: true, requiresGroundTruth: false, method: 'Execution Trace', scope: ['Agent', 'Step'] },
-      { id: 'stability', name: 'Output Stability (variance)', category: 'Consistency & Reliability', description: 'Variance of outputs', enabled: true, requiresGroundTruth: false, method: 'Statistical', scope: ['Application'] }
+      { id: 'stability', name: 'Output Stability (variance)', category: 'Consistency & Reliability', description: 'Variance of outputs', enabled: true, requiresGroundTruth: false, method: 'Statistical', scope: ['Application'] },
+
+      { id: 'ef398e63-f1ba-4ab8-85d8-48002295b008', name: 'Relevance', category: 'Task Quality', description: 'Output relevance to prompt and required aspects', enabled: true, requiresGroundTruth: false, method: 'LLM-as-a-Judge', scope: ['Application', 'Agent', 'Step'] },
+      { id: '0fc5fa84-d82a-4bf-9c65-59ff17e55e45', name: 'Fluency', category: 'Task Quality', description: 'Grammar, spelling, readability, flow, style/tone', enabled: true, requiresGroundTruth: false, method: 'LLM-as-a-Judge', scope: ['Application', 'Agent', 'Step'] },
+      { id: '45161a33-4961-44c7-a91b-5d39671e4d4a', name: 'Guardrail Adherence', category: 'Safety & Adherence', description: 'Compliance with safety guidelines and guardrails', enabled: true, requiresGroundTruth: false, method: 'LLM-as-a-Judge', scope: ['Application', 'Agent', 'Step'] },
+      { id: '75002009-4f3b-4ec4-9ec4-0e79eb10ffb8', name: 'Adversarial Resistance', category: 'Safety & Adherence', description: 'Resistance to adversarial inputs and attacks', enabled: true, requiresGroundTruth: false, method: 'LLM-as-a-Judge', scope: ['Application', 'Agent', 'Step'] },
+      { id: 'ea1f3833-dfd6-4eb0-b723-3d94fa922628', name: 'Trajectory Coherence', category: 'Reasoning & Explainability', description: 'Consistency and coherence of multi-step trajectory', enabled: true, requiresGroundTruth: false, method: 'LLM-as-a-Judge', scope: ['Application', 'Agent'] },
+      { id: 'ffd0b653-3040-45f6-af46-0de643bfdd29', name: 'Trajectory Clarity', category: 'Reasoning & Explainability', description: 'Clarity and understandability of reasoning steps', enabled: true, requiresGroundTruth: false, method: 'LLM-as-a-Judge', scope: ['Application', 'Agent'] }
     ]
 
     const apps = [
