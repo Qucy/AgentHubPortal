@@ -713,7 +713,12 @@
         <section id="evaluation" data-page class="hidden space-y-6">
           <div class="flex items-center">
             <h2 class="text-2xl font-semibold">Evaluation</h2>
+            <div class="ml-auto inline-flex border rounded overflow-hidden">
+              <button id="evalDashTab" class="px-3 py-1 text-sm bg-slate-800 text-white">Dashboard</button>
+              <button id="evalRunsTab" class="px-3 py-1 text-sm">Runs</button>
+            </div>
           </div>
+          <div id="evalDashContent" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div class="p-4 bg-white rounded border">
                 <div class="text-xs text-gray-500">Overall Pass Rate</div>
@@ -746,6 +751,10 @@
                 <div id="evalConsistency" class="w-full h-64"></div>
               </div>
             </div>
+          </div>
+          <div id="evalRunsContent" class="hidden space-y-4">
+            <div id="evalRunsTable"></div>
+          </div>
         </section>
 
         <section id="annotation" data-page class="hidden space-y-4">
@@ -896,6 +905,7 @@
       if (parts[0] === 'app' && parts[1]) target = 'app-detail'
       if (parts[0] === 'app-config' && parts[1]) target = 'app-config'
       if (parts[0] === 'metric' && parts[1]) target = 'metric-detail'
+      if (parts[0] === 'eval' && parts[1]) target = 'eval-detail'
       setActive(target)
       updateBreadcrumb(target, parts)
       if (target === 'applications') ensureApplications()
@@ -905,6 +915,8 @@
       if (target === 'app-detail') ensureAppDetail(parts[1])
       if (target === 'app-config') ensureAppConfig(parts[1])
       if (target === 'metric-detail') ensureMetricDetail(parts[1])
+      if (target === 'evaluation') ensureEvaluation()
+      if (target === 'eval-detail') ensureEvalDetail(parts[1])
       resizeVisibleCharts()
     }
 
@@ -1539,6 +1551,157 @@
         `).join('')
         const evcEl = document.getElementById('evalOverviewCount'); if (evcEl) evcEl.textContent = String(items.length)
       }
+    }
+    function getEvalRuns() {
+      const runs = JSON.parse(localStorage.getItem('evalRuns') || '[]')
+      if (runs && runs.length) return runs
+      const sample = []
+      for (let i = 0; i < 6; i++) {
+        const id = 100 + i
+        const name = `Monthly Eval ${i + 1}`
+        const status = i % 2 === 0 ? 'Finished' : 'Running'
+        const startAt = new Date(Date.now() - (i + 3) * 86400000).toISOString()
+        const endAt = status === 'Finished' ? new Date(Date.now() - (i + 2) * 86400000).toISOString() : ''
+        const records = 50 + i * 7
+        const passRate = +(0.6 + Math.random() * 0.3).toFixed(2)
+        sample.push({ id, name, status, startAt, endAt, records, passRate })
+      }
+      localStorage.setItem('evalRuns', JSON.stringify(sample))
+      return sample
+    }
+    function ensureEvaluation() {
+      const dashTab = document.getElementById('evalDashTab')
+      const runsTab = document.getElementById('evalRunsTab')
+      const dashC = document.getElementById('evalDashContent')
+      const runsC = document.getElementById('evalRunsContent')
+      const activate = v => {
+        const isDash = v === 'dash'
+        if (dashTab && runsTab) {
+          dashTab.classList.toggle('bg-slate-800', isDash)
+          dashTab.classList.toggle('text-white', isDash)
+          runsTab.classList.toggle('bg-slate-800', !isDash)
+          runsTab.classList.toggle('text-white', !isDash)
+        }
+        if (dashC && runsC) {
+          dashC.classList.toggle('hidden', !isDash)
+          runsC.classList.toggle('hidden', isDash)
+        }
+        if (!isDash) renderEvalRuns()
+      }
+      if (dashTab) dashTab.onclick = () => activate('dash')
+      if (runsTab) runsTab.onclick = () => activate('runs')
+      activate('dash')
+    }
+    function renderEvalRuns() {
+      const container = document.getElementById('evalRunsTable')
+      if (!container) return
+      const items = getEvalRuns()
+      const tbl = document.createElement('table')
+      tbl.className = 'min-w-full text-sm bg-white rounded border'
+      tbl.innerHTML = `
+        <thead class="bg-slate-50">
+          <tr class="text-gray-700">
+            <th class="text-left py-2 px-4">Eval Name</th>
+            <th class="text-left py-2 px-4">Status</th>
+            <th class="text-left py-2 px-4">Start</th>
+            <th class="text-left py-2 px-4">End</th>
+            <th class="text-right py-2 px-4">Records</th>
+            <th class="text-right py-2 px-4">Pass Rate</th>
+            <th class="text-left py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          ${items.map(r => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2 px-4 font-semibold">${r.name}</td>
+              <td class="py-2 px-4"><span class="pill ${r.status === 'Finished' ? 'pill-green' : 'pill-gray'}">${r.status}</span></td>
+              <td class="py-2 px-4">${formatTs(r.startAt)}</td>
+              <td class="py-2 px-4">${r.endAt ? formatTs(r.endAt) : '-'}</td>
+              <td class="py-2 px-4 text-right">${r.records}</td>
+              <td class="py-2 px-4 text-right">${(r.passRate * 100).toFixed(1)}%</td>
+              <td class="py-2 px-4">
+                <a href="#/eval/${r.id}" class="px-3 py-1 border rounded">View</a>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `
+      container.innerHTML = ''
+      container.appendChild(tbl)
+    }
+    function ensureEvalDetail(id) {
+      const items = getEvalRuns()
+      const run = items.find(x => String(x.id) === String(id))
+      const wrap = document.getElementById('evalDetailContent')
+      if (!wrap) return
+      if (!run) { wrap.innerHTML = '<div class="p-4 bg-white rounded border">Run not found.</div>'; return }
+      const records = Array.from({ length: run.records }).map((_, i) => {
+        const relevance = +(Math.random()).toFixed(2)
+        const fluency = +(Math.random()).toFixed(2)
+        const guardrail = Math.random() > 0.05 ? 1 : 0
+        const pass = relevance > 0.7 && fluency > 0.7 && guardrail === 1
+        return { id: `${run.id}-${i + 1}`, input: `Input ${i + 1}`, output: `Output ${i + 1}`, relevance, fluency, guardrail, pass }
+      })
+      const summary = `
+        <div class="p-4 bg-white rounded border">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div><div class="text-xs text-gray-500">Name</div><div class="font-semibold">${run.name}</div></div>
+            <div><div class="text-xs text-gray-500">Status</div><div class="font-semibold">${run.status}</div></div>
+            <div><div class="text-xs text-gray-500">Start</div><div class="font-semibold">${formatTs(run.startAt)}</div></div>
+            <div><div class="text-xs text-gray-500">End</div><div class="font-semibold">${run.endAt ? formatTs(run.endAt) : '-'}</div></div>
+          </div>
+        </div>
+      `
+      const tbl = document.createElement('table')
+      tbl.className = 'min-w-full text-sm bg-white rounded border'
+      tbl.innerHTML = `
+        <thead class="bg-slate-50">
+          <tr class="text-gray-700">
+            <th class="text-left py-2 px-4">Record</th>
+            <th class="text-left py-2 px-4">Input</th>
+            <th class="text-left py-2 px-4">Output</th>
+            <th class="text-right py-2 px-4">Relevance</th>
+            <th class="text-right py-2 px-4">Fluency</th>
+            <th class="text-left py-2 px-4">Guardrail</th>
+            <th class="text-left py-2 px-4">Pass</th>
+            <th class="text-left py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y">
+          ${records.map(r => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2 px-4 mono">${r.id}</td>
+              <td class="py-2 px-4">${r.input}</td>
+              <td class="py-2 px-4">${r.output}</td>
+              <td class="py-2 px-4 text-right">${r.relevance}</td>
+              <td class="py-2 px-4 text-right">${r.fluency}</td>
+              <td class="py-2 px-4">${r.guardrail === 1 ? 'Compliant' : 'Violation'}</td>
+              <td class="py-2 px-4">${r.pass ? '<span class="pill pill-green">Pass</span>' : '<span class="pill pill-gray">Fail</span>'}</td>
+              <td class="py-2 px-4"><button class="px-3 py-1 border rounded" data-rview="${r.id}">View</button></td>
+            </tr>
+            <tr class="hidden" data-rdetail="${r.id}">
+              <td colspan="8" class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div><div class="text-gray-500">Input</div><div class="font-semibold">${r.input}</div></div>
+                  <div><div class="text-gray-500">Output</div><div class="font-semibold">${r.output}</div></div>
+                  <div><div class="text-gray-500">Scores</div><div class="font-semibold">Relevance: ${r.relevance}, Fluency: ${r.fluency}, Guardrail: ${r.guardrail === 1 ? 'Compliant' : 'Violation'}</div></div>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `
+      wrap.innerHTML = summary
+      const tableWrap = document.createElement('div')
+      tableWrap.appendChild(tbl)
+      wrap.appendChild(tableWrap)
+      wrap.querySelectorAll('[data-rview]').forEach(btn => {
+        btn.onclick = () => {
+          const idv = btn.getAttribute('data-rview')
+          const row = wrap.querySelector(`[data-rdetail="${idv}"]`)
+          if (row) row.classList.toggle('hidden')
+        }
+      })
     }
 
 
@@ -2433,6 +2596,9 @@
       } else if (target === 'metric-detail') {
         const m = getMetrics().find(x => x.id === parts[1])
         items = [mk('Metrics', '#/metrics'), `<span class="text-slate-900">${m ? m.name : 'Metric'}</span>`]
+      } else if (target === 'eval-detail') {
+        const r = getEvalRuns().find(x => String(x.id) === String(parts[1]))
+        items = [mk('Evaluation', '#/evaluation'), `<span class="text-slate-900">${r ? r.name : 'Run'}</span>`]
       } else if (target === 'monitoring') {
         items = [mk('Monitoring', '#/monitoring')]
       } else if (target === 'annotation') {
