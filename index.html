@@ -721,9 +721,24 @@
                 <span id="evalRunsPageInfo" class="text-xs text-gray-500"></span>
                 <button id="evalRunsPrev" class="px-3 py-1 border rounded text-sm">Prev</button>
                 <button id="evalRunsNext" class="px-3 py-1 border rounded text-sm">Next</button>
+                <button id="evalRunNew" class="px-3 py-1 border rounded text-sm">New Eval</button>
               </div>
             </div>
             <div id="evalRunsTable"></div>
+          </div>
+          <div id="evalRunForm" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+            <div class="bg-white w-full max-w-xl rounded border p-4">
+              <div class="text-lg font-semibold mb-2">Create Evaluation</div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <label class="block">Name<input id="erName" class="mt-1 w-full px-2 py-1 border rounded" placeholder="Monthly Eval" /></label>
+                <label class="block">Records<input id="erRecords" type="number" min="1" class="mt-1 w-full px-2 py-1 border rounded" placeholder="50" /></label>
+                <label class="block md:col-span-2">Start Time<input id="erStart" type="datetime-local" class="mt-1 w-full px-2 py-1 border rounded" /></label>
+              </div>
+              <div class="mt-3 flex justify-end gap-2">
+                <button id="erCancel" class="px-3 py-2 border rounded">Cancel</button>
+                <button id="erSave" class="px-3 py-2 border rounded">Save</button>
+              </div>
+            </div>
           </div>
           <div class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -759,6 +774,12 @@
               </div>
             </div>
           </div>
+        </section>
+        <section id="eval-detail" data-page class="hidden space-y-4">
+          <div class="flex items-center">
+            <h2 class="text-2xl font-semibold">Evaluation Run</h2>
+          </div>
+          <div id="evalDetailContent" class="space-y-4"></div>
         </section>
 
         <section id="annotation" data-page class="hidden space-y-4">
@@ -1573,6 +1594,9 @@
       localStorage.setItem('evalRuns', JSON.stringify(sample))
       return sample
     }
+    function saveEvalRuns(items) {
+      localStorage.setItem('evalRuns', JSON.stringify(items))
+    }
     function ensureEvaluation() {
       const prev = document.getElementById('evalRunsPrev')
       const next = document.getElementById('evalRunsNext')
@@ -1588,6 +1612,26 @@
       const go = delta => { const items = getEvalRuns(); const total = Math.max(1, Math.ceil(items.length/size)); const p = Math.min(Math.max(1, getPage()+delta), total); setPage(p); renderEvalRuns(p, size); updateInfo() }
       if (prev) prev.onclick = () => go(-1)
       if (next) next.onclick = () => go(1)
+      const newBtn = document.getElementById('evalRunNew')
+      const form = document.getElementById('evalRunForm')
+      const cancel = document.getElementById('erCancel')
+      const save = document.getElementById('erSave')
+      if (newBtn && form) newBtn.onclick = () => form.classList.remove('hidden')
+      if (cancel && form) cancel.onclick = () => form.classList.add('hidden')
+      if (save && form) save.onclick = () => {
+        const name = document.getElementById('erName').value.trim() || `Eval ${Date.now()}`
+        const records = parseInt(document.getElementById('erRecords').value || '50', 10)
+        const startRaw = document.getElementById('erStart').value
+        const startAt = startRaw ? new Date(startRaw).toISOString() : new Date().toISOString()
+        const items = getEvalRuns()
+        const id = (items.reduce((m, r) => Math.max(m, r.id), 99) + 1)
+        const passRate = +(0.6 + Math.random()*0.3).toFixed(2)
+        items.unshift({ id, name, status: 'Running', startAt, endAt: '', records, passRate })
+        saveEvalRuns(items)
+        form.classList.add('hidden')
+        renderEvalRuns(getPage(), size)
+        updateInfo()
+      }
       renderEvalRuns(getPage(), size); updateInfo()
     }
     function renderEvalRuns(page = 1, size = 5) {
@@ -1622,7 +1666,10 @@
               <td class="py-2 px-4 text-right">${r.records}</td>
               <td class="py-2 px-4 text-right">${(r.passRate * 100).toFixed(1)}%</td>
               <td class="py-2 px-4">
-                <a href="#/eval/${r.id}" class="px-3 py-1 border rounded">View</a>
+                <div class="inline-flex gap-2">
+                  <a href="#/eval/${r.id}" class="px-3 py-1 border rounded">View</a>
+                  <button class="px-3 py-1 border rounded" data-er-del="${r.id}">Delete</button>
+                </div>
               </td>
             </tr>
           `).join('')}
@@ -1630,6 +1677,15 @@
       `
       container.innerHTML = ''
       container.appendChild(tbl)
+      container.querySelectorAll('[data-er-del]').forEach(btn => {
+        btn.onclick = () => {
+          const id = parseInt(btn.getAttribute('data-er-del'), 10)
+          if (!confirm('Deleting this evaluation cannot be reversed. Continue?')) return
+          const items = getEvalRuns().filter(r => r.id !== id)
+          saveEvalRuns(items)
+          renderEvalRuns(page, size)
+        }
+      })
     }
     function ensureEvalDetail(id) {
       const items = getEvalRuns()
