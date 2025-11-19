@@ -690,18 +690,7 @@
             <p class="text-gray-600">Guides and references.</p>
             <div class="p-4 bg-white rounded border">
               <div class="text-sm font-semibold mb-2">Deep Research</div>
-              <div class="space-y-2">
-                <div>
-                  <a href="./deep_research/" class="inline-flex items-center gap-2 px-3 py-1 border rounded text-sm">
-                    <span>Folder: deep_research</span>
-                  </a>
-                </div>
-                <div>
-                  <a href="./deep_research/google_gemini_3.html" class="inline-flex items-center gap-2 px-3 py-1 border rounded text-sm">
-                    <span>google_gemini_3.html</span>
-                  </a>
-                </div>
-              </div>
+              <div id="docsTree" class="space-y-2"></div>
             </div>
           </section>
 
@@ -976,6 +965,7 @@
       if (target === 'metrics') ensureMetrics()
       if (target === 'tracing') ensureTracing()
       if (target === 'datasets') ensureDatasets()
+      if (target === 'documentation') ensureDocumentation()
       if (target === 'dataset-detail') ensureDatasetDetail(parts[1])
       if (target === 'app-detail') ensureAppDetail(parts[1])
       if (target === 'app-config') ensureAppConfig(parts[1])
@@ -2579,6 +2569,36 @@
       }
       const mode = localStorage.getItem('dsView') || 'cards'
       renderDatasets(mode)
+    }
+
+    function ensureDocumentation() {
+      const tree = document.getElementById('docsTree')
+      if (!tree) return
+      const path = './deep_research/'
+      fetch(path).then(r => r.text()).then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html')
+        const links = Array.from(doc.querySelectorAll('a')).map(a => a.getAttribute('href')).filter(h => !!h)
+        const items = links.filter(h => h !== '../')
+        const folders = items.filter(h => /\/$/.test(h))
+        const files = items.filter(h => !/\/$/.test(h))
+        const folderIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>'
+        const fileIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>'
+        const folderRow = `
+          <div class="flex items-center gap-2">
+            ${folderIcon}
+            <a href="${path}" class="hover:underline">deep_research</a>
+          </div>
+        `
+        const children = `
+          <div class="ml-6 space-y-1">
+            ${folders.map(f => `<div class=\"flex items-center gap-2\">${folderIcon}<a href=\"${path + f}\" class=\"hover:underline\">${f.replace(/\/$/, '')}</a></div>`).join('')}
+            ${files.map(fn => `<div class=\"flex items-center gap-2\">${fileIcon}<a href=\"${path + fn}\" class=\"hover:underline\">${fn}</a></div>`).join('')}
+          </div>
+        `
+        tree.innerHTML = folderRow + children
+      }).catch(() => {
+        tree.innerHTML = `<div class="text-sm text-gray-600">Unable to load folder.</div>`
+      })
     }
 
     function getDatasetDetail(d) {
