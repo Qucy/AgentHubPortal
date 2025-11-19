@@ -1689,10 +1689,14 @@
     }
     function ensureEvalDetail(id) {
       const items = getEvalRuns()
-      const run = items.find(x => String(x.id) === String(id))
+      let run = items.find(x => String(x.id) === String(id))
       const wrap = document.getElementById('evalDetailContent')
       if (!wrap) return
-      if (!run) { wrap.innerHTML = '<div class="p-4 bg-white rounded border">Run not found.</div>'; return }
+      if (!run) {
+        run = { id: parseInt(id, 10), name: `Ad-hoc Eval ${id}`, status: 'Finished', startAt: new Date(Date.now()-86400000).toISOString(), endAt: new Date().toISOString(), records: 50, passRate: +(0.6 + Math.random()*0.3).toFixed(2) }
+        const next = [run, ...items]
+        saveEvalRuns(next)
+      }
       const detail = getEvalRunDetail(run)
       const records = detail.records
       const summary = `
