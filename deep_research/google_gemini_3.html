@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google&#39;s AI Revolution: Gemini 3 and Beyond</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #1e40af;
+            --secondary: #64748b;
+            --accent: #0ea5e9;
+            --neutral: #f8fafc;
+            --base: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .toc {
+            position: fixed;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 280px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 50;
+            background: rgba(248, 250, 252, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .toc a {
+            display: block;
+            padding: 0.5rem 0;
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-left: 2px solid transparent;
+            padding-left: 1rem;
+            margin-left: -1rem;
+            transition: all 0.2s ease;
+        }
+
+        .toc a:hover {
+            color: var(--primary);
+            border-left-color: var(--accent);
+            background: rgba(14, 165, 233, 0.1);
+        }
+
+        .toc .toc-level-2 {
+            margin-left: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .content-wrapper {
+            margin-left: 320px;
+            max-width: 900px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            min-height: 70vh;
+            margin-bottom: 4rem;
+        }
+
+        .hero-text {
+            background: linear-gradient(135deg, #1e40af 0%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .citation {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            font-size: 0.8rem;
+            margin-left: 0.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .citation:hover {
+            background: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #e2e8f0 50%, transparent 100%);
+            margin: 4rem 0;
+        }
+
+        @media (max-width: 1280px) {
+            .toc {
+                position: relative;
+                left: auto;
+                top: auto;
+                transform: none;
+                width: 100%;
+                margin-bottom: 2rem;
+            }
+
+            .content-wrapper {
+                margin-left: 0;
+                max-width: 100%;
+            }
+        }
+
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .scroll-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mermaid diagram styling */
+        .mermaid-container {
+            display: flex;
+            justify-content: center;
+            min-height: 300px;
+            max-height: 800px;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mermaid-container .mermaid {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+            /* 防止触摸设备上的默认行为 */
+            -webkit-user-select: none;
+            /* 防止文本选择 */
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .mermaid-container .mermaid svg {
+            max-width: 100%;
+            height: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .mermaid-container .mermaid:active {
+            cursor: grabbing;
+        }
+
+        .mermaid-container.zoomed .mermaid {
+            height: 100%;
+            width: 100%;
+            cursor: grab;
+        }
+
+        .mermaid-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mermaid-control-btn {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #374151;
+            font-size: 14px;
+            min-width: 36px;
+            height: 36px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mermaid-control-btn:hover {
+            background: #f8fafc;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .mermaid-control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Enhanced mermaid diagram text contrast and styling */
+        .mermaid svg {
+            font-family: 'Inter', sans-serif !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+        }
+
+        .mermaid .node rect,
+        .mermaid .node circle,
+        .mermaid .node ellipse,
+        .mermaid .node polygon {
+            stroke-width: 2px !important;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .mermaid .node .label {
+            color: #1e293b !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .mermaid .edgeLabel {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            color: #374151 !important;
+            font-weight: 500 !important;
+            padding: 4px 8px !important;
+            border-radius: 4px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .mermaid .edge-pattern-solid {
+            stroke: #64748b !important;
+            stroke-width: 2px !important;
+        }
+
+        .mermaid .edge-pattern-dotted {
+            stroke: #94a3b8 !important;
+            stroke-width: 2px !important;
+        }
+
+        /* Ensure high contrast for all node types */
+        .mermaid .node[class*="default"] rect {
+            fill: #f8fafc !important;
+            stroke: #1e40af !important;
+        }
+
+        .mermaid .node[class*="default"] .label {
+            color: #1e293b !important;
+        }
+
+        /* Responsive adjustments for mermaid controls */
+        @media (max-width: 1024px) {
+            .mermaid-control-btn:not(.reset-zoom) {
+                display: none;
+            }
+
+            .mermaid-controls {
+                top: auto;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+    <base target="_blank">
+</head>
+
+<body class="bg-neutral">
+    <!-- Table of Contents -->
+    <nav class="toc">
+        <h3 class="text-lg font-bold text-primary mb-4">Contents</h3>
+        <a href="#introduction" class="toc-level-1">Introduction</a>
+        <a href="#gemini-3-series" class="toc-level-1">1. Gemini 3 Model Series</a>
+        <a href="#gemini-3-overview" class="toc-level-2">1.1 Overview</a>
+        <a href="#gemini-3-pro" class="toc-level-2">1.2 Gemini 3 Pro</a>
+        <a href="#deep-think" class="toc-level-2">1.3 Deep Think Mode</a>
+        <a href="#antigravity" class="toc-level-1">2. Google Antigravity</a>
+        <a href="#antigravity-intro" class="toc-level-2">2.1 Introduction</a>
+        <a href="#antigravity-architecture" class="toc-level-2">2.2 Architecture</a>
+        <a href="#antigravity-use-cases" class="toc-level-2">2.3 Use Cases</a>
+        <a href="#generative-ui" class="toc-level-1">3. Generative UI</a>
+        <a href="#generative-ui-concept" class="toc-level-2">3.1 Concept</a>
+        <a href="#generative-ui-technical" class="toc-level-2">3.2 Technical Details</a>
+        <a href="#generative-ui-applications" class="toc-level-2">3.3 Applications</a>
+        <a href="#gemini-agent" class="toc-level-1">4. Gemini AI Agent</a>
+        <a href="#agent-introduction" class="toc-level-2">4.1 Introduction</a>
+        <a href="#agent-capabilities" class="toc-level-2">4.2 Capabilities</a>
+        <a href="#ecosystem" class="toc-level-1">5. Ecosystem Integration</a>
+        <a href="#stitch" class="toc-level-2">5.1 Google Stitch</a>
+        <a href="#api-tools" class="toc-level-2">5.2 API &amp; Tools</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="content-wrapper px-4 md:px-8 py-12">
+        <!-- Hero Section -->
+        <div class="hero-grid scroll-reveal" id="introduction">
+            <div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold serif hero-text leading-tight mb-6">
+                    Google&#39;s AI Revolution: A Deep Dive into the November 18, 2025 Release
+                </h1>
+                <p class="text-lg md:text-xl text-muted leading-relaxed">
+                    A comprehensive analysis of Gemini 3, Google Antigravity, and the future of AI-powered development
+                </p>
+                <div class="mt-8 text-sm text-secondary">
+                    <i class="fas fa-calendar mr-2"></i>
+                    November 18, 2025 (US) / November 19, 2025 (China)
+                </div>
+            </div>
+            <div class="relative">
+                <img src="https://kimi-web-img.moonshot.cn/img/blog.tengrai.com/6e44225e6f5437e311051b37054f7d97b50abb32.webp"
+                    alt="Abstract visualization of artificial intelligence technology"
+                    class="rounded-2xl shadow-2xl w-full h-auto md:h-80 object-cover" size="medium" aspect="wide"
+                    query="abstract AI technology visualization" referrerpolicy="no-referrer" data-modified="1"
+                    data-score="0.00" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
+            </div>
+        </div>
+
+        <!-- Key Highlights -->
+        <div class="highlight-box scroll-reveal">
+            <h3 class="text-2xl font-bold text-primary mb-4">
+                <i class="fas fa-star mr-2"></i>Key Highlights
+            </h3>
+            <ul class="space-y-3">
+                <li><strong>Gemini 3 Pro:</strong> Achieved 1501 Elo on LMArena Leaderboard, topping performance
+                    benchmarks <a
+                        href="https://www.ainewshub.org/post/google-gemini-3-pro-vibe-coding-pricing-full-review-2025"
+                        class="citation">77</a>
+                </li>
+                <li><strong>Google Antigravity:</strong> Agentic development environment transforming AI into an active
+                    coding partner <a href="https://blog.google/technology/developers/gemini-3-developers/"
+                        class="citation">74</a>
+                </li>
+                <li><strong>Generative UI:</strong> Dynamic interface generation creating custom interactive experiences
+                    <a href="https://research.google/blog/generative-ui-a-rich-custom-visual-interactive-user-experience-for-any-prompt/"
+                        class="citation">73</a>
+                </li>
+                <li><strong>Gemini AI Agent:</strong> Multi-step task execution across Google&#39;s ecosystem <a
+                        href="https://www.constellationr.com/blog-news/insights/google-launches-gemini-3-google-antigravity-generative-ui-features"
+                        class="citation">69</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Section 1: Gemini 3 Series -->
+        <section class="scroll-reveal" id="gemini-3-series">
+            <h2 class="text-4xl font-bold serif text-primary mb-8">1. The Gemini 3 Model Series: A New Era of
+                Intelligence</h2>
+
+            <div class="prose prose-lg max-w-none">
+                <p class="text-lg leading-relaxed mb-6">
+                    On November 18, 2025, Google officially unveiled the Gemini 3 model series, marking a significant
+                    milestone in the company&#39;s AI development
+                    <a href="https://blog.google/intl/en-africa/company-news/outreach-and-initiatives/a-new-era-of-intelligence-with-gemini-3/"
+                        class="citation">67</a>
+                    <a href="https://blog.google/products/gemini/gemini-3/" class="citation">68</a>.
+                    This release, announced by Google DeepMind, introduces a new generation of AI models designed to
+                    push the boundaries of logical reasoning, multimodal understanding, and agentic capabilities
+                    <a href="https://the-decoder.com/analysts-say-google-now-leads-the-ai-performance-race-with-gemini-3-pro/"
+                        class="citation">40</a>.
+                </p>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="gemini-3-overview">1.1 Overview of the Gemini 3 Release
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-6 my-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h4 class="text-xl font-bold text-primary mb-3">
+                            <i class="fas fa-rocket mr-2"></i>Launch Scope
+                        </h4>
+                        <p class="text-muted">
+                            Comprehensive global launch across Google&#39;s entire product ecosystem, including Search,
+                            Gemini app, AI Studio, and Vertex AI
+                            <a href="https://ppc.land/google-launches-gemini-3-with-generative-ui-for-dynamic-search-experiences/"
+                                class="citation">75</a>.
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h4 class="text-xl font-bold text-primary mb-3">
+                            <i class="fas fa-brain mr-2"></i>Core Advancements
+                        </h4>
+                        <p class="text-muted">
+                            Enhanced reasoning, native multimodality (text, images, audio, video), and robust agentic
+                            capabilities for autonomous task execution
+                            <a href="https://venturebeat.com/ai/google-unveils-gemini-3-claiming-the-lead-in-math-science-multimodal-and"
+                                class="citation">89</a>.
+                        </p>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="gemini-3-pro">1.2 Gemini 3 Pro: The Flagship Model</h3>
+
+                <img src="https://kimi-web-img.moonshot.cn/img/external-preview.redd.it/4c1ca64dd178dc9bb186298fe5662dc989ebe532.png"
+                    alt="Google Gemini 3 Pro AI model" class="w-full h-64 object-cover rounded-xl shadow-lg mb-6"
+                    size="medium" aspect="wide" query="Google Gemini 3 Pro AI model" referrerpolicy="no-referrer"
+                    data-modified="1" data-score="0.00" />
+
+                <p class="leading-relaxed mb-6">
+                    Gemini 3 Pro represents the pinnacle of Google&#39;s AI development, featuring state-of-the-art
+                    reasoning abilities and native multimodality.
+                    The model introduces &#34;Deep Think&#34; mode for enhanced problem-solving and excels at &#34;vibe
+                    coding&#34; - generating complete applications from natural language descriptions
+                    <a href="https://www.ainewshub.org/post/google-gemini-3-pro-vibe-coding-pricing-full-review-2025"
+                        class="citation">77</a>
+                    <a href="http://www.36kr.com/p/3559185639652488" class="citation">101</a>.
+                </p>
+
+                <h4 class="text-xl font-bold mb-4">Performance Benchmarks</h4>
+                <div class="overflow-x-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-semibold">LMArena Leaderboard</span>
+                                <span class="text-accent font-bold">1501 Elo</span>
+                            </div>
+                            <div class="text-sm text-muted">Tops leaderboard, surpassing previous models</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-semibold">Humanity&#39;s Last Exam</span>
+                                <span class="text-accent font-bold">37-38%</span>
+                            </div>
+                            <div class="text-sm text-muted">Without tools, outperforms GPT-5.1 (mid-20s)</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-semibold">GPQA Diamond</span>
+                                <span class="text-accent font-bold">~92%</span>
+                            </div>
+                            <div class="text-sm text-muted">Graduate-level science questions</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-semibold">ScreenSpot-Pro</span>
+                                <span class="text-accent font-bold">72.7%</span>
+                            </div>
+                            <div class="text-sm text-muted">UI understanding, far exceeds GPT-5.1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="deep-think">1.3 Gemini 3 Deep Think: Enhanced Reasoning
+                    Mode</h3>
+
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+                    <p class="leading-relaxed">
+                        Deep Think mode allows Gemini 3 to spend more &#34;brain cycles&#34; on complex problems, using
+                        enhanced internal processing for improved accuracy.
+                        Currently in limited release for safety testing, it will be available to Google AI Ultra
+                        subscribers
+                        <a href="https://medium.com/@sebuzdugan/google-gemini-3-the-ai-model-that-turns-prompts-into-apps-f6bf8bb9b9b2"
+                            class="citation">72</a>
+                        <a href="https://www.constellationr.com/blog-news/insights/google-launches-gemini-3-google-antigravity-generative-ui-features"
+                            class="citation">69</a>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- Section 2: Google Antigravity -->
+        <section class="scroll-reveal" id="antigravity">
+            <h2 class="text-4xl font-bold serif text-primary mb-8">2. Google Antigravity: The Agentic Development
+                Platform</h2>
+
+            <div class="prose prose-lg max-w-none">
+                <div class="grid md:grid-cols-3 gap-6 my-8">
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                        <i class="fas fa-robot text-3xl text-purple-600 mb-4"></i>
+                        <h4 class="font-bold text-lg mb-2">Active Partner</h4>
+                        <p class="text-sm text-muted">Transforms AI from passive tool to active development partner</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200">
+                        <i class="fas fa-cogs text-3xl text-blue-600 mb-4"></i>
+                        <h4 class="font-bold text-lg mb-2">Autonomous Execution</h4>
+                        <p class="text-sm text-muted">Agents handle end-to-end software tasks independently</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                        <i class="fas fa-users text-3xl text-green-600 mb-4"></i>
+                        <h4 class="font-bold text-lg mb-2">Multi-Agent</h4>
+                        <p class="text-sm text-muted">Multiple agents collaborate on complex projects</p>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="antigravity-intro">2.1 Introduction to Google Antigravity
+                </h3>
+
+                <img src="https://kimi-web-img.moonshot.cn/img/theia-ide.org/04027ed93f14d5fbf8f5cbdc8c0a249637f2f337.png"
+                    alt="AI software development environment interface"
+                    class="w-full h-64 object-cover rounded-xl shadow-lg mb-6" size="medium" aspect="wide" style="photo"
+                    query="AI programming interface" referrerpolicy="no-referrer" data-modified="1" data-score="0.00" />
+
+                <p class="leading-relaxed mb-6">
+                    Google Antigravity represents a fundamental shift in AI-assisted development, transforming AI from a
+                    passive code generator into an active partner that can collaborate on complex software projects.
+                    The platform leverages Gemini 3&#39;s advanced reasoning and agentic capabilities to enable
+                    autonomous task execution across the entire development stack
+                    <a href="https://blog.google/technology/developers/gemini-3-developers/" class="citation">74</a>
+                    <a href="https://ppc.land/google-launches-gemini-3-with-generative-ui-for-dynamic-search-experiences/"
+                        class="citation">75</a>.
+                </p>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="antigravity-architecture">2.2 Technical Architecture and
+                    Integration</h3>
+
+                <div class="mermaid-container">
+                    <div class="mermaid-controls">
+                        <button class="mermaid-control-btn zoom-in" title="放大">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button class="mermaid-control-btn zoom-out" title="缩小">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button class="mermaid-control-btn reset-zoom" title="重置">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                        <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                    <div class="mermaid">
+                        graph TD
+                        A[&#34;Developer Input&#34;] --&gt; B[&#34;Gemini 3 Pro Core&#34;]
+                        B --&gt; C[&#34;Multi-Agent Orchestrator&#34;]
+                        C --&gt; D[&#34;Editor Agent&#34;]
+                        C --&gt; E[&#34;Terminal Agent&#34;]
+                        C --&gt; F[&#34;Browser Agent&#34;]
+                        D --&gt; G[&#34;Code Generation&#34;]
+                        E --&gt; H[&#34;Command Execution&#34;]
+                        F --&gt; I[&#34;Web Interaction&#34;]
+                        G --&gt; J[&#34;Project Output&#34;]
+                        H --&gt; J
+                        I --&gt; J
+                    </div>
+                </div>
+
+                <p class="leading-relaxed mb-6">
+                    Antigravity&#39;s architecture integrates multiple specialized Gemini models: Gemini 3 Pro for core
+                    reasoning, Gemini 2.5 Computer Use model for browser control, and Nano Banana for image editing
+                    tasks.
+                    This multi-model approach enables comprehensive development capabilities with direct access to
+                    editor, terminal, and browser environments
+                    <a href="https://www.ifanr.com/1645010" class="citation">99</a>.
+                </p>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="antigravity-use-cases">2.3 Use Cases and Developer
+                    Workflows</h3>
+
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h4 class="text-xl font-bold text-primary mb-3">
+                            <i class="fas fa-code mr-2"></i>End-to-End Development
+                        </h4>
+                        <p class="text-muted">
+                            Agents handle complete software development lifecycle from architecture planning to
+                            deployment, as demonstrated with a flight tracking application example
+                            <a href="https://www.ifanr.com/1645010" class="citation">99</a>.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h4 class="text-xl font-bold text-primary mb-3">
+                            <i class="fas fa-paint-brush mr-2"></i>UI Iteration
+                        </h4>
+                        <p class="text-muted">
+                            Rapid prototyping and front-end development through natural language UI descriptions,
+                            enabling &#34;vibe coding&#34; approaches
+                            <a href="https://blog.google/technology/developers/gemini-3-developers/"
+                                class="citation">74</a>.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h4 class="text-xl font-bold text-primary mb-3">
+                            <i class="fas fa-bug mr-2"></i>Bug Fixing &amp; Validation
+                        </h4>
+                        <p class="text-muted">
+                            Automated bug identification, root cause analysis, and code validation with test generation
+                            capabilities
+                            <a href="https://max-productive.ai/blog/google-gemini-3-release/" class="citation">76</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- Section 3: Generative UI -->
+        <section class="scroll-reveal" id="generative-ui">
+            <h2 class="text-4xl font-bold serif text-primary mb-8">3. Generative UI: Redefining User Interaction</h2>
+
+            <div class="prose prose-lg max-w-none">
+                <div class="highlight-box mb-8">
+                    <h3 class="text-2xl font-bold mb-4">
+                        <i class="fas fa-magic mr-2"></i>From Static to Dynamic Interfaces
+                    </h3>
+                    <p class="leading-relaxed">
+                        Generative UI represents a paradigm shift from static AI-generated content to dynamic,
+                        interactive interfaces tailored to user queries.
+                        Instead of receiving text blocks, users interact with custom-generated applications featuring
+                        maps, widgets, and interactive components
+                        <a href="https://research.google/blog/generative-ui-a-rich-custom-visual-interactive-user-experience-for-any-prompt/"
+                            class="citation">73</a>.
+                    </p>
+                </div>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="generative-ui-concept">3.1 The Concept of Generative UI
+                </h3>
+
+                <img src="https://kimi-web-img.moonshot.cn/img/www.thesys.dev/0c650694963babe7080bffea63e8beac47df5771"
+                    alt="Dynamic AI-generated user interface with interactive widgets"
+                    class="w-full h-64 object-cover rounded-xl shadow-lg mb-6" size="medium" aspect="wide"
+                    query="AI generated dynamic interface" referrerpolicy="no-referrer" data-modified="1"
+                    data-score="0.00" />
+
+                <p class="leading-relaxed mb-6">
+                    The core principle of Generative UI is creating interfaces specifically designed for each query
+                    context.
+                    For example, a travel planning request generates custom interfaces with interactive maps, booking
+                    widgets, and day-by-day itineraries
+                    <a href="https://www.constellationr.com/blog-news/insights/google-launches-gemini-3-google-antigravity-generative-ui-features"
+                        class="citation">69</a>.
+                </p>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="generative-ui-technical">3.2 Technical Details and
+                    Capabilities</h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-br from-orange-50 to-red-50 p-4 rounded-lg border border-orange-200">
+                            <h5 class="font-bold text-orange-800 mb-2">On-the-Fly Generation</h5>
+                            <p class="text-sm text-orange-700">
+                                Complete web applications generated in real-time from natural language descriptions
+                                <a href="https://medium.com/@sebuzdugan/google-gemini-3-the-ai-model-that-turns-prompts-into-apps-f6bf8bb9b9b2"
+                                    class="citation">72</a>.
+                            </p>
+                        </div>
+                        <div class="bg-gradient-to-br from-teal-50 to-cyan-50 p-4 rounded-lg border border-teal-200">
+                            <h5 class="font-bold text-teal-800 mb-2">Gemini 3 Integration</h5>
+                            <p class="text-sm text-teal-700">
+                                Leverages advanced coding and reasoning capabilities for intelligent interface design
+                                <a href="https://medium.com/@sebuzdugan/google-gemini-3-the-ai-model-that-turns-prompts-into-apps-f6bf8bb9b9b2"
+                                    class="citation">72</a>.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="bg-gradient-to-br from-indigo-50 to-purple-50 p-4 rounded-lg border border-indigo-200">
+                            <h5 class="font-bold text-indigo-800 mb-2">Dynamic Widgets</h5>
+                            <p class="text-sm text-indigo-700">
+                                Interactive charts, filters, and components for meaningful user engagement
+                                <a href="https://www.constellationr.com/blog-news/insights/google-launches-gemini-3-google-antigravity-generative-ui-features"
+                                    class="citation">69</a>.
+                            </p>
+                        </div>
+                        <div
+                            class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200">
+                            <h5 class="font-bold text-green-800 mb-2">&#34;Vibe Coding&#34;</h5>
+                            <p class="text-sm text-green-700">
+                                Democratizes web development through natural language application creation
+                                <a href="https://medium.com/@sebuzdugan/google-gemini-3-the-ai-model-that-turns-prompts-into-apps-f6bf8bb9b9b2"
+                                    class="citation">72</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="generative-ui-applications">3.3 Use Cases and Applications
+                </h3>
+
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
+                        <h4 class="text-xl font-bold text-blue-700 mb-3">
+                            <i class="fas fa-graduation-cap mr-2"></i>Interactive Learning Tools
+                        </h4>
+                        <p class="text-muted">
+                            Custom simulations and educational experiences tailored to specific learning objectives,
+                            from scientific concepts to interactive quizzes
+                            <a href="https://research.google/blog/generative-ui-a-rich-custom-visual-interactive-user-experience-for-any-prompt/"
+                                class="citation">73</a>.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
+                        <h4 class="text-xl font-bold text-green-700 mb-3">
+                            <i class="fas fa-chart-bar mr-2"></i>Custom Dashboards
+                        </h4>
+                        <p class="text-muted">
+                            Dynamic data visualizations and business intelligence tools with interactive filtering and
+                            drill-down capabilities
+                            <a href="https://medium.com/@sebuzdugan/google-gemini-3-the-ai-model-that-turns-prompts-into-apps-f6bf8bb9b9b2"
+                                class="citation">72</a>.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-purple-500">
+                        <h4 class="text-xl font-bold text-purple-700 mb-3">
+                            <i class="fas fa-rocket mr-2"></i>Rapid Prototyping
+                        </h4>
+                        <p class="text-muted">
+                            Accelerated application development with immediate user feedback integration and iterative
+                            design processes
+                            <a href="https://medium.com/@sebuzdugan/google-gemini-3-the-ai-model-that-turns-prompts-into-apps-f6bf8bb9b9b2"
+                                class="citation">72</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- Section 4: Gemini AI Agent -->
+        <section class="scroll-reveal" id="gemini-agent">
+            <h2 class="text-4xl font-bold serif text-primary mb-8">4. The Gemini AI Agent: A Generalist Assistant</h2>
+
+            <div class="prose prose-lg max-w-none">
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200 mb-8">
+                    <h3 class="text-2xl font-bold text-amber-800 mb-4">
+                        <i class="fas fa-robot mr-2"></i>Towards a True Generalist Agent
+                    </h3>
+                    <p class="text-amber-700 leading-relaxed">
+                        The Gemini AI Agent represents Google&#39;s vision of a proactive assistant capable of executing
+                        multi-step tasks across Google&#39;s ecosystem.
+                        It moves beyond simple Q&amp;A to orchestrate complex workflows involving Search, Maps, Gmail,
+                        and Calendar
+                        <a href="https://www.constellationr.com/blog-news/insights/google-launches-gemini-3-google-antigravity-generative-ui-features"
+                            class="citation">69</a>.
+                    </p>
+                </div>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="agent-introduction">4.1 Introduction to the Gemini AI Agent
+                </h3>
+
+                <img src="https://kimi-web-img.moonshot.cn/img/www.testingcatalog.com/e62dade4e23ca3e06171d4e355079873498254b8.PNG"
+                    alt="AI assistant performing multiple tasks across different applications"
+                    class="w-full h-64 object-cover rounded-xl shadow-lg mb-6" size="medium" aspect="wide"
+                    query="AI assistant multitasking across applications" referrerpolicy="no-referrer" data-modified="1"
+                    data-score="0.00" />
+
+                <p class="leading-relaxed mb-6">
+                    The Gemini AI Agent is an experimental feature designed to automate complex, multi-step tasks by
+                    breaking them down into manageable steps and executing them across different Google products.
+                    Currently available to Google AI Ultra subscribers in the United States, it represents a significant
+                    step toward truly helpful AI assistants
+                    <a href="https://www.constellationr.com/blog-news/insights/google-launches-gemini-3-google-antigravity-generative-ui-features"
+                        class="citation">69</a>
+                    <a href="https://ppc.land/google-launches-gemini-3-with-generative-ui-for-dynamic-search-experiences/"
+                        class="citation">75</a>.
+                </p>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="agent-capabilities">4.2 Capabilities and Integration</h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                            <h4 class="text-xl font-bold text-primary mb-3">
+                                <i class="fas fa-tasks mr-2"></i>Multi-Step Execution
+                            </h4>
+                            <p class="text-muted mb-3">
+                                Breaks complex requests into actionable steps and executes them sequentially across
+                                multiple services
+                                <a href="https://www.constellationr.com/blog-news/insights/google-launches-gemini-3-google-antigravity-generative-ui-features"
+                                    class="citation">69</a>.
+                            </p>
+                            <div class="text-sm text-secondary">
+                                <strong>Example:</strong> &#34;Plan a three-day trip to Rome&#34; → Flight search →
+                                Hotel booking → Itinerary creation
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                            <h4 class="text-xl font-bold text-primary mb-3">
+                                <i class="fas fa-puzzle-piece mr-2"></i>Service Integration
+                            </h4>
+                            <p class="text-muted">
+                                Seamlessly works with Gmail, Calendar, Maps, and Search to provide comprehensive
+                                assistance
+                                <a href="https://www.ifanr.com/1645010" class="citation">99</a>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                            <h4 class="text-xl font-bold text-primary mb-3">
+                                <i class="fas fa-shield-alt mr-2"></i>User Control
+                            </h4>
+                            <p class="text-muted">
+                                Always asks for confirmation before significant actions, providing transparency and
+                                maintaining user trust
+                                <a href="https://www.ifanr.com/1645010" class="citation">99</a>.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                            <h4 class="text-xl font-bold text-primary mb-3">
+                                <i class="fas fa-brain mr-2"></i>Reasoning Capabilities
+                            </h4>
+                            <p class="text-muted">
+                                Powered by Gemini 3&#39;s advanced reasoning to understand context and adapt plans as
+                                needed
+                                <a href="https://www.ifanr.com/1645010" class="citation">99</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- Section 5: Ecosystem Integration -->
+        <section class="scroll-reveal" id="ecosystem">
+            <h2 class="text-4xl font-bold serif text-primary mb-8">5. Additional Tools and Ecosystem Integration</h2>
+
+            <div class="prose prose-lg max-w-none">
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="stitch">5.1 Google Stitch: AI-Powered UI Design</h3>
+
+                <img src="https://kimi-web-img.moonshot.cn/img/miro.medium.com/2f5d02caf438bc80669c4c5a1a35d84ae9d73bab.jpeg"
+                    alt="AI UI design tool interface" class="w-full h-64 object-cover rounded-xl shadow-lg mb-6"
+                    size="medium" aspect="wide" style="photo" query="AI UI design tool" referrerpolicy="no-referrer"
+                    data-modified="1" data-score="0.00" />
+
+                <p class="leading-relaxed mb-6">
+                    Google Stitch is an experimental tool from Google Labs that bridges design and development by
+                    transforming text prompts or image inputs into complex UI designs and front-end code.
+                    It integrates seamlessly with Figma and generates production-ready code for frameworks like React
+                    and Vue.js
+                    <a href="https://blog.einverne.info/post/2025/05/stitch-a-new-way-to-design.html"
+                        class="citation">78</a>
+                    <a href="https://developers.googleblog.com/en/stitch-a-new-way-to-design-uis/"
+                        class="citation">82</a>.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6 my-8">
+                    <div class="bg-gradient-to-br from-pink-50 to-rose-50 p-6 rounded-xl border border-pink-200">
+                        <h4 class="text-xl font-bold text-pink-800 mb-3">
+                            <i class="fas fa-magic mr-2"></i>Core Features
+                        </h4>
+                        <ul class="text-sm text-pink-700 space-y-2">
+                            <li>• Text-to-UI generation</li>
+                            <li>• Multiple design variants</li>
+                            <li>• Theme and style customization</li>
+                            <li>• Rapid prototyping capabilities</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+                        <h4 class="text-xl font-bold text-blue-800 mb-3">
+                            <i class="fas fa-plug mr-2"></i>Integrations
+                        </h4>
+                        <ul class="text-sm text-blue-700 space-y-2">
+                            <li>• Figma export support</li>
+                            <li>• React/Vue.js code generation</li>
+                            <li>• Design system creation</li>
+                            <li>• Designer-developer workflow</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold mt-8 mb-4" id="api-tools">5.2 Gemini API and Developer Tools</h3>
+
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h4 class="text-xl font-bold text-primary mb-3">
+                            <i class="fas fa-code mr-2"></i>New API Features
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h5 class="font-semibold mb-2">Client-side Bash Tool</h5>
+                                <p class="text-sm text-muted mb-3">
+                                    Enables shell command proposals for agentic workflows and system operations
+                                    <a href="https://blog.google/technology/developers/gemini-3-developers/"
+                                        class="citation">74</a>.
+                                </p>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold mb-2">Enhanced Grounding</h5>
+                                <p class="text-sm text-muted mb-3">
+                                    Combined Search and URL context tools with structured outputs for web data
+                                    extraction
+                                    <a href="https://blog.google/technology/developers/gemini-3-developers/"
+                                        class="citation">74</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h4 class="text-xl font-bold text-primary mb-3">
+                            <i class="fas fa-laptop-code mr-2"></i>IDE Integration
+                        </h4>
+                        <p class="text-muted mb-3">
+                            Gemini 3 integrates with popular IDEs including Cursor, VS Code, and JetBrains, providing
+                            code completion, generation, and debugging capabilities directly in developers&#39;
+                            preferred environments
+                            <a href="https://max-productive.ai/blog/google-gemini-3-release/" class="citation">76</a>
+                            <a href="https://k.sina.com.cn/article_5953741034_162dee0ea06702qen4.html?from=tech"
+                                class="citation">100</a>.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h4 class="text-xl font-bold text-primary mb-3">
+                            <i class="fas fa-cloud mr-2"></i>Vertex AI Enterprise
+                        </h4>
+                        <p class="text-muted">
+                            Enterprise customers can access Gemini 3 through Vertex AI, Google&#39;s cloud platform
+                            providing secure, scalable AI deployment with robust security and compliance features
+                            <a href="https://cloud.google.com/blog/products/ai-machine-learning/gemini-3-is-available-for-enterprise"
+                                class="citation">70</a>
+                            <a href="https://max-productive.ai/blog/google-gemini-3-release/" class="citation">76</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section class="scroll-reveal mt-16">
+            <div class="bg-gradient-to-br from-slate-50 to-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h2 class="text-3xl font-bold serif text-primary mb-6">Conclusion: A New Era of AI Integration</h2>
+                <p class="text-lg leading-relaxed text-muted mb-6">
+                    Google&#39;s November 18, 2025 release marks a pivotal moment in AI development, introducing not
+                    just a new model series but a comprehensive ecosystem of tools and capabilities.
+                    From Gemini 3 Pro&#39;s industry-leading performance to Antigravity&#39;s agentic development
+                    paradigm and Generative UI&#39;s dynamic interface creation,
+                    this release demonstrates Google&#39;s commitment to making AI more accessible, powerful, and
+                    integrated into our daily workflows.
+                </p>
+                <div class="flex items-center justify-between text-sm text-secondary">
+                    <span>
+                        <i class="fas fa-calendar mr-2"></i>
+                        Launch Date: November 18, 2025 (US) / November 19, 2025 (China)
+                    </span>
+                    <span>
+                        <i class="fas fa-globe mr-2"></i>
+                        Global Availability: Rolling out across Google&#39;s ecosystem
+                    </span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#f8fafc',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#1e40af',
+                lineColor: '#64748b',
+                secondaryColor: '#e2e8f0',
+                tertiaryColor: '#f1f5f9',
+                background: '#ffffff',
+                mainBkg: '#f8fafc',
+                secondBkg: '#e2e8f0',
+                tertiaryBkg: '#f1f5f9',
+                nodeBorder: '#1e40af',
+                clusterBkg: '#f8fafc',
+                edgeLabelBackground: '#ffffff',
+                nodeTextColor: '#1e293b'
+            },
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis',
+                padding: 20
+            }
+        });
+
+        // Initialize Mermaid Controls for zoom and pan
+        function initializeMermaidControls() {
+            const containers = document.querySelectorAll('.mermaid-container');
+
+            containers.forEach(container => {
+                const mermaidElement = container.querySelector('.mermaid');
+                let scale = 1;
+                let isDragging = false;
+                let startX, startY, translateX = 0, translateY = 0;
+
+                // 触摸相关状态
+                let isTouch = false;
+                let touchStartTime = 0;
+                let initialDistance = 0;
+                let initialScale = 1;
+                let isPinching = false;
+
+                // Zoom controls
+                const zoomInBtn = container.querySelector('.zoom-in');
+                const zoomOutBtn = container.querySelector('.zoom-out');
+                const resetBtn = container.querySelector('.reset-zoom');
+                const fullscreenBtn = container.querySelector('.fullscreen');
+
+                function updateTransform() {
+                    mermaidElement.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+
+                    if (scale > 1) {
+                        container.classList.add('zoomed');
+                    } else {
+                        container.classList.remove('zoomed');
+                    }
+
+                    mermaidElement.style.cursor = isDragging ? 'grabbing' : 'grab';
+                }
+
+                if (zoomInBtn) {
+                    zoomInBtn.addEventListener('click', () => {
+                        scale = Math.min(scale * 1.25, 4);
+                        updateTransform();
+                    });
+                }
+
+                if (zoomOutBtn) {
+                    zoomOutBtn.addEventListener('click', () => {
+                        scale = Math.max(scale / 1.25, 0.3);
+                        if (scale <= 1) {
+                            translateX = 0;
+                            translateY = 0;
+                        }
+                        updateTransform();
+                    });
+                }
+
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => {
+                        scale = 1;
+                        translateX = 0;
+                        translateY = 0;
+                        updateTransform();
+                    });
+                }
+
+                if (fullscreenBtn) {
+                    fullscreenBtn.addEventListener('click', () => {
+                        if (container.requestFullscreen) {
+                            container.requestFullscreen();
+                        } else if (container.webkitRequestFullscreen) {
+                            container.webkitRequestFullscreen();
+                        } else if (container.msRequestFullscreen) {
+                            container.msRequestFullscreen();
+                        }
+                    });
+                }
+
+                // Mouse Events
+                mermaidElement.addEventListener('mousedown', (e) => {
+                    if (isTouch) return; // 如果是触摸设备，忽略鼠标事件
+
+                    isDragging = true;
+                    startX = e.clientX - translateX;
+                    startY = e.clientY - translateY;
+                    mermaidElement.style.cursor = 'grabbing';
+                    updateTransform();
+                    e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (isDragging && !isTouch) {
+                        translateX = e.clientX - startX;
+                        translateY = e.clientY - startY;
+                        updateTransform();
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (isDragging && !isTouch) {
+                        isDragging = false;
+                        mermaidElement.style.cursor = 'grab';
+                        updateTransform();
+                    }
+                });
+
+                document.addEventListener('mouseleave', () => {
+                    if (isDragging && !isTouch) {
+                        isDragging = false;
+                        mermaidElement.style.cursor = 'grab';
+                        updateTransform();
+                    }
+                });
+
+                // 获取两点之间的距离
+                function getTouchDistance(touch1, touch2) {
+                    return Math.hypot(
+                        touch2.clientX - touch1.clientX,
+                        touch2.clientY - touch1.clientY
+                    );
+                }
+
+                // Touch Events - 触摸事件处理
+                mermaidElement.addEventListener('touchstart', (e) => {
+                    isTouch = true;
+                    touchStartTime = Date.now();
+
+                    if (e.touches.length === 1) {
+                        // 单指拖动
+                        isPinching = false;
+                        isDragging = true;
+
+                        const touch = e.touches[0];
+                        startX = touch.clientX - translateX;
+                        startY = touch.clientY - translateY;
+
+                    } else if (e.touches.length === 2) {
+                        // 双指缩放
+                        isPinching = true;
+                        isDragging = false;
+
+                        const touch1 = e.touches[0];
+                        const touch2 = e.touches[1];
+                        initialDistance = getTouchDistance(touch1, touch2);
+                        initialScale = scale;
+                    }
+
+                    e.preventDefault();
+                }, { passive: false });
+
+                mermaidElement.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 1 && isDragging && !isPinching) {
+                        // 单指拖动
+                        const touch = e.touches[0];
+                        translateX = touch.clientX - startX;
+                        translateY = touch.clientY - startY;
+                        updateTransform();
+
+                    } else if (e.touches.length === 2 && isPinching) {
+                        // 双指缩放
+                        const touch1 = e.touches[0];
+                        const touch2 = e.touches[1];
+                        const currentDistance = getTouchDistance(touch1, touch2);
+
+                        if (initialDistance > 0) {
+                            const newScale = Math.min(Math.max(
+                                initialScale * (currentDistance / initialDistance),
+                                0.3
+                            ), 4);
+                            scale = newScale;
+                            updateTransform();
+                        }
+                    }
+
+                    e.preventDefault();
+                }, { passive: false });
+
+                mermaidElement.addEventListener('touchend', (e) => {
+                    // 重置状态
+                    if (e.touches.length === 0) {
+                        isDragging = false;
+                        isPinching = false;
+                        initialDistance = 0;
+
+                        // 延迟重置isTouch，避免鼠标事件立即触发
+                        setTimeout(() => {
+                            isTouch = false;
+                        }, 100);
+                    } else if (e.touches.length === 1 && isPinching) {
+                        // 从双指变为单指，切换为拖动模式
+                        isPinching = false;
+                        isDragging = true;
+
+                        const touch = e.touches[0];
+                        startX = touch.clientX - translateX;
+                        startY = touch.clientY - translateY;
+                    }
+
+                    updateTransform();
+                });
+
+                mermaidElement.addEventListener('touchcancel', (e) => {
+                    isDragging = false;
+                    isPinching = false;
+                    initialDistance = 0;
+
+                    setTimeout(() => {
+                        isTouch = false;
+                    }, 100);
+
+                    updateTransform();
+                });
+
+                // Enhanced wheel zoom with better center point handling
+                container.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const rect = container.getBoundingClientRect();
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                    const newScale = Math.min(Math.max(scale * delta, 0.3), 4);
+
+                    // Adjust translation to zoom towards center
+                    if (newScale !== scale) {
+                        const scaleDiff = newScale / scale;
+                        translateX = translateX * scaleDiff;
+                        translateY = translateY * scaleDiff;
+                        scale = newScale;
+
+                        if (scale <= 1) {
+                            translateX = 0;
+                            translateY = 0;
+                        }
+
+                        updateTransform();
+                    }
+                });
+
+                // Initialize display
+                updateTransform();
+            });
+        }
+
+        // Initialize controls when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeMermaidControls();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Highlight active TOC item
+        const sections = document.querySelectorAll('section[id], h3[id]');
+        const tocLinks = document.querySelectorAll('.toc a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-500');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('bg-blue-100', 'text-blue-800', 'border-blue-500');
+                }
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>
