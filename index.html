@@ -1693,13 +1693,8 @@
       const wrap = document.getElementById('evalDetailContent')
       if (!wrap) return
       if (!run) { wrap.innerHTML = '<div class="p-4 bg-white rounded border">Run not found.</div>'; return }
-      const records = Array.from({ length: run.records }).map((_, i) => {
-        const relevance = +(Math.random()).toFixed(2)
-        const fluency = +(Math.random()).toFixed(2)
-        const guardrail = Math.random() > 0.05 ? 1 : 0
-        const pass = relevance > 0.7 && fluency > 0.7 && guardrail === 1
-        return { id: `${run.id}-${i + 1}`, input: `Input ${i + 1}`, output: `Output ${i + 1}`, relevance, fluency, guardrail, pass }
-      })
+      const detail = getEvalRunDetail(run)
+      const records = detail.records
       const summary = `
         <div class="p-4 bg-white rounded border">
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -1709,10 +1704,15 @@
             <div><div class="text-xs text-gray-500">End</div><div class="font-semibold">${run.endAt ? formatTs(run.endAt) : '-'}</div></div>
           </div>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="p-4 bg-white rounded border"><div class="text-xs text-gray-500">Total Records</div><div class="text-2xl font-semibold">${records.length}</div></div>
+          <div class="p-4 bg-white rounded border"><div class="text-xs text-gray-500">Pass Rate</div><div class="text-2xl font-semibold">${(detail.passRate * 100).toFixed(1)}%</div></div>
+          <div class="p-4 bg-white rounded border"><div class="text-xs text-gray-500">Failures</div><div class="text-2xl font-semibold">${records.filter(r => !r.pass).length}</div></div>
+        </div>
       `
       const controls = document.createElement('div')
       controls.className = 'flex items-center mb-2'
-      controls.innerHTML = `<div class="text-sm font-semibold">Records</div><div class="ml-auto inline-flex gap-2"><button id="evalRecPrev_${id}" class="px-3 py-1 border rounded text-sm">Prev</button><button id="evalRecNext_${id}" class="px-3 py-1 border rounded text-sm">Next</button></div>`
+      controls.innerHTML = `<div class="text-sm font-semibold">Records</div><div class="ml-auto inline-flex gap-2"><button id="evalRecPrev_${id}" class="px-3 py-1 border rounded text-sm">Prev</button><button id="evalRecNext_${id}" class="px-3 py-1 border rounded text-sm">Next</button><span id="evalRecInfo_${id}" class="text-xs text-gray-500"></span></div>`
       const tbl = document.createElement('table')
       tbl.className = 'min-w-full text-sm bg-white rounded border'
       tbl.innerHTML = `
@@ -1734,9 +1734,9 @@
               <td class="py-2 px-4 mono">${r.id}</td>
               <td class="py-2 px-4">${r.input}</td>
               <td class="py-2 px-4">${r.output}</td>
-              <td class="py-2 px-4 text-right">${r.relevance}</td>
-              <td class="py-2 px-4 text-right">${r.fluency}</td>
-              <td class="py-2 px-4">${r.guardrail === 1 ? 'Compliant' : 'Violation'}</td>
+              <td class="py-2 px-4 text-right">${r.scores.Relevance.score}</td>
+              <td class="py-2 px-4 text-right">${r.scores.Fluency.score}</td>
+              <td class="py-2 px-4">${r.scores.Guardrail.score === 1 ? 'Compliant' : 'Violation'}</td>
               <td class="py-2 px-4">${r.pass ? '<span class="pill pill-green">Pass</span>' : '<span class="pill pill-gray">Fail</span>'}</td>
               <td class="py-2 px-4"><button class="px-3 py-1 border rounded" data-rpanel="${r.id}">View</button></td>
             </tr>
@@ -1750,6 +1750,7 @@
       wrap.appendChild(tableWrap)
       const prev = document.getElementById(`evalRecPrev_${id}`)
       const next = document.getElementById(`evalRecNext_${id}`)
+      const info = document.getElementById(`evalRecInfo_${id}`)
       const pageKey = `evalRecPage_${id}`
       const size = 10
       const getPage = () => { const v = parseInt(localStorage.getItem(pageKey) || '1', 10); const total = Math.max(1, Math.ceil(records.length/size)); return Math.min(Math.max(1,v), total) }
@@ -1762,13 +1763,14 @@
               <td class="py-2 px-4 mono">${r.id}</td>
               <td class="py-2 px-4">${r.input}</td>
               <td class="py-2 px-4">${r.output}</td>
-              <td class="py-2 px-4 text-right">${r.relevance}</td>
-              <td class="py-2 px-4 text-right">${r.fluency}</td>
-              <td class="py-2 px-4">${r.guardrail === 1 ? 'Compliant' : 'Violation'}</td>
+              <td class="py-2 px-4 text-right">${r.scores.Relevance.score}</td>
+              <td class="py-2 px-4 text-right">${r.scores.Fluency.score}</td>
+              <td class="py-2 px-4">${r.scores.Guardrail.score === 1 ? 'Compliant' : 'Violation'}</td>
               <td class="py-2 px-4">${r.pass ? '<span class="pill pill-green">Pass</span>' : '<span class="pill pill-gray">Fail</span>'}</td>
               <td class="py-2 px-4"><button class="px-3 py-1 border rounded" data-rpanel="${r.id}">View</button></td>
             </tr>
         `).join('')
+        if (info) { const s = start + 1; const e = Math.min(records.length, start+size); info.textContent = `Showing ${s}-${e} of ${records.length}` }
         attachPanelHandlers()
       }
       if (prev) prev.onclick = () => { setPage(getPage()-1); renderSlice() }
@@ -1784,23 +1786,88 @@
       }
       renderSlice()
     }
+    function getEvalRunDetail(run) {
+      const key = `evalRunDetail_${run.id}`
+      try { const raw = localStorage.getItem(key); if (raw) return JSON.parse(raw) } catch {}
+      const prompts = [
+        'Summarize the latest compliance policy changes for retail banking.',
+        'Draft a customer email explaining fee adjustments clearly and politely.',
+        'Extract key fields from an invoice and normalize vendor data.',
+        'Explain the reasoning steps used to select an insurance plan.',
+        'Generate an FAQ answer with citations from the knowledge base.'
+      ]
+      const outputs = [
+        'Summary: Policy updates focus on AML thresholds, KYC refresh, and SAR escalation. Key points: thresholds, verification windows, documentation.',
+        'Dear Customer, we adjusted fees due to new service tiers. Your plan benefits increased; details are attached. Thank you for your understanding.',
+        'Vendor: Acme Co; Invoice#: INV-1042; Amount: $1,245.00; Due: 2025-12-01. Normalized fields set and validated.',
+        'We compared premiums, deductibles, and network coverage. Final choice maximizes value given risk profile and budget constraints.',
+        'Answer: See docs Section 3.1 and 4.2. Citations: KB-1132, KB-2239.'
+      ]
+      const buildTrajectory = () => [
+        { id: 'plan', label: 'Plan', detail: 'Outline approach and constraints.' },
+        { id: 'retrieve', label: 'Retrieve', detail: 'Fetch relevant knowledge and tools.' },
+        { id: 'analyze', label: 'Analyze', detail: 'Score relevance and fluency; validate guardrails.' },
+        { id: 'compose', label: 'Compose', detail: 'Generate final answer with citations and structure.' }
+      ]
+      const recs = []
+      const total = run.records || 50
+      for (let i = 0; i < total; i++) {
+        const id = `${run.id}-${i+1}`
+        const relevance = +(0.5 + Math.random()*0.5).toFixed(2)
+        const fluency = +(0.5 + Math.random()*0.5).toFixed(2)
+        const guardrail = Math.random() > 0.08 ? 1 : 0
+        const scores = {
+          Relevance: { score: relevance, reason: relevance > 0.85 ? 'Highly relevant.' : 'Partially relevant.' },
+          Fluency: { score: fluency, reason: fluency > 0.85 ? 'Fluent output.' : 'Minor errors present.' },
+          Guardrail: { score: guardrail, reason: guardrail === 1 ? 'Compliant.' : 'Violation detected.' }
+        }
+        const pass = scores.Relevance.score >= 0.8 && scores.Fluency.score >= 0.8 && scores.Guardrail.score === 1
+        const input = prompts[i % prompts.length]
+        const output = outputs[i % outputs.length]
+        const trajectory = buildTrajectory()
+        recs.push({ id, input, output, scores, pass, trajectory })
+      }
+      const passRate = recs.filter(r => r.pass).length / recs.length
+      const detail = { records: recs, passRate }
+      try { localStorage.setItem(key, JSON.stringify(detail)) } catch {}
+      return detail
+    }
     function openEvalRecordPanel(rec) {
       let panel = document.getElementById('evalRecordPanel')
       let mask = document.getElementById('evalRecordMask')
       if (!panel) {
-        panel = document.createElement('div'); panel.id = 'evalRecordPanel'; panel.className = 'fixed inset-y-0 left-0 w-[420px] bg-white border-r z-50 hidden'
-        panel.innerHTML = `<div class="p-4 flex items-center"><div class="text-lg font-semibold">Record Detail</div><button id="evalRecordClose" class="ml-auto px-3 py-1 border rounded">Close</button></div><div id="evalRecordBody" class="p-4 space-y-3"></div>`
+        panel = document.createElement('div'); panel.id = 'evalRecordPanel'; panel.className = 'fixed inset-y-0 right-0 w-1/2 min-w-[560px] bg-white border-l z-50 hidden'
+        panel.innerHTML = `<div class="p-4 flex items-center"><div class="text-lg font-semibold">Record Detail</div><button id="evalRecordClose" class="ml-auto px-3 py-1 border rounded">Close</button></div><div id="evalRecordBody" class="p-4 space-y-4 overflow-y-auto h-[calc(100vh-64px)]"></div>`
         document.body.appendChild(panel)
       }
       if (!mask) { mask = document.createElement('div'); mask.id = 'evalRecordMask'; mask.className = 'fixed inset-0 bg-black/30 z-40 hidden'; document.body.appendChild(mask) }
       const body = document.getElementById('evalRecordBody')
       if (body && rec) {
+        const traj = (rec.trajectory || []).map((s, idx) => `
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs">${idx+1}</div>
+            <div>
+              <div class="font-semibold">${s.label}</div>
+              <div class="text-xs text-gray-500">${s.detail}</div>
+            </div>
+          </div>
+        `).join('')
         body.innerHTML = `
-          <div class="grid grid-cols-1 gap-2 text-sm">
+          <div class="grid grid-cols-1 gap-3 text-sm">
             <div><div class="text-gray-500">Record ID</div><div class="font-semibold mono">${rec.id}</div></div>
             <div><div class="text-gray-500">Input</div><div class="font-semibold">${rec.input}</div></div>
             <div><div class="text-gray-500">Output</div><div class="font-semibold">${rec.output}</div></div>
-            <div><div class="text-gray-500">Scores</div><div class="font-semibold">Relevance: ${rec.relevance}, Fluency: ${rec.fluency}, Guardrail: ${rec.guardrail === 1 ? 'Compliant' : 'Violation'}</div></div>
+            <div><div class="text-gray-500">Scores</div>
+              <div class="space-y-1">
+                <div>Relevance: <span class="font-semibold">${rec.scores.Relevance.score}</span> <span class="text-xs text-gray-500">${rec.scores.Relevance.reason}</span></div>
+                <div>Fluency: <span class="font-semibold">${rec.scores.Fluency.score}</span> <span class="text-xs text-gray-500">${rec.scores.Fluency.reason}</span></div>
+                <div>Guardrail: <span class="font-semibold">${rec.scores.Guardrail.score === 1 ? 'Compliant' : 'Violation'}</span> <span class="text-xs text-gray-500">${rec.scores.Guardrail.reason}</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="text-gray-500">Trajectory</div>
+              <div class="space-y-2">${traj}</div>
+            </div>
           </div>
         `
       }
