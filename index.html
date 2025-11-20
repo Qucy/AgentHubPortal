@@ -2585,27 +2585,69 @@
         const candidates = items.filter(h => /\/$/.test(h) || /\.(html?|md|txt|json|csv)$/i.test(h))
         let folders = candidates.filter(h => /\/$/.test(h))
         let files = candidates.filter(h => !/\/$/.test(h))
-        if (folders.length === 0 && files.length === 0) {
-          folders = []
-          files = ['google_gemini_3.html']
+        const render = (folders, files) => {
+          const folderIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>'
+          const fileIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>'
+          const folderRow = `
+            <div class="flex items-center gap-2">
+              ${folderIcon}
+              <a href="${path}" class="hover:underline">deep_research</a>
+            </div>
+          `
+          const children = `
+            <div class="ml-6 space-y-1">
+              ${folders.map(f => `<div class=\"flex items-center gap-2\">${folderIcon}<a href=\"${path + f}\" class=\"hover:underline\">${f.replace(/\/$/, '')}</a></div>`).join('')}
+              ${files.map(fn => `<div class=\"flex items-center gap-2\">${fileIcon}<a href=\"${path + fn}\" class=\"hover:underline\">${fn}</a></div>`).join('')}
+            </div>
+          `
+          tree.innerHTML = folderRow + children
         }
+        if (folders.length === 0 && files.length === 0) {
+          const owner = 'Qucy'
+          const repo = 'AgentHubPortal'
+          const branch = 'main'
+          const api = `https://api.github.com/repos/${owner}/${repo}/contents/deep_research?ref=${branch}`
+          fetch(api).then(r => r.json()).then(arr => {
+            if (Array.isArray(arr)) {
+              const gFolders = arr.filter(x => x.type === 'dir').map(x => x.name + '/')
+              const gFiles = arr.filter(x => x.type === 'file').map(x => x.name).filter(n => /\.(html?|md|txt|json|csv)$/i.test(n))
+              if (gFolders.length || gFiles.length) render(gFolders, gFiles)
+              else render([], ['google_gemini_3.html'])
+            } else render([], ['google_gemini_3.html'])
+          }).catch(() => render([], ['google_gemini_3.html']))
+        } else {
+          render(folders, files)
+        }
+      }).catch(() => {
         const folderIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>'
         const fileIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg>'
-        const folderRow = `
-          <div class="flex items-center gap-2">
-            ${folderIcon}
-            <a href="${path}" class="hover:underline">deep_research</a>
-          </div>
-        `
-        const children = `
-          <div class="ml-6 space-y-1">
-            ${folders.map(f => `<div class=\"flex items-center gap-2\">${folderIcon}<a href=\"${path + f}\" class=\"hover:underline\">${f.replace(/\/$/, '')}</a></div>`).join('')}
-            ${files.map(fn => `<div class=\"flex items-center gap-2\">${fileIcon}<a href=\"${path + fn}\" class=\"hover:underline\">${fn}</a></div>`).join('')}
-          </div>
-        `
-        tree.innerHTML = folderRow + children
-      }).catch(() => {
-        tree.innerHTML = `<div class="text-sm text-gray-600">Unable to load folder.</div>`
+        const render = (folders, files) => {
+          const folderRow = `
+            <div class="flex items-center gap-2">
+              ${folderIcon}
+              <a href="${path}" class="hover:underline">deep_research</a>
+            </div>
+          `
+          const children = `
+            <div class="ml-6 space-y-1">
+              ${folders.map(f => `<div class=\"flex items-center gap-2\">${folderIcon}<a href=\"${path + f}\" class=\"hover:underline\">${f.replace(/\/$/, '')}</a></div>`).join('')}
+              ${files.map(fn => `<div class=\"flex items-center gap-2\">${fileIcon}<a href=\"${path + fn}\" class=\"hover:underline\">${fn}</a></div>`).join('')}
+            </div>
+          `
+          tree.innerHTML = folderRow + children
+        }
+        const owner = 'Qucy'
+        const repo = 'AgentHubPortal'
+        const branch = 'main'
+        const api = `https://api.github.com/repos/${owner}/${repo}/contents/deep_research?ref=${branch}`
+        fetch(api).then(r => r.json()).then(arr => {
+          if (Array.isArray(arr)) {
+            const gFolders = arr.filter(x => x.type === 'dir').map(x => x.name + '/')
+            const gFiles = arr.filter(x => x.type === 'file').map(x => x.name).filter(n => /(\.html?|md|txt|json|csv)$/i.test(n))
+            if (gFolders.length || gFiles.length) render(gFolders, gFiles)
+            else render([], ['google_gemini_3.html'])
+          } else render([], ['google_gemini_3.html'])
+        }).catch(() => render([], ['google_gemini_3.html']))
       })
     }
 
